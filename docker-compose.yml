@@ -1,0 +1,15 @@
+services:
+  app-frontend:
+    container_name: app-frontend
+    image: ghcr.io/remla25-team21/app-frontend
+    ports:
+      - 3000:3000
+
+  app-service:
+    image: ghcr.io/remla25-team21/app-backend
+    environment:
+      - MODEL_SERVICE=http://model-service:8080
+
+  model-service:
+    container_name: model-service
+    image: ghcr.io/remla25-team21/model-service
