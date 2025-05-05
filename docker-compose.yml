@@ -9,10 +9,10 @@ services:
   app-service:
     #build: "../app/app-service"
     image: ghcr.io/remla25-team21/app-backend
-    environment:
-      - MODEL_SERVICE_URL=http://model-service:8080
     ports:
       - 5000:5000
+    environment:
+      - MODEL_SERVICE_URL=http://model-service:8080
     depends_on:
       model-service:
         condition: service_healthy
