@@ -20,7 +20,7 @@ This is the central repository for a REMLA project by Group 21.  The application
 2.  Navigate into the project directory.
 3.  Clone the repository
      ```bash
-     docker-compose up
+     docker-compose pull && docker-compose up -d
      ```
 
 The frontend will be available at http://localhost:3000 by default. You can open it up in your browser and type in your review. 
