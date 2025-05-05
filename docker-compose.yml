@@ -1,15 +1,29 @@
 services:
   app-frontend:
     container_name: app-frontend
+    #build: "../app/app-frontend"
     image: ghcr.io/remla25-team21/app-frontend
     ports:
       - 3000:3000
 
   app-service:
+    #build: "../app/app-service"
     image: ghcr.io/remla25-team21/app-backend
     environment:
-      - MODEL_SERVICE=http://model-service:8080
+      - MODEL_SERVICE_URL=http://model-service:8080
+    ports:
+      - 5000:5000
+    depends_on:
+      model-service:
+        condition: service_healthy
 
   model-service:
+    #build: "../model-service"
     container_name: model-service
     image: ghcr.io/remla25-team21/model-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
