@@ -27,4 +27,4 @@ The frontend will be available at http://localhost:3000 by default. You can open
 
 # Activity Tracking
 
-We maintain an overview of each team member's contributions in [ACTIVITY.md](). 
+We maintain an overview of each team member's contributions in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/docs/readme-update/ACTIVITY.md). 
