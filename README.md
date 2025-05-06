@@ -25,3 +25,6 @@ This is the central repository for a REMLA project by Group 21.  The application
 
 The frontend will be available at http://localhost:3000 by default. You can open it up in your browser and type in your review. 
 
+# Activity Tracking
+
+We maintain an overview of each team member's contributions in [ACTIVITY.md](). 
