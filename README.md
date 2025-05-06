@@ -25,6 +25,18 @@ This is the central repository for a REMLA project by Group 21.  The application
 
 The frontend will be available at http://localhost:3000 by default. You can open it up in your browser and type in your review. 
 
+## Known Bug: Port Conflict on macOS (AirPlay Receiver)
+
+On macOS, the `app-service` currently binds statically to `localhost:5000`. However, macOS reserves port `5000` for the AirPlay Receiver feature by default. This causes the app-service to fail to start or bind to the port correctly during local development or testing. 
+
+**Temporary Workaround**: 
+1. Go to System Settings -> General -> Airdrop & Handoff and switch off Airplay Receiver. 
+2. Go to terminal and use the following commands: `lsof -i :5000` `kill -9 <PID>` 
+
+**Long Term Fix**: 
+
+We plan to eventually change `app-service` to accomodate environment variables which should allow users to freely change ports via `docker-compose.yml` file. 
+
 # Activity Tracking
 
 We maintain an overview of each team member's contributions in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/docs/readme-update/ACTIVITY.md). 
