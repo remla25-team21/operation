@@ -32,6 +32,9 @@ Vagrant.configure("2") do |config|
     end
   end
 
+   # Shared SSH keys folder for Ansible to access
+  config.vm.synced_folder "./ssh_keys", "/vagrant/ssh_keys"
+  
   # Shared General Playbook 
   config.vm.provision "ansible_local" do |ansible|
     ansible.playbook = "general.yaml"
