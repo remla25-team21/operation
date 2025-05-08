@@ -1,0 +1,5 @@
+- hosts: all
+  tasks:
+    - name: Placeholder task
+      debug:
+        msg: "Controller node ready."
