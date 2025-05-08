@@ -97,3 +97,44 @@
       changed_when: false
       failed_when: "'overlay' not in modules_file_check.stdout or 'br_netfilter' not in modules_file_check.stdout"
       tags: verify
+    - name: Enable net.ipv4.ip_forward
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        state: present
+        sysctl_set: yes
+        reload: yes
+
+    - name: Enable net.bridge.bridge-nf-call-iptables
+      ansible.posix.sysctl:
+        name: net.bridge.bridge-nf-call-iptables
+        value: '1'
+        state: present
+        sysctl_set: yes
+        reload: yes
+
+    - name: Enable net.bridge.bridge-nf-call-ip6tables
+      ansible.posix.sysctl:
+        name: net.bridge.bridge-nf-call-ip6tables
+        value: '1'
+        state: present
+        sysctl_set: yes
+        reload: yes
+
+    - name: Confirm IPv4 forwarding is enabled
+      ansible.builtin.shell: sysctl net.ipv4.ip_forward
+      register: ipv4_forward
+      changed_when: false
+      failed_when: "'1' not in ipv4_forward.stdout"
+
+    - name: Confirm iptables bridge call is enabled
+      ansible.builtin.shell: sysctl net.bridge.bridge-nf-call-iptables
+      register: nf_call_iptables
+      changed_when: false
+      failed_when: "'1' not in nf_call_iptables.stdout"
+
+    - name: Confirm ip6tables bridge call is enabled
+      ansible.builtin.shell: sysctl net.bridge.bridge-nf-call-ip6tables
+      register: nf_call_ip6tables
+      changed_when: false
+      failed_when: "'1' not in nf_call_ip6tables.stdout"
