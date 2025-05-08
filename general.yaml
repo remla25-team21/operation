@@ -28,3 +28,32 @@
         key: "{{ lookup('file', item) }}"
       with_fileglob:
         - "/vagrant/ssh_keys/*.pub"
+
+    - name: Disable swap
+      ansible.builtin.shell: swapoff -a
+    
+    - name: Check if swap is still enabled
+      ansible.builtin.shell: swapon --summary
+      register: swap_status
+      changed_when: false
+      failed_when: swap_status.stdout != ""
+
+    - name: Debug swap status
+      ansible.builtin.debug:
+        msg: "Swap is successfully disabled. "
+
+    - name: Remove swap entry from /etc/fstab
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        regexp: '^\s*[^#]*\s+swap\s+'
+        state: absent
+        
+    - name: Check if swap entry exists in /etc/fstab
+      ansible.builtin.shell: "grep -P '^[^#]*\\s+swap\\s+' /etc/fstab || true"
+      register: fstab_swap_check
+      changed_when: false
+      failed_when: fstab_swap_check.stdout != ""
+
+    - name: Debug fstab verification
+      ansible.builtin.debug:
+        msg: "No swap entries found in `/etc/fstab`. "
