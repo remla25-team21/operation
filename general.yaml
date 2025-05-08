@@ -47,7 +47,7 @@
         path: /etc/fstab
         regexp: '^\s*[^#]*\s+swap\s+'
         state: absent
-        
+
     - name: Check if swap entry exists in /etc/fstab
       ansible.builtin.shell: "grep -P '^[^#]*\\s+swap\\s+' /etc/fstab || true"
       register: fstab_swap_check
@@ -57,3 +57,43 @@
     - name: Debug fstab verification
       ansible.builtin.debug:
         msg: "No swap entries found in `/etc/fstab`. "
+
+    - name: Ensure br_netfilter and overlay modules are loaded on boot
+      ansible.builtin.copy:
+        dest: /etc/modules-load.d/k8s.conf
+        content: |
+          overlay
+          br_netfilter
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Load br_netfilter module immediately
+      community.general.modprobe:
+        name: br_netfilter
+        state: present
+
+    - name: Load overlay module immediately
+      community.general.modprobe:
+        name: overlay
+        state: present
+    - name: Verify br_netfilter is loaded
+      ansible.builtin.shell: lsmod | grep -w br_netfilter
+      register: br_netfilter_check
+      changed_when: false
+      failed_when: br_netfilter_check.stdout == ""
+      tags: verify
+
+    - name: Verify overlay is loaded
+      ansible.builtin.shell: lsmod | grep -w overlay
+      register: overlay_check
+      changed_when: false
+      failed_when: overlay_check.stdout == ""
+      tags: verify
+
+    - name: Confirm modules listed in /etc/modules-load.d/k8s.conf
+      ansible.builtin.shell: cat /etc/modules-load.d/k8s.conf
+      register: modules_file_check
+      changed_when: false
+      failed_when: "'overlay' not in modules_file_check.stdout or 'br_netfilter' not in modules_file_check.stdout"
+      tags: verify
