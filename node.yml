@@ -1,5 +1,0 @@
-- hosts: all
-  tasks:
-    - name: Placeholder task
-      debug:
-        msg: "Worker node ready."

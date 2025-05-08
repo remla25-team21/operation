@@ -1,42 +1,37 @@
 Vagrant.configure("2") do |config|
-    NUM_WORKERS = 2
-
     # Base
     config.vm.box = "bento/ubuntu-24.04"
-    config.vm.box_version = "202502.21.0"
   
-    # Controller node
-    config.vm.define "ctrl" do |ctrl|
-      ctrl.vm.hostname = "ctrl"
-      ctrl.vm.network "private_network", ip: "192.168.56.100"
+    # Configuration variables
+    num_workers = 2
+    vm_memory = { "ctrl" => 4096 }.merge((1..num_workers).map { |i| ["node-#{i}", 6144] }.to_h)
+    vm_cpus   = { "ctrl" => 1 }.merge((1..num_workers).map { |i| ["node-#{i}", 2] }.to_h)
   
-      ctrl.vm.provider "virtualbox" do |vb|
-        vb.name = "k8s-ctrl"
-        vb.memory = 4096
-        vb.cpus = 1
-      end
-  
-      ctrl.vm.provision :ansible do |a|
-        a.compatibility_mode = "2.0"
-        a.playbook = "ctrl.yml"
-      end
-    end
-  
-    # Worker nodes
-    (1..NUM_WORKERS).each do |i|
-      config.vm.define "node-#{i}" do |node|
-        node.vm.hostname = "node-#{i}"
-        node.vm.network "private_network", ip: "192.168.56.#{100 + i}"
-  
+    # Define VMs
+    ["ctrl", *(1..num_workers).map { |i| "node-#{i}" }].each_with_index do |name, index|
+      config.vm.define name do |node|
+        node.vm.hostname = name
+        node.vm.network "private_network", ip: "192.168.56.#{100 + index}"
         node.vm.provider "virtualbox" do |vb|
-          vb.name = "k8s-node-#{i}"
-          vb.memory = 6144
-          vb.cpus = 2
+          vb.memory = vm_memory[name]
+          vb.cpus = vm_cpus[name]
         end
   
-        node.vm.provision :ansible do |a|
-          a.compatibility_mode = "2.0"
-          a.playbook = "node.yml"
+        # Ansible provisioning
+        node.vm.provision :ansible do |ansible|
+          ansible.compatibility_mode = "2.0"
+          ansible.playbook = case name
+                             when "ctrl"
+                               "ctrl.yaml"
+                             when /^node-/
+                               "node.yaml"
+                             else
+                               "general.yaml"
+                             end
+          ansible.extra_vars = {
+            node_name: name,
+            worker_count: num_workers
+          }
         end
       end
     end
