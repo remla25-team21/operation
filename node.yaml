@@ -1,6 +1,6 @@
-- hosts: "node-*"
+- hosts: nodes
   become: true
   tasks:
-    - name: Print message
+    - name: Debug node provisioning
       debug:
-        msg: "This is a worker node. Kubernetes node setup goes here."
+        msg: "Node-specific provisioning would happen here. "

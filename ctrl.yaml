@@ -1,6 +1,6 @@
 - hosts: ctrl
   become: true
   tasks:
-    - name: Print message
+    - name: Debug controller provisioning
       debug:
-        msg: "This is the controller node. Kubernetes controller setup goes here."
+        msg: "Controller-specific provisioning would happen here. "
