@@ -13,6 +13,7 @@
           - ca-certificates
         state: present
 
+    #Step 4: 
     - name: Create .ssh directory for vagrant user
       file:
         path: /home/vagrant/.ssh
@@ -29,26 +30,27 @@
       with_fileglob:
         - "/vagrant/ssh_keys/*.pub"
 
-    - name: Disable swap
+    # Step 5: 
+    - name: Disable SWAP
       ansible.builtin.shell: swapoff -a
     
-    - name: Check if swap is still enabled
+    - name: Check if SWAP is still enabled
       ansible.builtin.shell: swapon --summary
       register: swap_status
       changed_when: false
       failed_when: swap_status.stdout != ""
 
-    - name: Debug swap status
+    - name: Debug SWAP status
       ansible.builtin.debug:
         msg: "Swap is successfully disabled. "
 
-    - name: Remove swap entry from /etc/fstab
+    - name: Remove SWAP entry from /etc/fstab
       ansible.builtin.lineinfile:
         path: /etc/fstab
         regexp: '^\s*[^#]*\s+swap\s+'
         state: absent
 
-    - name: Check if swap entry exists in /etc/fstab
+    - name: Confirm SWAP entry is removed from /etc/fstab
       ansible.builtin.shell: "grep -P '^[^#]*\\s+swap\\s+' /etc/fstab || true"
       register: fstab_swap_check
       changed_when: false
@@ -56,8 +58,9 @@
 
     - name: Debug fstab verification
       ansible.builtin.debug:
-        msg: "No swap entries found in `/etc/fstab`. "
+        msg: "No SWAP entries found in `/etc/fstab`. "
 
+    # Step 6: 
     - name: Ensure br_netfilter and overlay modules are loaded on boot
       ansible.builtin.copy:
         dest: /etc/modules-load.d/k8s.conf
@@ -77,6 +80,7 @@
       community.general.modprobe:
         name: overlay
         state: present
+
     - name: Verify br_netfilter is loaded
       ansible.builtin.shell: lsmod | grep -w br_netfilter
       register: br_netfilter_check
@@ -97,6 +101,8 @@
       changed_when: false
       failed_when: "'overlay' not in modules_file_check.stdout or 'br_netfilter' not in modules_file_check.stdout"
       tags: verify
+
+    # Step 7: 
     - name: Enable net.ipv4.ip_forward
       ansible.posix.sysctl:
         name: net.ipv4.ip_forward
@@ -138,3 +144,13 @@
       register: nf_call_ip6tables
       changed_when: false
       failed_when: "'1' not in nf_call_ip6tables.stdout"
+    
+    # Step 8: 
+    - name: Copy static /etc/hosts file to all nodes
+      ansible.builtin.copy:
+        src: hosts
+        dest: /etc/hosts
+        owner: root
+        group: root
+        mode: '0644'
+      tags: update_hosts
