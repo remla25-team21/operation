@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
       machine.vm.provider "virtualbox" do |vb|
         vb.name = name
         vb.memory = name == "ctrl" ? 4096 : 6144
-        vb.cpus = name == "ctrl" ? 1 : 2
+        vb.cpus = 2
       end
 
       # Shared SSH keys folder
