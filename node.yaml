@@ -1,0 +1,6 @@
+- hosts: nodes
+  become: true
+  tasks:
+    - name: Debug node provisioning
+      debug:
+        msg: "Node-specific provisioning would happen here. "

@@ -1,0 +1,6 @@
+- hosts: ctrl
+  become: true
+  tasks:
+    - name: Debug controller provisioning
+      debug:
+        msg: "Controller-specific provisioning would happen here. "
