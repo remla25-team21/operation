@@ -16,27 +16,30 @@ Vagrant.configure("2") do |config|
         vb.cpus = name == "ctrl" ? 1 : 2
       end
 
-      # Ansible Provisioner
+      # Shared SSH keys folder
+      config.vm.synced_folder "./ssh_keys", "/vagrant/ssh_keys"
+
+      # First: general setup playbook (runs on all VMs)
       machine.vm.provision :ansible do |ansible|
         ansible.compatibility_mode = "2.0"
-        ansible.playbook = case name
-          when "ctrl" then "ctrl.yaml"
-          else "node.yaml"
-        end
+        ansible.playbook = "general.yaml"
+        ansible.inventory_path = "inventory.cfg"
         ansible.extra_vars = {
           "node_name" => name,
           "private_ip" => ip
         }
+      end
+
+      # Second: controller or node specific setup
+      machine.vm.provision :ansible do |ansible|
+        ansible.compatibility_mode = "2.0"
+        ansible.playbook = name == "ctrl" ? "ctrl.yaml" : "node.yaml"
         ansible.inventory_path = "inventory.cfg"
+        ansible.extra_vars = {
+          "node_name" => name,
+          "private_ip" => ip
+        }
       end
     end
-  end
-
-   # Shared SSH keys folder for Ansible to access
-  config.vm.synced_folder "./ssh_keys", "/vagrant/ssh_keys"
-  
-  # Shared General Playbook 
-  config.vm.provision "ansible_local" do |ansible|
-    ansible.playbook = "general.yaml"
   end
 end
