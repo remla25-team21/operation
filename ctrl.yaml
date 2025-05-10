@@ -3,4 +3,50 @@
   tasks:
     - name: Debug controller provisioning
       debug:
-        msg: "Controller-specific provisioning would happen here. "
+        msg: "Controller-specific provisioning would happen here."
+
+    # Step 13: Init cluster
+    - name: Check if Kubernetes config exists
+      stat:
+        path: /etc/kubernetes/admin.conf
+      register: k8s_config
+
+    - name: Initialize Kubernetes cluster
+      shell: >
+        kubeadm init 
+        --apiserver-advertise-address=192.168.56.100 
+        --node-name=ctrl 
+        --pod-network-cidr=10.244.0.0/16
+      when: not k8s_config.stat.exists
+      register: kubeadm_output
+
+    - name: Display kubeadm init output
+      debug:
+        var: kubeadm_output.stdout_lines
+      when: kubeadm_output.changed
+
+    # Step 14: Setup kubectl
+    - name: Create .kube directory for vagrant user
+      file:
+        path: /home/vagrant/.kube
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: '0755'
+
+    - name: Copy Kubernetes admin config for vagrant user
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/vagrant/.kube/config
+        remote_src: yes
+        owner: vagrant
+        group: vagrant
+        mode: '0600'
+      when: k8s_config.stat.exists or kubeadm_output.changed
+
+    - name: Copy Kubernetes admin config to host
+      fetch:
+        src: /etc/kubernetes/admin.conf
+        dest: ./kubeconfig
+        flat: yes
+      when: k8s_config.stat.exists or kubeadm_output.changed
