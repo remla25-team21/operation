@@ -16,9 +16,6 @@ Vagrant.configure("2") do |config|
         vb.cpus = 2
       end
 
-      # Shared SSH keys folder
-      config.vm.synced_folder "./ssh_keys", "/vagrant/ssh_keys"
-
       # First: general setup playbook (runs on all VMs)
       machine.vm.provision :ansible do |ansible|
         ansible.compatibility_mode = "2.0"
