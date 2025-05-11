@@ -9,7 +9,6 @@
     - name: Generate join command on the controller
       shell: kubeadm token create --print-join-command
       delegate_to: "{{ groups['ctrl'][0] }}"
-      become_user: vagrant
       run_once: true
       register: join_cmd
 
