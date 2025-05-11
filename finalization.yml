@@ -1,0 +1,91 @@
+---
+- name: Finalize Kubernetes cluster setup
+  hosts: all
+  become: true
+  gather_facts: yes
+  vars:
+    ansible_ssh_private_key_file: .vagrant/machines/ctrl/virtualbox/private_key
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    kubectl_cmd: "kubectl --kubeconfig=/home/vagrant/kubeconfig"
+  tasks:
+    # Step 20: Install MetalLB
+    - name: Copy kubeconfig to remote host
+      copy:
+        src: kubeconfig
+        dest: /home/vagrant/kubeconfig
+        mode: '0644'
+
+    - name: Download MetalLB manifest
+      get_url:
+        url: https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
+        dest: /tmp/metallb-native-0.14.9.yml
+        mode: '0644'
+
+    - name: Install MetalLB CRDs
+      become_user: vagrant
+      shell: |
+        kubectl apply -f /tmp/metallb-native-0.14.9.yml --validate=false
+      register: metallb_output
+
+    - name: Display MetalLB installation output
+      debug:
+        var: metallb_output.stdout_lines
+      when: metallb_output.changed
+
+    - name: Wait for MetalLB controller to be ready
+      become_user: vagrant
+      shell: |
+        kubectl wait -n metallb-system -l app=metallb,component=controller --for=condition=ready pod --timeout=60s
+      register: wait_result
+      failed_when: wait_result.rc != 0
+      retries: 5
+      delay: 10
+      until: wait_result.rc == 0
+
+    - name: Create IPAddressPool for MetalLB
+      copy:
+        dest: /tmp/metallb-ipaddresspool.yml
+        content: |
+          apiVersion: metallb.io/v1beta1
+          kind: IPAddressPool
+          metadata:
+            name: first-pool
+            namespace: metallb-system
+          spec:
+            addresses:
+            - 192.168.56.90-192.168.56.99
+
+    - name: Apply IPAddressPool
+      become_user: vagrant
+      shell: |
+        kubectl apply -f /tmp/metallb-ipaddresspool.yml
+      register: pool_output
+
+    - name: Display IPAddressPool creation output
+      debug:
+        var: pool_output.stdout_lines
+      when: pool_output.changed
+
+    - name: Create L2Advertisement for MetalLB
+      copy:
+        dest: /tmp/metallb-l2advertisement.yml
+        content: |
+          apiVersion: metallb.io/v1beta1
+          kind: L2Advertisement
+          metadata:
+            name: example
+            namespace: metallb-system
+          spec:
+            ipAddressPools:
+            - first-pool
+
+    - name: Apply L2Advertisement
+      become_user: vagrant
+      shell: |
+        kubectl apply -f /tmp/metallb-l2advertisement.yml
+      register: l2adv_output
+
+    - name: Display L2Advertisement creation output
+      debug:
+        var: l2adv_output.stdout_lines
+      when: l2adv_output.changed 
