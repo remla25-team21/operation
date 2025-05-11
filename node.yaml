@@ -11,6 +11,8 @@
       delegate_to: "{{ groups['ctrl'][0] }}"
       run_once: true
       register: join_cmd
+      retries: 5  # NOTE: Wait for the controller to be ready !!!!!!
+      delay: 10
 
     # Step 19: Run Join Command
     - name: Join this worker to the Kubernetes cluster

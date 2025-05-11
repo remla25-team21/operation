@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-  NUM_WORKERS = 2
+  NUM_WORKERS = 1
   LABELS = ["ctrl"] + (1..NUM_WORKERS).map { |i| "node-#{i}" }
 
   LABELS.each_with_index do |name, i|

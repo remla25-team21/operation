@@ -132,7 +132,7 @@
         kubectl wait --namespace default --for=condition=ready pod --selector=app.kubernetes.io/name=ingress-nginx --timeout=120s
       register: ingress_wait_result
       failed_when: false
-      retries: 5
+      retries: 10  # NOTE: Fix potential bugs
       delay: 20
       until: ingress_wait_result.rc == 0
 
@@ -223,7 +223,7 @@
                   pathType: Prefix
                   backend:
                     service:
-                      name: kubernetes-dashboard-kong-proxy
+                      name: kubernetes-dashboard
                       port:
                         number: 443
         mode: '0644'
