@@ -47,7 +47,7 @@
     - name: Copy Kubernetes admin config to host
       fetch:
         src: /etc/kubernetes/admin.conf
-        dest: ./kubeconfig
+        dest: kubernetes/kubeconfig
         flat: yes
       when: k8s_config.stat.exists or kubeadm_output.changed
 
@@ -55,7 +55,7 @@
     - name: Apply kube-flannel with correct interface
       become_user: vagrant
       shell: |
-        kubectl apply -f /vagrant/kube-flannel.yml
+        kubectl apply -f /vagrant/ansible/files/kube-flannel.yml
       register: flannel_output
       
     - name: Update flannel DaemonSet to use eth1 interface

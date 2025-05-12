@@ -12,7 +12,7 @@ This is the central repository for a REMLA project by Group 21.  The application
 
 - [`app`](https://github.com/remla25-team21/app): Contains the application frontend and backend (user interface and service logic).
 
-# How to start the application
+## How to start the application
 1. Clone the repository
    ```bash
    git clone https://github.com/remla25-team21/operation.git
@@ -45,7 +45,7 @@ These steps guide you through setting up the Kubernetes cluster on your local ma
 2.  **Finalize Cluster Setup**:
     Once `vagrant up` completes, run the following Ansible playbook to install MetalLB, Nginx Ingress, and the Kubernetes Dashboard:
     ```bash
-    ansible-playbook -u vagrant -i 192.168.56.100, finalization.yml
+    ansible-playbook -u vagrant -i ansible/inventory/inventory.cfg ansible/playbooks/finalization.yml --limit=ctrl
     ```
 
 3.  **Access Kubernetes Dashboard**:
@@ -68,6 +68,6 @@ On macOS, the `app-service` currently binds statically to `localhost:5000`. Howe
 
 We plan to eventually change `app-service` to accomodate environment variables which should allow users to freely change ports via `docker-compose.yml` file. 
 
-# Activity Tracking
+## Activity Tracking
 
 We maintain an overview of each team member's contributions in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/docs/readme-update/ACTIVITY.md). 

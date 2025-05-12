@@ -2,7 +2,7 @@
 - name: Finalize Kubernetes cluster setup
   hosts: all
   become: true
-  gather_facts: yes
+  gather_facts: true
   vars:
     ansible_ssh_private_key_file: .vagrant/machines/ctrl/virtualbox/private_key
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
@@ -11,7 +11,7 @@
     # Step 20: Install MetalLB
     - name: Copy kubeconfig to remote host
       copy:
-        src: kubeconfig
+        src: ../../kubernetes/kubeconfig
         dest: /home/vagrant/kubeconfig
         mode: '0644'
 
@@ -247,4 +247,11 @@
         msg:
           - "Kubernetes Dashboard has been installed."
           - "To access it, add 'dashboard.local' to your hosts file pointing to 192.168.56.90"
-          - "To get a login token, run: kubectl -n kubernetes-dashboard create token admin-user" 
+          - "To get a login token, run: kubectl -n kubernetes-dashboard create token admin-user"
+
+    - name: Make .kube directory
+      file: path=/root/.kube state=directory
+    - name: Copy kubeconfig
+      copy:
+        src: ../../kubernetes/kubeconfig
+        dest: /root/.kube/config 

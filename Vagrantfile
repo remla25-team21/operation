@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-  NUM_WORKERS = 1
+  NUM_WORKERS = 2
   LABELS = ["ctrl"] + (1..NUM_WORKERS).map { |i| "node-#{i}" }
 
   LABELS.each_with_index do |name, i|
@@ -19,8 +19,8 @@ Vagrant.configure("2") do |config|
       # First: general setup playbook (runs on all VMs)
       machine.vm.provision :ansible do |ansible|
         ansible.compatibility_mode = "2.0"
-        ansible.playbook = "general.yaml"
-        ansible.inventory_path = "inventory.cfg"
+        ansible.playbook = "ansible/playbooks/general.yaml"
+        ansible.inventory_path = "ansible/inventory/inventory.cfg"
         ansible.extra_vars = {
           "node_name" => name,
           "private_ip" => ip
@@ -30,8 +30,8 @@ Vagrant.configure("2") do |config|
       # Second: controller or node specific setup
       machine.vm.provision :ansible do |ansible|
         ansible.compatibility_mode = "2.0"
-        ansible.playbook = name == "ctrl" ? "ctrl.yaml" : "node.yaml"
-        ansible.inventory_path = "inventory.cfg"
+        ansible.playbook = name == "ctrl" ? "ansible/playbooks/ctrl.yaml" : "ansible/playbooks/node.yaml"
+        ansible.inventory_path = "ansible/inventory/inventory.cfg"
         ansible.extra_vars = {
           "node_name" => name,
           "private_ip" => ip
