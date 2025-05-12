@@ -25,6 +25,7 @@ Vagrant.configure("2") do |config|
           "node_name" => name,
           "private_ip" => ip
         }
+        ansible.verbose = "v"
       end
 
       # Second: controller or node specific setup
@@ -36,6 +37,7 @@ Vagrant.configure("2") do |config|
           "node_name" => name,
           "private_ip" => ip
         }
+        ansible.verbose = "v"
       end
     end
   end
