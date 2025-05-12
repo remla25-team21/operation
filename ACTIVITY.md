@@ -89,5 +89,14 @@ This file documents individual contributions to each assignment in the REMLA pro
 
 ### Yizhen Zang
 
+- `operation`: implemented *steps 1-8*, provisioning VMs with Vagrant, setting up private networking and SSH access, and configuring Ansible playbooks. 
+- `model-training`: improved classification accuracy with a different model and hyperparameter tuning. 
+
+- Created PR：
+  - https://github.com/remla25-team21/operation/pull/4 
+  - https://github.com/remla25-team21/model-training/pull/2 
+- Approved PR: 
+  - https://github.com/remla25-team21/operation/pull/7 
+
 ### Zeryab Alam
 
