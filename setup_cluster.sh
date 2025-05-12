@@ -26,7 +26,7 @@ echo -e "${GREEN}Cluster setup completed${NC}"
 
 # Step 3: Get Dashboard access token
 echo -e "${YELLOW}Step 3/3: Retrieving Kubernetes Dashboard access token...${NC}"
-echo -e "${GREEN}Open your browser and navigate to: http://dashboard.local${NC}"
+echo -e "${GREEN}Open your browser and navigate to: https://dashboard.local${NC} ${RED} HTTPS PROTOCOL ONLY! ${NC}"
 echo -e "${YELLOW}Your login token is:${NC}"
 vagrant ssh -c "kubectl -n kubernetes-dashboard create token admin-user" ctrl
 
