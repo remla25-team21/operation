@@ -35,6 +35,16 @@ These steps guide you through setting up the Kubernetes cluster on your local ma
     192.168.56.90  dashboard.local
     ```
 
+**Option 1: Using the Setup Script (Recommended)**
+
+Run the provided setup script which automates steps 1-3:
+```bash
+chmod +x setup_cluster.sh
+./setup_cluster.sh
+```
+
+**Option 2: Manual Setup**
+
 1.  **Start and Provision Virtual Machines**:
     Open your terminal in the project's root directory (where the `Vagrantfile` is located) and run:
     ```bash
@@ -49,7 +59,7 @@ These steps guide you through setting up the Kubernetes cluster on your local ma
     ```
 
 3.  **Access Kubernetes Dashboard**:
-    *   After the playbook finishes, open your web browser and navigate to: `http://dashboard.local`
+    *   After the playbook finishes, open your web browser and navigate to: `https://dashboard.local` (**HTTPS** is required).
     *   You will be prompted for a token. To obtain the login token, run the following command in your terminal (on the host machine):
         ```bash
         vagrant ssh -c "kubectl -n kubernetes-dashboard create token admin-user" ctrl
@@ -70,4 +80,4 @@ We plan to eventually change `app-service` to accomodate environment variables w
 
 ## Activity Tracking
 
-We maintain an overview of each team member's contributions in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/docs/readme-update/ACTIVITY.md). 
+We maintain an overview of each team member's contributions in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/docs/readme-update/ACTIVITY.md).
