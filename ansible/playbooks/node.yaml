@@ -5,12 +5,19 @@
       debug:
         msg: "Node-specific provisioning would happen here."
 
+    # Step 18: Generate Join Command
     - name: Generate join command on the controller
       shell: kubeadm token create --print-join-command
-      delegate_to: "{{ groups['ctrl'][0] }}"
-      run_once: true
+      delegate_to: controller
       register: join_cmd
+      retries: 5  # NOTE: Wait for the controller to be ready !!!!!!
+      delay: 10
 
+    - name: Print join command
+      debug:
+        var: join_cmd.stdout
+
+    # Step 19: Run Join Command
     - name: Join this worker to the Kubernetes cluster
       shell: "{{ join_cmd.stdout }} --ignore-preflight-errors=all"
       args:

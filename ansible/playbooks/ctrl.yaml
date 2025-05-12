@@ -1,0 +1,106 @@
+- hosts: ctrl
+  become: true
+  tasks:
+    - name: Debug controller provisioning
+      debug:
+        msg: "Controller-specific provisioning would happen here."
+
+    # Step 13: Init cluster
+    - name: Check if Kubernetes config exists
+      stat:
+        path: /etc/kubernetes/admin.conf
+      register: k8s_config
+
+    - name: Initialize Kubernetes cluster
+      shell: >
+        kubeadm init 
+        --apiserver-advertise-address=192.168.56.100 
+        --node-name=ctrl 
+        --pod-network-cidr=10.244.0.0/16
+      when: not k8s_config.stat.exists
+      register: kubeadm_output
+
+    - name: Display kubeadm init output
+      debug:
+        var: kubeadm_output.stdout_lines
+      when: kubeadm_output.changed
+
+    # Step 14: Setup kubectl
+    - name: Create .kube directory for vagrant user
+      file:
+        path: /home/vagrant/.kube
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: '0755'
+
+    - name: Copy Kubernetes admin config for vagrant user
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/vagrant/.kube/config
+        remote_src: yes
+        owner: vagrant
+        group: vagrant
+        mode: '0600'
+      when: k8s_config.stat.exists or kubeadm_output.changed
+
+    - name: Copy Kubernetes admin config to host
+      fetch:
+        src: /etc/kubernetes/admin.conf
+        dest: "{{ playbook_dir }}/../../kubernetes/kubeconfig"
+        flat: yes
+      when: k8s_config.stat.exists or kubeadm_output.changed
+
+    # Step 15: Create Pod network
+    - name: Apply kube-flannel with correct interface
+      become_user: vagrant
+      shell: |
+        kubectl apply -f /vagrant/ansible/files/kube-flannel.yml
+      register: flannel_output
+      
+    - name: Update flannel DaemonSet to use eth1 interface
+      become_user: vagrant
+      shell: |
+        kubectl -n kube-flannel patch ds kube-flannel-ds --type=json -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--iface=eth1"}]'
+      register: flannel_patch_output
+      
+    - name: Display flannel installation output
+      debug:
+        var: flannel_output.stdout_lines
+      when: flannel_output.changed
+      
+    - name: Display flannel patch output
+      debug:
+        var: flannel_patch_output.stdout_lines
+      when: flannel_patch_output.changed
+
+    # Step 16: Install Helm
+    - name: Add Helm signing key
+      apt_key:
+        url: https://baltocdn.com/helm/signing.asc
+        state: present
+        
+    - name: Add Helm repository
+      apt_repository:
+        repo: deb https://baltocdn.com/helm/stable/debian/ all main
+        state: present
+        filename: helm
+        
+    - name: Install Helm
+      apt:
+        name: helm
+        state: present
+        update_cache: yes
+      
+    # Step 17: Install Helm diff plugin (Optional)
+    - name: Install Helm diff plugin
+      become_user: vagrant
+      shell: helm plugin install https://github.com/databus23/helm-diff
+      register: helm_diff_output
+      failed_when: helm_diff_output.rc != 0 and "plugin already exists" not in helm_diff_output.stderr
+      changed_when: helm_diff_output.rc == 0
+      
+    - name: Display helm diff installation output
+      debug:
+        var: helm_diff_output.stdout_lines
+      when: helm_diff_output.changed

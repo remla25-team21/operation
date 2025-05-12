@@ -12,7 +12,7 @@ This is the central repository for a REMLA project by Group 21.  The application
 
 - [`app`](https://github.com/remla25-team21/app): Contains the application frontend and backend (user interface and service logic).
 
-# How to start the application
+## How to start the application
 1. Clone the repository
    ```bash
    git clone https://github.com/remla25-team21/operation.git
@@ -24,6 +24,47 @@ This is the central repository for a REMLA project by Group 21.  The application
      ```
 
 The frontend will be available at http://localhost:3000 by default. You can open it up in your browser and type in your review. 
+
+## Kubernetes Cluster Provisioning (Assignment 2)
+
+These steps guide you through setting up the Kubernetes cluster on your local machine using Vagrant and Ansible, and deploying the Kubernetes Dashboard.
+
+0.  **Pre-configuration**:
+    Add the following line to your host machine's hosts file. This file is typically located at `/etc/hosts` on Linux and macOS, or `C:\Windows\System32\drivers\etc\hosts` on Windows.
+    ```
+    192.168.56.90  dashboard.local
+    ```
+
+**Option 1: Using the Setup Script (Recommended)**
+
+Run the provided setup script which automates steps 1-3:
+```bash
+chmod +x setup_cluster.sh
+./setup_cluster.sh
+```
+
+**Option 2: Manual Setup**
+
+1.  **Start and Provision Virtual Machines**:
+    Open your terminal in the project's root directory (where the `Vagrantfile` is located) and run:
+    ```bash
+    vagrant up
+    ```
+    This command will create and configure the virtual machines for the controller and worker node(s) and run initial setup playbooks.
+
+2.  **Finalize Cluster Setup**:
+    Once `vagrant up` completes, run the following Ansible playbook to install MetalLB, Nginx Ingress, and the Kubernetes Dashboard:
+    ```bash
+    ansible-playbook -u vagrant -i ansible/inventory/inventory.cfg ansible/playbooks/finalization.yml --limit=ctrl
+    ```
+
+3.  **Access Kubernetes Dashboard**:
+    *   After the playbook finishes, open your web browser and navigate to: `https://dashboard.local` (**HTTPS** is required).
+    *   You will be prompted for a token. To obtain the login token, run the following command in your terminal (on the host machine):
+        ```bash
+        vagrant ssh -c "kubectl -n kubernetes-dashboard create token admin-user" ctrl
+        ```
+    *   Copy the output token and paste it into the Kubernetes Dashboard login page.
 
 ## Known Bug: Port Conflict on macOS (AirPlay Receiver)
 
@@ -37,6 +78,6 @@ On macOS, the `app-service` currently binds statically to `localhost:5000`. Howe
 
 We plan to eventually change `app-service` to accomodate environment variables which should allow users to freely change ports via `docker-compose.yml` file. 
 
-# Activity Tracking
+## Activity Tracking
 
-We maintain an overview of each team member's contributions in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/docs/readme-update/ACTIVITY.md). 
+We maintain an overview of each team member's contributions in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/docs/readme-update/ACTIVITY.md).
