@@ -1,4 +1,4 @@
-# ACTIVIRY.md
+# ACTIVITY.md
 
 This file documents individual contributions to each assignment in the REMLA project by Group 21. 
 
@@ -101,3 +101,11 @@ This file documents individual contributions to each assignment in the REMLA pro
 
 ### Zeryab Alam
 
+- Implemented Istio (step 23). Performed final deployment test with lightweight application.
+- Performed extensive testing and bugfixing for each iterative PR.
+
+- Created PR:
+  - https://github.com/remla25-team21/operation/pull/8
+ 
+- Approved PR:
+  - https://github.com/remla25-team21/operation/pull/5
