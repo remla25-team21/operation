@@ -11,7 +11,7 @@
     # Step 20: Install MetalLB
     - name: Copy kubeconfig to remote host
       copy:
-        src: ../../kubernetes/kubeconfig
+        src: "{{ playbook_dir }}/../../kubernetes/kubeconfig"
         dest: /home/vagrant/kubeconfig
         mode: '0644'
 
@@ -253,5 +253,5 @@
       file: path=/root/.kube state=directory
     - name: Copy kubeconfig
       copy:
-        src: ../../kubernetes/kubeconfig
+        src: "{{ playbook_dir }}/../../kubernetes/kubeconfig"
         dest: /root/.kube/config 

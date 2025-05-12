@@ -47,7 +47,7 @@
     - name: Copy Kubernetes admin config to host
       fetch:
         src: /etc/kubernetes/admin.conf
-        dest: kubernetes/kubeconfig
+        dest: "{{ playbook_dir }}/../../kubernetes/kubeconfig"
         flat: yes
       when: k8s_config.stat.exists or kubeadm_output.changed
 
