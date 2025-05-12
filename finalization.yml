@@ -127,13 +127,12 @@
     - name: Wait for Nginx Ingress controller to be ready
       become_user: vagrant
       shell: |
-        kubectl get pods --all-namespaces | grep ingress-nginx
+        kubectl get pods -n ingress-nginx
         echo "Waiting for ingress-nginx controller pods..."
-        kubectl wait --namespace default --for=condition=ready pod --selector=app.kubernetes.io/name=ingress-nginx --timeout=120s
+        kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/name=ingress-nginx --timeout=120s
       register: ingress_wait_result
-      failed_when: false
-      retries: 10  # NOTE: Fix potential bugs
-      delay: 20
+      retries: 5
+      delay: 10
       until: ingress_wait_result.rc == 0
 
     # Step 22: Install Kubernetes Dashboard
@@ -152,7 +151,7 @@
     - name: Install Kubernetes Dashboard
       become_user: vagrant
       shell: |
-        helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --set protocolHttp=true --namespace kubernetes-dashboard --create-namespace
+        helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kubernetes-dashboard --create-namespace
       register: dashboard_install_output
       failed_when: dashboard_install_output.rc != 0 and "cannot re-use a name that is still in use" not in dashboard_install_output.stderr
 
@@ -202,6 +201,15 @@
         kubectl apply -f /tmp/dashboard-adminuser-role.yml
       register: crb_output
 
+    - name: Wait for Kubernetes Dashboard to be ready
+      become_user: vagrant
+      shell: |
+        kubectl wait deployment -n kubernetes-dashboard kubernetes-dashboard-web --for=condition=Available=True --timeout=180s
+      register: dashboard_wait_result
+      retries: 5
+      delay: 15
+      until: dashboard_wait_result.rc == 0
+
     - name: Create Dashboard Ingress
       copy:
         dest: /tmp/dashboard-ingress.yml
@@ -223,7 +231,7 @@
                   pathType: Prefix
                   backend:
                     service:
-                      name: kubernetes-dashboard
+                      name: kubernetes-dashboard-kong-proxy
                       port:
                         number: 443
         mode: '0644'
