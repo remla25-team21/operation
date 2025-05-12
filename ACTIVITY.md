@@ -82,6 +82,7 @@ This file documents individual contributions to each assignment in the REMLA pro
 - Approved PR: 
   - https://github.com/remla25-team21/operation/pull/5
   - https://github.com/remla25-team21/operation/pull/6
+  - https://github.com/remla25-team21/operation/pull/8
 
 ### Kanta Tanahashi
 
