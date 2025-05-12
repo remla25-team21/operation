@@ -3,6 +3,7 @@
 This file documents individual contributions to each assignment in the REMLA project by Group 21. 
 
 ## A1: Versions, Releases, and Containerization
+
 ### Bohong Lu
 
 - `lib-version`: includes creating a version utility class, setting up automated releases via GitHub workflows, and ensuring version consistency across the project. 
@@ -63,7 +64,30 @@ This file documents individual contributions to each assignment in the REMLA pro
 - Approved PR: https://github.com/remla25-team21/lib-ml/pull/2 
 
 ### Zeryab Alam
+
 - Segregated out the data pre-processing code into its the `lib-ml`package, set up versioning and GitHub workflow, so it can be easily installed with pip and reused in both `model-training` and `model-service`. 
 
 - Created PR：https://github.com/remla25-team21/lib-ml/pull/2 
 - Approved PR: https://github.com/remla25-team21/model-service/pull/1 
+
+## A2: Provisioning a Kubernetes Cluster
+
+### Bohong Lu
+
+- Collaborated with Kanta in *steps 15-17* to set up flannel as the network plugin for the cluster and set up Helm for package management.
+- Implemented cluster infrastructure components including MetalLB for load balancing, Nginx Ingress Controller for routing, and Kubernetes Dashboard for monitoring and management in *steps 20-22*.
+
+- Created PR：
+  - https://github.com/remla25-team21/operation/pull/
+- Approved PR: 
+  - https://github.com/remla25-team21/operation/pull/5
+  - https://github.com/remla25-team21/operation/pull/6
+
+### Kanta Tanahashi
+
+### Raghav Talwar
+
+### Yizhen Zang
+
+### Zeryab Alam
+
