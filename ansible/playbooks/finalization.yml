@@ -254,4 +254,66 @@
     - name: Copy kubeconfig
       copy:
         src: "{{ playbook_dir }}/../../kubernetes/kubeconfig"
-        dest: /root/.kube/config 
+        dest: /root/.kube/config
+
+    # Step 23: Install Istio
+    - name: Download Istio 1.25.2
+      become_user: vagrant
+      get_url:
+        url: https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz
+        dest: /home/vagrant/istio-1.25.2-linux-amd64.tar.gz
+        mode: '0644'
+
+    - name: Extract Istio archive
+      become_user: vagrant
+      unarchive:
+        src: /home/vagrant/istio-1.25.2-linux-amd64.tar.gz
+        dest: /home/vagrant/
+        remote_src: yes
+
+    - name: Add istioctl to PATH
+      become_user: vagrant
+      lineinfile:
+        path: /home/vagrant/.bashrc
+        line: 'export PATH=$PATH:/home/vagrant/istio-1.25.2/bin'
+        state: present
+
+    - name: Install Istio
+      become_user: vagrant
+      shell: |
+        source ~/.bashrc
+        /home/vagrant/istio-1.25.2/bin/istioctl install --set profile=demo -y
+      environment:
+        PATH: "/home/vagrant/istio-1.25.2/bin:{{ ansible_env.PATH }}"
+
+    # Step 24: Setup Istio Config
+    - name: Create Istio config
+      copy:
+        dest: /tmp/istio-config.yaml
+        content: |
+          apiVersion: install.istio.io/v1alpha1
+          kind: IstioOperator
+          spec:
+            components:
+              ingressGateways:
+              - name: istio-ingressgateway
+                enabled: true
+                k8s:
+                  service:
+                    ports:
+                    - name: http2
+                      port: 80
+                      targetPort: 8080
+                    - name: https
+                      port: 443
+                      targetPort: 8443
+                    loadBalancerIP: 192.168.56.91
+        mode: '0644'
+
+    - name: Apply Istio config
+      become_user: vagrant
+      shell: |
+        /home/vagrant/istio-1.25.2/bin/istioctl install -y -f /tmp/istio-config.yaml
+      environment:
+        PATH: "/home/vagrant/istio-1.25.2/bin:{{ ansible_env.PATH }}"
+      register: istio_custom_output
