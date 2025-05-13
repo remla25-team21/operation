@@ -1,5 +1,5 @@
 ## Versions for Review
-The tags to be reviewed of this assignment for each repositories are the following. 
+The tags to be reviewed for this assignment for each repository are the following. 
 - [`model-training`](https://github.com/remla25-team21/model-training): [v1.0.0](https://github.com/remla25-team21/model-training/releases/tag/v1.0.0) 
 - [`lib-ml`](https://github.com/remla25-team21/lib-ml): [v0.0.6](https://github.com/remla25-team21/lib-ml/releases/tag/v0.0.6) 
 - [`model-service`](https://github.com/remla25-team21/model-service): [v1.0.7](https://github.com/remla25-team21/model-service/releases/tag/v1.0.7) 
