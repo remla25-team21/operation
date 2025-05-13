@@ -96,7 +96,12 @@ This file documents individual contributions to each assignment in the REMLA pro
 
 
 ### Raghav Talwar
+- `operation`: implemented *steps 9-14*, adding kubernetes to the repository, installing k8 tools and setting up the cluster.
 
+- Created PR：
+  - https://github.com/remla25-team21/operation/pull/5
+- Approved PR: 
+  - https://github.com/remla25-team21/operation/pull/4
 ### Yizhen Zang
 
 - `operation`: implemented *steps 1-8*, provisioning VMs with Vagrant, setting up private networking and SSH access, and configuring Ansible playbooks. 
