@@ -1,8 +1,9 @@
-# ACTIVIRY.md
+# ACTIVITY.md
 
 This file documents individual contributions to each assignment in the REMLA project by Group 21. 
 
 ## A1: Versions, Releases, and Containerization
+
 ### Bohong Lu
 
 - `lib-version`: includes creating a version utility class, setting up automated releases via GitHub workflows, and ensuring version consistency across the project. 
@@ -63,7 +64,62 @@ This file documents individual contributions to each assignment in the REMLA pro
 - Approved PR: https://github.com/remla25-team21/lib-ml/pull/2 
 
 ### Zeryab Alam
+
 - Segregated out the data pre-processing code into its the `lib-ml`package, set up versioning and GitHub workflow, so it can be easily installed with pip and reused in both `model-training` and `model-service`. 
 
 - Created PR：https://github.com/remla25-team21/lib-ml/pull/2 
 - Approved PR: https://github.com/remla25-team21/model-service/pull/1 
+
+## A2: Provisioning a Kubernetes Cluster
+
+### Bohong Lu
+
+- Collaborated with Kanta in *steps 15-17* to set up flannel as the network plugin for the cluster and set up Helm for package management.
+- Implemented cluster infrastructure components including MetalLB for load balancing, Nginx Ingress Controller for routing, and Kubernetes Dashboard for monitoring and management in *steps 20-22*.
+
+- Created PR：
+  - https://github.com/remla25-team21/operation/pull/7
+- Approved PR: 
+  - https://github.com/remla25-team21/operation/pull/5
+  - https://github.com/remla25-team21/operation/pull/6
+  - https://github.com/remla25-team21/operation/pull/8
+
+### Kanta Tanahashi
+
+- Initially attempted steps 15-19, and successfully completed with the help of Bohong.
+
+- Created PR:
+  - https://github.com/remla25-team21/operation/pull/6
+- Approved PR:
+  - https://github.com/remla25-team21/operation/pull/6
+  - https://github.com/remla25-team21/operation/pull/9
+
+
+### Raghav Talwar
+- `operation`: implemented *steps 9-14*, adding kubernetes to the repository, installing k8 tools and setting up the cluster.
+
+- Created PR：
+  - https://github.com/remla25-team21/operation/pull/5
+- Approved PR: 
+  - https://github.com/remla25-team21/operation/pull/4
+### Yizhen Zang
+
+- `operation`: implemented *steps 1-8*, provisioning VMs with Vagrant, setting up private networking and SSH access, and configuring Ansible playbooks. 
+- `model-training`: improved classification accuracy with a different model and hyperparameter tuning. 
+
+- Created PR：
+  - https://github.com/remla25-team21/operation/pull/4 
+  - https://github.com/remla25-team21/model-training/pull/2 
+- Approved PR: 
+  - https://github.com/remla25-team21/operation/pull/7 
+
+### Zeryab Alam
+
+- Implemented Istio (step 23). Performed final deployment test with lightweight application.
+- Performed extensive testing and bugfixing for each iterative PR.
+
+- Created PR:
+  - https://github.com/remla25-team21/operation/pull/8
+ 
+- Approved PR:
+  - https://github.com/remla25-team21/operation/pull/5
