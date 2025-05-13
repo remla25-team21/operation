@@ -86,6 +86,15 @@ This file documents individual contributions to each assignment in the REMLA pro
 
 ### Kanta Tanahashi
 
+- Initially attempted steps 15-19, and successfully completed with the help of Bohong.
+
+- Created PR:
+  - https://github.com/remla25-team21/operation/pull/6
+- Approved PR:
+  - https://github.com/remla25-team21/operation/pull/6
+  - https://github.com/remla25-team21/operation/pull/9
+
+
 ### Raghav Talwar
 
 ### Yizhen Zang
