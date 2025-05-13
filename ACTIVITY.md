@@ -78,7 +78,7 @@ This file documents individual contributions to each assignment in the REMLA pro
 - Implemented cluster infrastructure components including MetalLB for load balancing, Nginx Ingress Controller for routing, and Kubernetes Dashboard for monitoring and management in *steps 20-22*.
 
 - Created PR：
-  - https://github.com/remla25-team21/operation/pull/
+  - https://github.com/remla25-team21/operation/pull/7
 - Approved PR: 
   - https://github.com/remla25-team21/operation/pull/5
   - https://github.com/remla25-team21/operation/pull/6
