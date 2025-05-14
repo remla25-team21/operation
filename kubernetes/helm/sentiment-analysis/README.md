@@ -5,9 +5,8 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 ## Installation
 
 1. First, ensure you have your Kubernetes cluster running (e.g., with `minikube start`)
-
-2. Install the chart:
-
+2. Make sure that you are inside of the sentiment-analysis folder.
+3. Install the chart:
    ```bash
    helm install my-sentiment-analysis ./sentiment-analysis
    ```

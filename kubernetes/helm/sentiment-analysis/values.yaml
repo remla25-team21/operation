@@ -1,4 +1,4 @@
-# Model Service configuration
+# model-service
 modelService:
   name: model-service
   replicaCount: 1
@@ -10,23 +10,29 @@ modelService:
     type: ClusterIP
     port: 5000
 
-# App configuration
-app:
-  name: app
+# app-service
+appService:
+  name: app-service
   replicaCount: 1
   image:
-    repository: ghcr.io/remla25-team21/app
+    repository: ghcr.io/remla25-team21/app-backend
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 5000
+
+# app-frontend
+appFrontend:
+  name: app-frontend
+  replicaCount: 1
+  image:
+    repository: ghcr.io/remla25-team21/app-frontend
     tag: latest
     pullPolicy: Always
   service:
     type: ClusterIP
     port: 3000
-
-# Storage configuration
-persistence:
-  enabled: true
-  storageClass: "standard"
-  size: 1Gi
 
 # Ingress configuration
 ingress:
@@ -38,12 +44,10 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
-# # Secrets configuration
-# secrets:
-#   create: true
-#   sensitiveData: {}
 
-# # ConfigMap configuration
-# configMap:
-#   create: true
-#   data: {}
+# ConfigMap configuration (to store environment variables)
+configMap:
+  create: true
+  data:
+    MODEL_SERVICE_URL: "model-service"
+    MODEL_SERVICE_PORT: "5000"
