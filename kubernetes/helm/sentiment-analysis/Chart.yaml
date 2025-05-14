@@ -1,0 +1,8 @@
+apiVersion: v2
+name: sentiment-analysis
+description: A Helm chart for deploying the Restaurant Review Sentiment Analysis application
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+maintainers:
+  - name: "REMLA Team 21"

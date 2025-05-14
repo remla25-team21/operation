@@ -1,0 +1,49 @@
+# Model Service configuration
+modelService:
+  name: model-service
+  replicaCount: 1
+  image:
+    repository: ghcr.io/remla25-team21/model-service
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 5000
+
+# App configuration
+app:
+  name: app
+  replicaCount: 1
+  image:
+    repository: ghcr.io/remla25-team21/app
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 3000
+
+# Storage configuration
+persistence:
+  enabled: true
+  storageClass: "standard"
+  size: 1Gi
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: sentiment-analysis.local
+      paths:
+        - path: /
+          pathType: Prefix
+# # Secrets configuration
+# secrets:
+#   create: true
+#   sensitiveData: {}
+
+# # ConfigMap configuration
+# configMap:
+#   create: true
+#   data: {}
