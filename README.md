@@ -12,7 +12,7 @@ This is the central repository for a REMLA project by Group 21.  The application
 
 - [`app`](https://github.com/remla25-team21/app): Contains the application frontend and backend (user interface and service logic).
 
-## How to start the application
+## How to start the application  (Assignment 1)
 1. Clone the repository
    ```bash
    git clone https://github.com/remla25-team21/operation.git
@@ -40,6 +40,13 @@ These steps guide you through setting up the Kubernetes cluster on your local ma
 2. **Access Kubernetes Dashboard**:
     * After the script completes, open your web browser and navigate to: `https://dashboard.local` (**HTTPS** is required).
     * You will see a token displayed in your terminal. Copy and paste this token into the Kubernetes Dashboard login page.
+
+3. **Remove the Cluster**:
+    If you want to remove the cluster, run the following command:
+    ```bash
+    vagrant destroy -f
+    ```
+    This will remove all the VMs and the Kubernetes cluster.
 
 ## Known Bug: Port Conflict on macOS (AirPlay Receiver)
 

@@ -1,4 +1,5 @@
 - hosts: ctrl
+  gather_facts: false
   become: true
   tasks:
     - name: Debug controller provisioning

@@ -1,5 +1,6 @@
 - hosts: nodes
   become: true
+  gather_facts: false
   tasks:
     - name: Debug node provisioning
       debug:
