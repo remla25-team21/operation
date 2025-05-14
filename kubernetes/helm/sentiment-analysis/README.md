@@ -15,4 +15,8 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
    ```bash
    kubectl port-forward svc/app-frontend 3000:3000
    ```
+6. You also have to port-forward the backend service for it to be reachable from the frontend accessed via localhost
+   ```bash
+   kubectl port-forward service/app-service 5000:5000
+   ```
 6. Access the application from `http://localhost:3000`.
