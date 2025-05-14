@@ -8,7 +8,7 @@ modelService:
     pullPolicy: Always
   service:
     type: ClusterIP
-    port: 5000
+    port: 8080
 
 # app-service
 appService:
@@ -49,5 +49,4 @@ ingress:
 configMap:
   create: true
   data:
-    MODEL_SERVICE_URL: "model-service"
-    MODEL_SERVICE_PORT: "5000"
+    MODEL_SERVICE_URL: "http://model-service:8080"
