@@ -20,6 +20,7 @@ This is the central repository for a REMLA project by Group 21.  The application
 2.  Navigate into the project directory.
 3.  Clone the repository
      ```bash
+     cd kubernetes
      docker-compose pull && docker-compose up -d
      ```
 
