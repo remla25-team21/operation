@@ -19,6 +19,10 @@ Vagrant.configure("2") do |config|
     # ansible.verbose = "v"
   end
 
+  # Acceleration settings
+  config.vm.box_check_update = false
+  config.ssh.insert_key = false
+
   LABELS.each_with_index do |name, i|
     config.vm.define name do |machine|
       machine.vm.box = "bento/ubuntu-24.04"
@@ -31,6 +35,8 @@ Vagrant.configure("2") do |config|
         vb.name = name
         vb.memory = name == CTRL_NAME ? 4096 : 6144
         vb.cpus = 2
+        vb.check_guest_additions = false
+        vb.gui = false
       end
 
       # Provisioning Step 1 (User's terminology): General setup for the current VM
