@@ -1,6 +1,6 @@
 ---
 - name: Finalize Kubernetes cluster setup
-  hosts: all
+  hosts: ctrl
   become: true
   gather_facts: true
   vars:
@@ -91,11 +91,18 @@
       when: l2adv_output.changed
 
     # Step 21: Install the Nginx Ingress Controller
+    - name: Update Helm repositories once
+      become_user: vagrant
+      shell: helm repo update
+      register: helm_repo_update_output_global
+      failed_when: helm_repo_update_output_global.rc != 0 and "no repositories found" not in helm_repo_update_output_global.stderr
+      changed_when: helm_repo_update_output_global.rc == 0
+
     - name: Add Nginx Ingress Controller Helm repository
       become_user: vagrant
       shell: |
         helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-        helm repo update
+        # helm repo update # REMOVE from here
       register: helm_repo_output
 
     - name: Display Helm repository add output
@@ -140,7 +147,7 @@
       become_user: vagrant
       shell: |
         helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-        helm repo update
+        # helm repo update # REMOVE from here
       register: dashboard_repo_output
 
     - name: Display Dashboard repo add output
