@@ -5,7 +5,7 @@
       apt:
         update_cache: yes
 
-    # 添加更快的Ubuntu镜像源
+    # Add faster Ubuntu mirror sources
     - name: Configure Ubuntu apt mirror
       ansible.builtin.copy:
         dest: /etc/apt/sources.list.d/official-ubuntu-mirrors.list
@@ -29,7 +29,7 @@
           - ca-certificates
         state: present
 
-    #Step 4: 
+    # Step 4: 
     - name: Create .ssh directory for vagrant user
       file:
         path: /home/vagrant/.ssh
@@ -178,7 +178,7 @@
         state: directory
         mode: '0755'
 
-    # 添加apt配置以提高下载速度
+    # Add apt configuration to improve download speed
     - name: Create apt.conf.d directory
       file:
         path: /etc/apt/apt.conf.d
@@ -219,12 +219,12 @@
         state: present
         force: yes
         install_recommends: no
-        update_cache: yes  # 改为yes以确保使用最新的源信息
-        # cache_valid_time: 86400  # 移除这个配置，强制每次都更新
+        update_cache: yes  # Changed to yes to ensure using the latest source information
+        # cache_valid_time: 86400  # Removed this configuration, force update every time
         dpkg_options: 'force-confold,force-confdef'
-        # 移除不支持的timeout参数
+        # Removed unsupported timeout parameter
 
-    # 添加apt镜像源配置，使用更快的镜像源
+    # Add apt mirror source configuration, using faster mirror sources
     - name: Ensure apt HTTP transport is installed
       apt:
         name: apt-transport-https
