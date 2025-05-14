@@ -90,7 +90,7 @@
       apt:
         name: helm
         state: present
-        update_cache: yes
+        # update_cache: yes
       
     # Step 17: Install Helm diff plugin (Optional)
     - name: Install Helm diff plugin

@@ -1,43 +1,86 @@
 Vagrant.configure("2") do |config|
   NUM_WORKERS = 2
-  LABELS = ["ctrl"] + (1..NUM_WORKERS).map { |i| "node-#{i}" }
+  CTRL_NAME = "ctrl"
+  NODE_PREFIX = "node-"
+  # Using the original LABELS structure helps maintain consistent IP assignment
+  # if ctrl is expected to be the first VM (index 0 for IP calculation).
+  LABELS = [CTRL_NAME] + (1..NUM_WORKERS).map { |i| "#{NODE_PREFIX}#{i}" }
+
+  # Helper method for configuring Ansible provisioners consistently
+  def configure_ansible_provisioner(ansible, playbook_path, current_vm_name, current_vm_ip, limit_target = nil)
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = playbook_path
+    ansible.inventory_path = "ansible/inventory/inventory.cfg" # Assumes this path is correct relative to Vagrantfile
+    ansible.extra_vars = {
+      "node_name" => current_vm_name,
+      "private_ip" => current_vm_ip
+    }
+    ansible.limit = limit_target if limit_target # Apply --limit if a target is specified
+    # ansible.verbose = "v"
+  end
 
   LABELS.each_with_index do |name, i|
     config.vm.define name do |machine|
       machine.vm.box = "bento/ubuntu-24.04"
       machine.vm.hostname = name
-      ip = "192.168.56.#{100 + i}"
+      ip = "192.168.56.#{100 + i}" # IP assignment based on order in LABELS
       machine.vm.network "private_network", ip: ip
 
       # Configure resources
       machine.vm.provider "virtualbox" do |vb|
         vb.name = name
-        vb.memory = name == "ctrl" ? 4096 : 6144
+        vb.memory = name == CTRL_NAME ? 4096 : 6144
         vb.cpus = 2
       end
 
-      # First: general setup playbook (runs on all VMs)
-      machine.vm.provision :ansible do |ansible|
-        ansible.compatibility_mode = "2.0"
-        ansible.playbook = "ansible/playbooks/general.yaml"
-        ansible.inventory_path = "ansible/inventory/inventory.cfg"
-        ansible.extra_vars = {
-          "node_name" => name,
-          "private_ip" => ip
-        }
-        ansible.verbose = "v"
+      # Provisioning Step 1 (User's terminology): General setup for the current VM
+      # Vagrant will attempt to run this stage in parallel for all VMs during `vagrant up`.
+      machine.vm.provision "ansible_general_setup", type: :ansible do |ansible|
+        configure_ansible_provisioner(
+          ansible,
+          "ansible/playbooks/general.yaml",
+          name,
+          ip
+        )
       end
 
-      # Second: controller or node specific setup
-      machine.vm.provision :ansible do |ansible|
-        ansible.compatibility_mode = "2.0"
-        ansible.playbook = name == "ctrl" ? "ansible/playbooks/ctrl.yaml" : "ansible/playbooks/node.yaml"
-        ansible.inventory_path = "ansible/inventory/inventory.cfg"
-        ansible.extra_vars = {
-          "node_name" => name,
-          "private_ip" => ip
-        }
-        ansible.verbose = "v"
+      # Provisioning Step 2 (User's terminology): Specific setup based on VM role
+      if name == CTRL_NAME
+        # Step 2a: Controller-specific playbook
+        machine.vm.provision "ansible_ctrl_specific_setup", type: :ansible do |ansible|
+          configure_ansible_provisioner(
+            ansible,
+            "ansible/playbooks/ctrl.yaml",
+            name,
+            ip
+          )
+        end
+
+        # Provisioning Step 3 (User's terminology): Finalization playbook for the controller
+        # This is defined as the last provisioner for 'ctrl'.
+        # Note: For strict "after nodes complete node.yaml" sequencing, see explanation below.
+        machine.vm.provision "ansible_ctrl_finalization", type: :ansible do |ansible|
+          configure_ansible_provisioner(
+            ansible,
+            "ansible/playbooks/finalization.yml",
+            name,
+            ip,
+            CTRL_NAME
+          ) # Ensures --limit=ctrl is applied
+        end
+      else # This is a node VM (e.g., node-1, node-2)
+        # Step 2b: Node-specific playbook
+        # This runs after general.yaml for this node. If multiple nodes are brought up
+        # by `vagrant up` concurrently, this step will also run concurrently for them.
+        # Note: For strict "after ctrl completes ctrl.yaml" sequencing, see explanation below.
+        machine.vm.provision "ansible_node_specific_setup", type: :ansible do |ansible|
+          configure_ansible_provisioner(
+            ansible,
+            "ansible/playbooks/node.yaml",
+            name,
+            ip
+          )
+        end
       end
     end
   end

@@ -5,6 +5,22 @@
       apt:
         update_cache: yes
 
+    # 添加更快的Ubuntu镜像源
+    - name: Configure Ubuntu apt mirror
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/official-ubuntu-mirrors.list
+        content: |
+          deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
+          deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
+        mode: '0644'
+      register: mirror_added
+      
+    - name: Update apt cache after mirror change
+      apt:
+        update_cache: yes
+      when: mirror_added.changed
+
     - name: Install common packages
       apt:
         name:
@@ -162,6 +178,24 @@
         state: directory
         mode: '0755'
 
+    # 添加apt配置以提高下载速度
+    - name: Create apt.conf.d directory
+      file:
+        path: /etc/apt/apt.conf.d
+        state: directory
+        mode: '0755'
+
+    - name: Configure apt for faster downloads
+      copy:
+        dest: /etc/apt/apt.conf.d/99faster-downloads
+        content: |
+          Acquire::Queue-mode "host";
+          Acquire::http::Pipeline-Depth "5";
+          Acquire::http::Timeout "180";
+          Acquire::https::Timeout "180";
+          APT::Install-Recommends "false";
+        mode: '0644'
+
     - name: Add Kubernetes GPG key
       ansible.builtin.apt_key:
         url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
@@ -174,7 +208,7 @@
         filename: kubernetes
         state: present
 
-    - name: Update apt cache
+    - name: Update apt cache after adding Kubernetes repo
       apt:
         update_cache: yes
 
@@ -183,13 +217,24 @@
       apt:
         name: containerd
         state: present
+        force: yes
+        install_recommends: no
+        update_cache: yes  # 改为yes以确保使用最新的源信息
+        # cache_valid_time: 86400  # 移除这个配置，强制每次都更新
+        dpkg_options: 'force-confold,force-confdef'
+        # 移除不支持的timeout参数
+
+    # 添加apt镜像源配置，使用更快的镜像源
+    - name: Ensure apt HTTP transport is installed
+      apt:
+        name: apt-transport-https
+        state: present
         update_cache: yes
 
     - name: Install runc
       apt:
         name: runc
         state: present
-        update_cache: yes
 
     - name: Install Kubernetes tools
       apt:
@@ -198,9 +243,8 @@
           - kubeadm=1.32.4-1.1
           - kubectl=1.32.4-1.1
         state: present
-        update_cache: yes
         allow_downgrade: yes
-
+        
     # Step 11: Configure Containerd
     - name: Create containerd config directory
       file:
