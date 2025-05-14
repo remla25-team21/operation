@@ -12,6 +12,7 @@ NC='\033[0m' # No Color
 # Error handler function
 error_handler() {
     echo -e "${RED}Error occurred at step $STEP_NUMBER. Setup failed.${NC}"
+    rm ctrl.log node-1.log node-2.log -rf
     exit 1
 }
 
@@ -21,39 +22,49 @@ trap 'error_handler' ERR
 # Initialize step counter
 STEP_NUMBER=0
 
+# Step 0: Check if parallel is installed
+STEP_NUMBER=0
+echo -e "${YELLOW}Step 0/4: Checking if parallel is installed...${NC}"
+if ! command -v parallel &> /dev/null; then
+    echo -e "${RED}Error: The 'parallel' package is not installed.${NC}"
+    echo -e "${RED}Please install it using one of the following commands:${NC}"
+    echo -e "${YELLOW}For Debian/Ubuntu:${NC} sudo apt-get install parallel"
+    echo -e "${YELLOW}For Red Hat/CentOS:${NC} sudo yum install parallel"
+    echo -e "${YELLOW}For macOS:${NC} brew install parallel"
+    exit 1
+else
+    echo -e "${GREEN}Parallel is installed. Proceeding with setup.${NC}"
+fi
+
 # Set Ansible configuration file location
 export ANSIBLE_CONFIG="./ansible.cfg"
 echo -e "${GREEN}Using Ansible config: $ANSIBLE_CONFIG${NC}"
 
-# step 0: add dashboard.local to hosts file if not already present
+# Step 1: add dashboard.local to hosts file if not already present
 STEP_NUMBER=1
+echo -e "${YELLOW}Step 1/4: Checking if dashboard.local is in /etc/hosts...${NC}"
 if ! grep -q "dashboard.local" /etc/hosts; then
-    echo -e "${YELLOW}Step 1/5: Adding dashboard.local to hosts file...${NC}"
+    echo -e "${GREEN}Adding dashboard.local to hosts file...${NC}"
     echo "127.0.0.1 dashboard.local" | sudo tee -a /etc/hosts > /dev/null
 else
-    echo -e "${YELLOW}Step 1/5: dashboard.local already exists in /etc/hosts${NC}"
+    echo -e "${GREEN}dashboard.local already exists in /etc/hosts${NC}"
 fi
 
-# Step 1: Start all VMs and perform general setup
+# Step 2: Start all VMs and perform general setup
 STEP_NUMBER=2
-echo -e "${YELLOW}Step 2/5: Starting virtual machines and performing general setup...${NC}"
-echo "ctrl node-1 node-2" | xargs -n 1 -P 3 vagrant up --provision-with ansible_general_setup
+echo -e "${YELLOW}Step 2/4: Starting virtual machines and performing general setup...${NC}"
+echo "ctrl node-1 node-2" | tr ' ' '\n' | parallel --jobs 3 --linebuffer "vagrant up {} --provision-with ansible_general_setup 2>&1"
 
-# Step 2: Run ctrl.yaml on the controller node
+# Step 3: Run ctrl.yaml on controller node and node.yaml on worker nodes in parallel
 STEP_NUMBER=3
-echo -e "${YELLOW}Step 3/5: Setting up controller node...${NC}"
-vagrant provision ctrl --provision-with ansible_ctrl_specific_setup
-
-# Step 3: Run node.yaml on node-1 and node-2 in parallel
-# Make sure the previous step is completed before executing this command
-STEP_NUMBER=4
-echo -e "${YELLOW}Step 4/5: Setting up worker nodes...${NC}"
-echo "node-1 node-2" | xargs -n 1 -P 2 vagrant provision --provision-with ansible_node_specific_setup
+echo -e "${YELLOW}Step 3/4: Setting up controller and worker nodes in parallel...${NC}"
+echo -e "ctrl:ansible_ctrl_specific_setup node-1:ansible_node_specific_setup node-2:ansible_node_specific_setup" | 
+  tr ' ' '\n' | 
+  parallel --colsep ':' --jobs 3 --linebuffer "vagrant provision {1} --provision-with {2} 2>&1"
 
 # Step 4: Run finalization.yml on ctrl after nodes are setup
-# Make sure the previous step is completed before executing this command
-STEP_NUMBER=5
-echo -e "${YELLOW}Step 5/5: Finalizing cluster setup...${NC}"
+STEP_NUMBER=4
+echo -e "${YELLOW}Step 4/4: Finalizing cluster setup...${NC}"
 vagrant provision ctrl --provision-with ansible_ctrl_finalization
 
 # Get Dashboard access token
@@ -64,3 +75,5 @@ echo -e "${YELLOW}Your login token is:${NC}"
 vagrant ssh -c "kubectl -n kubernetes-dashboard create token admin-user" ctrl
 
 echo -e "${GREEN}All steps completed successfully!${NC}"
+
+rm ctrl.log node-1.log node-2.log -rf
