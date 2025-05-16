@@ -53,14 +53,14 @@ fi
 # Step 2: Start all VMs and perform general setup
 STEP_NUMBER=2
 echo -e "${YELLOW}Step 2/4: Starting virtual machines and performing general setup...${NC}"
-echo "ctrl node-1 node-2" | tr ' ' '\n' | parallel --gnu --jobs 100% --linebuffer "vagrant up {} --provision-with ansible_general_setup 2>&1"
+echo "ctrl node-1 node-2" | tr ' ' '\n' | parallel --jobs 3 --tag --linebuffer "vagrant up {} --provision-with ansible_general_setup 2>&1"
 
 # Step 3: Run ctrl.yaml on controller node and node.yaml on worker nodes in parallel
 STEP_NUMBER=3
 echo -e "${YELLOW}Step 3/4: Setting up controller and worker nodes in parallel...${NC}"
 echo -e "ctrl:ansible_ctrl_specific_setup node-1:ansible_node_specific_setup node-2:ansible_node_specific_setup" | 
   tr ' ' '\n' | 
-  parallel --colsep ':' --gnu --jobs 100% --linebuffer "vagrant provision {1} --provision-with {2} 2>&1"
+  parallel --colsep ':' --jobs 3 --tag --linebuffer  "vagrant provision {1} --provision-with {2} 2>&1"
 
 # Step 4: Run finalization.yml on ctrl after nodes are setup
 STEP_NUMBER=4
