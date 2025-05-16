@@ -1,0 +1,44 @@
+# define deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appService.name }}
+spec:
+  replicas: {{ .Values.appService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appService.name }}
+    spec:
+      containers:
+      - name: {{ .Values.appService.name }}
+        image: {{ .Values.appService.image.repository }}:{{ .Values.appService.image.tag }}
+        ports:
+        - containerPort: {{ .Values.appService.service.port }}
+        envFrom:
+          - configMapRef:
+              name: app-configmap 
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.appService.service.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+---
+# define service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.appService.name }}
+spec:
+  selector:
+    app: {{ .Values.appService.name }}
+  ports:
+    - port: {{ .Values.appService.service.port }}
+      targetPort: {{ .Values.appService.service.port }}
+  type: {{ .Values.appService.service.type }}
+
