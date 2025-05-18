@@ -19,4 +19,64 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
    ```bash
    kubectl port-forward service/app-service 5000:5000
    ```
-6. Access the application from `http://localhost:3000`.
+7. Access the application from `http://localhost:3000`.
+
+## Prometheus Monitoring
+
+The app-service includes built-in Prometheus metrics to monitor application usage and performance. A ServiceMonitor resource is deployed alongside the application to enable automatic metrics scraping by Prometheus.
+
+### Available Metrics
+
+1. **sentiment_predictions_total** (Counter)
+   - Tracks the total number of sentiment predictions made
+   - Includes labels to differentiate between positive and negative sentiments
+   
+2. **sentiment_positive_ratio** (Gauge)
+   - Measures the ratio of positive to total sentiments (value between 0-1)
+   
+3. **sentiment_prediction_latency_seconds** (Histogram)
+   - Tracks the time taken to process sentiment predictions
+   - Includes multiple buckets to categorize response times
+   
+### Accessing Metrics
+
+You can access the metrics directly by port-forwarding the app-service and visiting the metrics endpoint:
+
+```bash
+kubectl port-forward service/app-service 5000:5000
+```
+
+Then visit `http://localhost:5000/metrics` in your browser.
+
+### Setting Up Prometheus
+
+1. Make sure you have the Prometheus Operator installed in your cluster. If you don't have it installed, you can use the kube-prometheus-stack Helm chart:
+
+   ```bash
+   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+   helm repo update
+   helm install prometheus prometheus-community/kube-prometheus-stack
+   ```
+
+2. The ServiceMonitor included in this chart is configured to be automatically discovered by Prometheus, as long as your Prometheus instance is configured to discover ServiceMonitors in this namespace.
+
+3. You can check if the ServiceMonitor is working by running:
+
+   ```bash
+   kubectl get servicemonitors
+   ```
+
+4. To access the Prometheus dashboard, you can port-forward the Prometheus service:
+
+   ```bash
+   kubectl port-forward service/prometheus-operated 9090:9090
+   ```
+
+   Then visit `http://localhost:9090` in your browser and query for the metrics like:
+   - `sentiment_predictions_total`
+   - `sentiment_positive_ratio`
+   - `sentiment_prediction_latency_seconds_bucket`
+
+### Grafana Dashboard
+
+// TODO
