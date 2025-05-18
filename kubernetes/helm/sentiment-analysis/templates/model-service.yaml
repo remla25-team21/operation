@@ -2,38 +2,38 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{.Values.modelService.name}}
+  name: {{ .Release.Name }}-{{ .Values.modelService.name }}
   labels:
-    app: {{.Values.modelService.name}}
+    app: {{ .Release.Name }}-{{ .Values.modelService.name }}
 spec:
-  replicas: {{.Values.modelService.replicaCount}}
+  replicas: {{ .Values.modelService.replicaCount }}
   selector:
     matchLabels:
-      app: {{.Values.modelService.name}}
+      app: {{ .Release.Name }}-{{ .Values.modelService.name }}
   template:
     metadata:
       labels:
-        app: {{.Values.modelService.name}}
+        app: {{ .Release.Name }}-{{ .Values.modelService.name }}
     spec:
       containers:
-        - name: {{.Values.modelService.name}}
+        - name: {{ .Values.modelService.name }}
           image: "{{ .Values.modelService.image.repository }}:{{ .Values.modelService.image.tag }}"
-          imagePullPolicy: {{.Values.modelService.image.pullPolicy}}
+          imagePullPolicy: {{ .Values.modelService.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{.Values.modelService.service.port}}
+              containerPort: {{ .Values.modelService.service.port }}
               protocol: TCP
 ---
 # define service
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{.Values.modelService.name}}
+  name: {{ .Release.Name }}-{{ .Values.modelService.name }}
 spec:
   selector:
-    app: {{.Values.modelService.name}}
+    app: {{ .Release.Name }}-{{ .Values.modelService.name }}
   ports:
-    - port: {{.Values.modelService.service.port}}
-      targetPort: {{.Values.modelService.service.port}}
+    - port: {{ .Values.modelService.service.port }}
+      targetPort: {{ .Values.modelService.service.port }}
       protocol: TCP
-  type: {{.Values.modelService.service.type}}
+  type: {{ .Values.modelService.service.type }}
