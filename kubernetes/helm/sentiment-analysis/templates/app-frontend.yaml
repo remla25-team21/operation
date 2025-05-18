@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.appFrontend.name }}
+  name: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
 spec:
   replicas: {{ .Values.appFrontend.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Values.appFrontend.name }}
+      app: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.appFrontend.name }}
+        app: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
     spec:
       containers:
       - name: {{ .Values.appFrontend.name }}
@@ -25,16 +25,23 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 30
           timeoutSeconds: 5
+        # showcasing secret usage
+        env:
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-app-secret
+              key: SECRET_KEY
 ---
 
 # define service
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.appFrontend.name }}
+  name: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
 spec:
   selector:
-    app: {{ .Values.appFrontend.name }}
+    app: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
   ports:
     - port: {{ .Values.appFrontend.service.port }}
       targetPort: {{ .Values.appFrontend.service.port }}
