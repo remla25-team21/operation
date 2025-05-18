@@ -50,3 +50,7 @@ configMap:
   create: true
   data:
     MODEL_SERVICE_URL: "http://model-service:8080"
+
+# Prometheus monitoring configuration
+monitoring:
+  enabled: true

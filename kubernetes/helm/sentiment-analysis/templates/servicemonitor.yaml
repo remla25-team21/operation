@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.appService.name }}-monitor
+  labels:
+    app: {{ .Values.appService.name }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.appService.name }}
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 1s  # FIXME: For debugging purposes, set to 1s. Change to 30s for production.
