@@ -2,6 +2,29 @@
 
 This Helm chart deploys the Restaurant Review Sentiment Analysis application, which includes a model service for sentiment analysis and a web application frontend/backend.
 
+> [!NOTE]
+> TL;DR:
+>
+> 1. Run the following command to install the chart and access the application:
+>
+> ```bash
+> helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis
+> kubectl port-forward svc/app-frontend 3000:3000  # Keep this running in a separate terminal
+> kubectl port-forward service/app-service 5000:5000  # Keep this running in another terminal
+> ```
+>
+> 2. Start prometheus and Grafana to monitor the application:
+>
+> ```bash
+> helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+> helm repo update
+> helm install prometheus prometheus-community/kube-prometheus-stack
+> kubectl port-forward service/prometheus-operated 9090:9090  # Keep this running in a separate terminal
+> ```
+>
+> 3. Access the application at `http://localhost:3000` and Prometheus at `http://localhost:9090`.
+> 4. For Grafana, ...
+
 ## Installation
 
 1. First, ensure you have your Kubernetes cluster running (e.g., with `minikube start`)
