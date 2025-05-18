@@ -54,3 +54,7 @@ configMap:
 # Prometheus monitoring configuration
 monitoring:
   enabled: true
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      prometheus: kube-prometheus

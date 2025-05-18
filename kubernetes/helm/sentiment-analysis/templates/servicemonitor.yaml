@@ -4,7 +4,11 @@ metadata:
   name: {{ .Values.appService.name }}-monitor
   labels:
     app: {{ .Values.appService.name }}
-    release: {{ .Release.Name }}
+    release: prometheus
+    k8s-app: {{ .Values.appService.name }}
+    {{- with .Values.monitoring.serviceMonitor.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -12,4 +16,7 @@ spec:
   endpoints:
   - port: http
     path: /metrics
-    interval: 1s  # FIXME: For debugging purposes, set to 1s. Change to 30s for production.
+    interval: 15s
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}

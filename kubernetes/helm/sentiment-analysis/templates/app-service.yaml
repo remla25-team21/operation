@@ -22,9 +22,11 @@ spec:
       containers:
       - name: {{ .Values.appService.name }}
         image: {{ .Values.appService.image.repository }}:{{ .Values.appService.image.tag }}
+        imagePullPolicy: {{ .Values.appService.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.appService.service.port }}
           name: http
+          protocol: TCP
         envFrom:
           - configMapRef:
               name: app-configmap 
@@ -43,6 +45,10 @@ metadata:
   name: {{ .Values.appService.name }}
   labels:
     app: {{ .Values.appService.name }}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "{{ .Values.appService.service.port }}"
 spec:
   selector:
     app: {{ .Values.appService.name }}
@@ -50,5 +56,6 @@ spec:
     - port: {{ .Values.appService.service.port }}
       targetPort: {{ .Values.appService.service.port }}
       name: http
+      protocol: TCP
   type: {{ .Values.appService.service.type }}
 
