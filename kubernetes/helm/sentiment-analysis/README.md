@@ -9,7 +9,13 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 >
 > ```bash
 > helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis
+> ```
+>
+> ```bash
 > kubectl port-forward svc/app-frontend 3000:3000  # Keep this running in a separate terminal
+> ```
+>
+> ```bash
 > kubectl port-forward service/app-service 5000:5000  # Keep this running in another terminal
 > ```
 >
@@ -19,11 +25,17 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 > helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 > helm repo update
 > helm install prometheus prometheus-community/kube-prometheus-stack
+> ```
+>
+> ```bash
 > kubectl port-forward service/prometheus-operated 9090:9090  # Keep this running in a separate terminal
 > ```
 >
-> 3. Access the application at `http://localhost:3000` and Prometheus at `http://localhost:9090`.
-> 4. For Grafana, ...
+> 3. Access the application at [http://localhost:3000](http://localhost:3000) and Prometheus at [http://localhost:9090](http://localhost:9090).
+> 4. For Grafana, port-forward it on a different port (e.g., 3300) and open [http://localhost:3300](http://localhost:3300). Log in with `admin / prom-operator` and open the pre-provisioned "Dashboard" under **Dashboards -> Browse**. 
+> ```bash
+> kubectl port-forward service/prometheus-grafana 3300:80 # Keep this running in a separate terminal
+> ```
 
 ## Installation
 
@@ -42,7 +54,7 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
    ```bash
    kubectl port-forward service/app-service 5000:5000
    ```
-7. Access the application from `http://localhost:3000`.
+7. Access the application from [http://localhost:3000](http://localhost:3000).
 
 ## Prometheus Monitoring
 
@@ -69,7 +81,7 @@ You can access the metrics directly by port-forwarding the app-service and visit
 kubectl port-forward service/app-service 5000:5000
 ```
 
-Then visit `http://localhost:5000/metrics` in your browser.
+Then visit [http://localhost:5000/metrics](http://localhost:5000/metrics) in your browser.
 
 ### Setting Up Prometheus
 
@@ -95,11 +107,38 @@ Then visit `http://localhost:5000/metrics` in your browser.
    kubectl port-forward service/prometheus-operated 9090:9090
    ```
 
-   Then visit `http://localhost:9090` in your browser and query for the metrics like:
+   Then visit [http://localhost:9090](http://localhost:9090) in your browser and query for the metrics like:
    - `sentiment_predictions_total`
    - `sentiment_positive_ratio`
    - `sentiment_prediction_latency_seconds_bucket`
 
-### Grafana Dashboard
 
-// TODO
+### Grafana Dashboard
+Grafana is used to visualize the Prometheus metrics collected from the `app-service`. A custom dashboard is automatically provisioned during deployment using a `ConfigMap`.
+
+#### Dashboard Features
+The Grafana dashboard includes:
+
+* Total Sentiment Predictions: A timeseries chart based on `sentiment_predictions_total`, with separate lines for each sentiment class. 
+* Positive Sentiment Ratio: A gauge showing the real-time ratio of positive reviews (`sentiment_positive_ratio`), ranging from 0 (all negative) to 1 (all positive). 
+* Prediction Latency (50th Percentile): A line graph showing the median request latency using
+  `histogram_quantile(0.5, rate(sentiment_prediction_latency_seconds_bucket[5m]))`. 
+
+#### Automatic Provisioning
+No manual import is required. The dashboard is automatically loaded by Grafana using a Kubernetes ConfigMap (`sentiment-dashboard`) defined in the Helm chart. 
+
+#### Accessing Grafana
+
+1. Port-forward the Grafana service on a free port (e.g., `3300`):
+
+   ```bash
+   kubectl port-forward service/prometheus-grafana 3300:80
+   ```
+
+2. Open Grafana in your browser: [http://localhost:3300](http://localhost:3300)
+
+3. Log in with: 
+   * **Username:** `admin` 
+   * **Password:** `prom-operator` (default) 
+
+4. Navigate to **Dashboards -> Browse** and open the dashboard titled "Dashboard". 

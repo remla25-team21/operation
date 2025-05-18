@@ -58,3 +58,9 @@ monitoring:
     enabled: true
     additionalLabels:
       prometheus: kube-prometheus
+
+# Grafana dashboard configuration
+grafana:
+  dashboardsConfigMaps:
+    sentiment-dashboard: "sentiment-dashboard"
+  additionalDataSources: []
