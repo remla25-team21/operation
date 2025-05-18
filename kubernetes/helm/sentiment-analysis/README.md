@@ -12,11 +12,13 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 > ```
 >
 > ```bash
-> kubectl port-forward svc/app-frontend 3000:3000  # Keep this running in a separate terminal
+>  # Keep this running in a separate terminal
+> kubectl port-forward svc/app-frontend 3000:3000
 > ```
 >
 > ```bash
-> kubectl port-forward service/app-service 5000:5000  # Keep this running in another terminal
+>  # Keep this running in another terminal
+> kubectl port-forward service/app-service 5000:5000
 > ```
 >
 > 2. Start prometheus and Grafana to monitor the application:
@@ -28,13 +30,15 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 > ```
 >
 > ```bash
-> kubectl port-forward service/prometheus-operated 9090:9090  # Keep this running in a separate terminal
+>  # Keep this running in a separate terminal
+> kubectl port-forward service/prometheus-operated 9090:9090
 > ```
 >
 > 3. Access the application at [http://localhost:3000](http://localhost:3000) and Prometheus at [http://localhost:9090](http://localhost:9090).
 > 4. For Grafana, port-forward it on a different port (e.g., 3300) and open [http://localhost:3300](http://localhost:3300). Log in with `admin / prom-operator` and open the pre-provisioned "Dashboard" under **Dashboards -> Browse**. 
 > ```bash
-> kubectl port-forward service/prometheus-grafana 3300:80 # Keep this running in a separate terminal
+>  # Keep this running in a separate terminal
+> kubectl port-forward service/prometheus-grafana 3300:80
 > ```
 
 ## Installation
