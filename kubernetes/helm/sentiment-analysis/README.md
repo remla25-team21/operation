@@ -17,12 +17,12 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 >
 > ```bash
 >  # Keep this running in a separate terminal
-> kubectl port-forward service/prometheus-operated 9090:9090
+> kubectl port-forward svc/prometheus-operated 9090:9090
 > ```
 >
 > ```bash
 >  # Keep this running in a separate terminal
-> kubectl port-forward service/prometheus-grafana 3300:80
+> kubectl port-forward scv/prometheus-grafana 3300:80
 > ```
 >
 > 3. Deploy the sentiment analysis application:
@@ -133,7 +133,7 @@ Then visit [`http://localhost:5000/metrics`](http://localhost:5000/metrics) in y
 4. To access the Prometheus dashboard, you can port-forward the Prometheus service:
 
    ```bash
-   kubectl port-forward service/prometheus-operated 9090:9090
+   kubectl port-forward svc/prometheus-operated 9090:9090
    ```
 
    Then visit [`http://localhost:9090`](http://localhost:9090) in your browser and query for the metrics like:
