@@ -6,6 +6,7 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 > TL;DR:
 >
 > 1. Make sure your Kubernetes cluster is running (e.g., `minikube start`). 
+>
 > 2. Add the Prometheus Helm chart repository and install the Prometheus + Grafana stack: 
 >
 > ```bash
@@ -54,26 +55,35 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
    minikube start
    ```
 
-2. Before deploying the application, install the monitoring stack so that Prometheus can discover metrics and Grafana can auto-load dashboards as detailed in [Prometheus Setup](#setting-up-prometheus). 
+2. Before deploying the application, install the monitoring stack so that Prometheus can discover metrics and Grafana can auto-load dashboards: 
+   ```bash
+   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+   helm repo update
+   helm install prometheus prometheus-community/kube-prometheus-stack -n default
+   ```
 
 3. Deploy the sentiment analysis application: 
    ```bash
    helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis -n default
    ```
 
-4. You can check if you've successfully installed your Helm release. (e.g., `helm status my-sentiment-analysis` to check the status of release, `kubectl get pods` to check that the pods are running, `kubectl get svc` to check for services, `kubectl get ingress` to check for ingress etc). 
+4. You can verify the deployment by checking the status of your Helm release and inspecting the running Kubernetes resources. For example: 
+   - `helm status my-sentiment-analysis`: shows the release status and resources created 
+   - `kubectl get pods`: confirms that all application pods are running 
+   - `kubectl get svc`: lists the exposed services 
+   - `kubectl get ingress` shows ingress configurations if used 
 
-5. You can port-forward the frontend service to your local machine like this:
-   ```bash
-   kubectl port-forward svc/app-frontend 3000:3000
-   ```
+5.  Port-forward services (in separate terminals): 
+   - Frontend: 
+      ```bash
+      kubectl port-forward svc/app-frontend 3000:3000
+      ```
+   - Backend: 
+      ```bash
+      kubectl port-forward svc/app-service 5000:5000 -n default
+      ```
 
-6. You also have to port-forward the backend service for it to be reachable from the frontend accessed via localhost
-   ```bash
-   kubectl port-forward service/app-service 5000:5000
-   ```
-
-7.  Access the application from [`http://localhost:3000`](http://localhost:3000).
+6.  Access the application from [`http://localhost:3000`](http://localhost:3000).
 
 ## Prometheus Monitoring
 
