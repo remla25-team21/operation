@@ -5,6 +5,10 @@ metadata:
   name: {{ .Release.Name }}-app-configmap
 data:
   {{- range $key, $value := .Values.configMap.data }}
+  {{- if eq $key "MODEL_SERVICE_URL" }}
+  MODEL_SERVICE_URL: "http://{{ $.Release.Name }}-{{ $.Values.modelService.name }}:{{ $.Values.modelService.service.port }}"
+  {{- else }}
   {{ $key }}: "{{ $value }}"
+  {{- end }}
   {{- end }}
 {{- end }}

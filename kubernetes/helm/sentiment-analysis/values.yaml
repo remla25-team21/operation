@@ -51,6 +51,14 @@ configMap:
   data:
     MODEL_SERVICE_URL: "http://model-service:8080"
 
+# Prometheus monitoring configuration
+monitoring:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      prometheus: kube-prometheus
+
 # Secret configuration (just to show that I know how to)
 secret:
   create: true
