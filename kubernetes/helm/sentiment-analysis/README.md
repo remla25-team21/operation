@@ -15,6 +15,8 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 > helm install prometheus prometheus-community/kube-prometheus-stack
 > ```
 >
+> After installing the Prometheus stack, it may take some time for all pods to become ready. You can monitor the status using `kubectl get pods` to ensure they are running before proceeding. 
+>
 > ```bash
 >  # Keep this running in a separate terminal
 > kubectl port-forward svc/prometheus-operated 9090:9090
@@ -30,8 +32,6 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 > ```bash
 > helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis
 > ```
->
-> After installing the Prometheus stack, it may take some time for all pods to become ready. You can monitor the status using `kubectl get pods` to ensure they are running before proceeding. 
 >
 > ```bash
 >  # Keep this running in a separate terminal
