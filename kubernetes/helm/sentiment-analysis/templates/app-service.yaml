@@ -2,16 +2,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.appService.name }}
+  name: {{ .Values.appService.name }}
+  labels:
+    app: {{ .Values.appService.name }}
 spec:
   replicas: {{ .Values.appService.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-{{ .Values.appService.name }}
+      app: {{ .Values.appService.name }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-{{ .Values.appService.name }}
+        app: {{ .Values.appService.name }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "{{ .Values.appService.service.port }}"
     spec:
       containers:
       - name: {{ .Values.appService.name }}
@@ -23,7 +29,7 @@ spec:
           protocol: TCP
         envFrom:
           - configMapRef:
-              name: {{ .Release.Name }}-app-configmap
+              name: app-configmap 
         readinessProbe:
           httpGet:
             path: /health
@@ -36,10 +42,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.appService.name }}
+  name: {{ .Values.appService.name }}
+  labels:
+    app: {{ .Values.appService.name }}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "{{ .Values.appService.service.port }}"
 spec:
   selector:
-    app: {{ .Release.Name }}-{{ .Values.appService.name }}
+    app: {{ .Values.appService.name }}
   ports:
     - port: {{ .Values.appService.service.port }}
       targetPort: {{ .Values.appService.service.port }}
