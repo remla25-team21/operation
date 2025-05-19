@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.appService.name }}
+  name: {{ .Release.Name }}-{{ .Values.appService.name }}
   labels:
-    app: {{ .Values.appService.name }}
+    app: {{ .Release.Name }}-{{ .Values.appService.name }}
 spec:
   replicas: {{ .Values.appService.replicaCount }}
   selector:
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .Values.appService.name }}
+        app: {{ .Release.Name }}-{{ .Values.appService.name }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
@@ -42,9 +42,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.appService.name }}
+  name: {{ .Release.Name }}-{{ .Values.appService.name }}
   labels:
-    app: {{ .Values.appService.name }}
+    app: {{ .Release.Name }}-{{ .Values.appService.name }}
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/path: "/metrics"
