@@ -1,18 +1,17 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ .Values.appService.name }}-monitor
+  name: {{ .Release.Name }}-{{ .Values.appService.name }}-monitor
   labels:
-    app: {{ .Values.appService.name }}
+    app: {{ .Release.Name }}-{{ .Values.appService.name }}
     release: prometheus
-    k8s-app: {{ .Values.appService.name }}
     {{- with .Values.monitoring.serviceMonitor.additionalLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.appService.name }}
+      app: {{ .Release.Name }}-{{ .Values.appService.name }}
   endpoints:
   - port: http
     path: /metrics
