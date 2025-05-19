@@ -1,125 +1,146 @@
-# ACTIVITY.md
+# Week 2:
 
-This file documents individual contributions to each assignment in the REMLA project by Group 21. 
+-- Bohong Lu: --  
+Created PR:  
+- https://github.com/remla25-team21/lib-version/pull/1  (Related to A1)
+- https://github.com/remla25-team21/app/pull/11         (Related to A1)
+- https://github.com/remla25-team21/app/pull/8          (Related to A1)
+- https://github.com/remla25-team21/app/pull/6          (Related to A1)
+- https://github.com/remla25-team21/app/pull/3          (Related to A1)
+- https://github.com/remla25-team21/app/pull/1          (Related to A1)  
 
-## A1: Versions, Releases, and Containerization
+Approved PR:  
+- https://github.com/remla25-team21/lib-ml/pull/3  
+- https://github.com/remla25-team21/model-service/pull/1  
+- https://github.com/remla25-team21/lib-version/pull/1  
+- https://github.com/remla25-team21/operation/pull/1  
+- https://github.com/remla25-team21/operation/pull/2  
+- https://github.com/remla25-team21/app/pull/5  
+- https://github.com/remla25-team21/app/pull/4  
+- https://github.com/remla25-team21/app/pull/2  
 
-### Bohong Lu
+-- Kanta Tanahashi: --  
+Created PR:  
+- https://github.com/remla25-team21/model-service/pull/1  
+- https://github.com/remla25-team21/operation/pull/1  
+- https://github.com/remla25-team21/operation/pull/2  
+- https://github.com/remla25-team21/app/pull/10  
 
-- `lib-version`: includes creating a version utility class, setting up automated releases via GitHub workflows, and ensuring version consistency across the project. 
-- `app-service`: includes integrating `lib-version`, integrating REST endpoints for model inference, and configuring Docker deployment for backend operations.
+Approved PR: https://github.com/remla25-team21/app/pull/8  
 
-- Created PR：
-  - https://github.com/remla25-team21/lib-version/pull/1
-  - https://github.com/remla25-team21/app/pull/11
-  - https://github.com/remla25-team21/app/pull/8
-  - https://github.com/remla25-team21/app/pull/6
-  - https://github.com/remla25-team21/app/pull/3
-  - https://github.com/remla25-team21/app/pull/1
-- Approved PR: 
-  - https://github.com/remla25-team21/lib-ml/pull/3
-  - https://github.com/remla25-team21/model-service/pull/1
-  - https://github.com/remla25-team21/lib-version/pull/1
-  - https://github.com/remla25-team21/operation/pull/1
-  - https://github.com/remla25-team21/operation/pull/2
-  - https://github.com/remla25-team21/app/pull/5
-  - https://github.com/remla25-team21/app/pull/4
-  - https://github.com/remla25-team21/app/pull/2
+-- Raghav Talwar: --  
+Created PR:  
+- https://github.com/remla25-team21/app/pull/5 (Related to A1)
+- https://github.com/remla25-team21/app/pull/4 (Related to A1)
+- https://github.com/remla25-team21/app/pull/2 (Related to A1)
 
-### Kanta Tanahashi
+Approved PR:  
+- https://github.com/remla25-team21/model-training/pull/1  
+- https://github.com/remla25-team21/app/pull/11  
+- https://github.com/remla25-team21/app/pull/10  
+- https://github.com/remla25-team21/app/pull/6  
+- https://github.com/remla25-team21/app/pull/3  
+- https://github.com/remla25-team21/app/pull/1  
 
-- Implemented the `model-service`, configuring the workflow and embedding the trained model from `model-training` and exposing it via a REST endpoint.  
-- Worked on the `operation` repository to orchestrate and document the full system.
+-- Yizhen Zang: --  
+Created PR:  
+- https://github.com/remla25-team21/model-training/pull/1  (Related to A1)
+- https://github.com/remla25-team21/lib-ml/pull/3  (Related to A1)
 
-- Created PR：
-  - https://github.com/remla25-team21/model-service/pull/1
-  - https://github.com/remla25-team21/operation/pull/1
-  - https://github.com/remla25-team21/operation/pull/2
-  - https://github.com/remla25-team21/app/pull/10
-- Approved PR: https://github.com/remla25-team21/app/pull/8
+Approved PR: https://github.com/remla25-team21/lib-ml/pull/2  (Related to A1)
 
-### Raghav Talwar
-
-- Worked on `app-frontend`: developed the frontend for the restaurant sentiment analysis app and integrated it with the `app-service` to handle responses from the `model-service`. 
-
-- Created PR：
-  - https://github.com/remla25-team21/app/pull/5
-  - https://github.com/remla25-team21/app/pull/4,
-  - https://github.com/remla25-team21/app/pull/2
-- Approved PR: 
-  - https://github.com/remla25-team21/model-training/pull/1
-  - https://github.com/remla25-team21/app/pull/11
-  - https://github.com/remla25-team21/app/pull/10
-  - https://github.com/remla25-team21/app/pull/6
-  - https://github.com/remla25-team21/app/pull/3
-  - https://github.com/remla25-team21/app/pull/1
-
-### Yizhen Zang
-
-- Built the `model-training` pipeline, integrated `lib-ml`, and configured versioning and release workflows for trained models. 
-
-- Created PR: 
-  - https://github.com/remla25-team21/model-training/pull/1
-  - https://github.com/remla25-team21/lib-ml/pull/3 
-- Approved PR: https://github.com/remla25-team21/lib-ml/pull/2 
-
-### Zeryab Alam
-
-- Segregated out the data pre-processing code into its the `lib-ml`package, set up versioning and GitHub workflow, so it can be easily installed with pip and reused in both `model-training` and `model-service`. 
-
-- Created PR：https://github.com/remla25-team21/lib-ml/pull/2 
-- Approved PR: https://github.com/remla25-team21/model-service/pull/1 
-
-## A2: Provisioning a Kubernetes Cluster
-
-### Bohong Lu
-
-- Collaborated with Kanta in *steps 15-17* to set up flannel as the network plugin for the cluster and set up Helm for package management.
-- Implemented cluster infrastructure components including MetalLB for load balancing, Nginx Ingress Controller for routing, and Kubernetes Dashboard for monitoring and management in *steps 20-22*.
-
-- Created PR：
-  - https://github.com/remla25-team21/operation/pull/7
-- Approved PR: 
-  - https://github.com/remla25-team21/operation/pull/5
-  - https://github.com/remla25-team21/operation/pull/6
-  - https://github.com/remla25-team21/operation/pull/8
-
-### Kanta Tanahashi
-
-- Initially attempted steps 15-19, and successfully completed with the help of Bohong.
-
-- Created PR:
-  - https://github.com/remla25-team21/operation/pull/6
-- Approved PR:
-  - https://github.com/remla25-team21/operation/pull/6
-  - https://github.com/remla25-team21/operation/pull/9
+-- Zeryab Alam: --  
+Created PR: 
+- https://github.com/remla25-team21/lib-ml/pull/2  (Related to A1)
+Approved PR:
+ https://github.com/remla25-team21/model-service/pull/1  (Related to A1)
 
 
-### Raghav Talwar
-- `operation`: implemented *steps 9-14*, adding kubernetes to the repository, installing k8 tools and setting up the cluster.
+# Week 3:
 
-- Created PR：
-  - https://github.com/remla25-team21/operation/pull/5
-- Approved PR: 
-  - https://github.com/remla25-team21/operation/pull/4
-### Yizhen Zang
+-- Bohong Lu: --  
+Created PR:  
+- https://github.com/remla25-team21/operation/pull/7  (Related to A2)  
 
-- `operation`: implemented *steps 1-8*, provisioning VMs with Vagrant, setting up private networking and SSH access, and configuring Ansible playbooks. 
-- `model-training`: improved classification accuracy with a different model and hyperparameter tuning. 
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/5  
+- https://github.com/remla25-team21/operation/pull/6  
+- https://github.com/remla25-team21/operation/pull/8  
 
-- Created PR：
-  - https://github.com/remla25-team21/operation/pull/4 
-  - https://github.com/remla25-team21/model-training/pull/2 
-- Approved PR: 
-  - https://github.com/remla25-team21/operation/pull/7 
+-- Kanta Tanahashi: --  
+Created PR:  
+- https://github.com/remla25-team21/operation/pull/6  
 
-### Zeryab Alam
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/6  
+- https://github.com/remla25-team21/operation/pull/9  
 
-- Implemented Istio (step 23). Performed final deployment test with lightweight application.
-- Performed extensive testing and bugfixing for each iterative PR.
+-- Raghav Talwar: --  
+Created PR:  
+- https://github.com/remla25-team21/operation/pull/5 (Related to A2)
 
-- Created PR:
-  - https://github.com/remla25-team21/operation/pull/8
- 
-- Approved PR:
-  - https://github.com/remla25-team21/operation/pull/5
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/4  
+
+-- Yizhen Zang: --  
+Created PR:  
+- https://github.com/remla25-team21/operation/pull/4  (Related to A2)
+- https://github.com/remla25-team21/model-training/pull/2  (Related to A1)
+
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/7  (Related to A2)
+
+-- Zeryab Alam: --  
+Created PR:  
+- https://github.com/remla25-team21/operation/pull/8  (Related to A2)
+
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/5  (Related to A2)
+
+# Week 4:
+
+-- Bohong Lu: --  
+Created PR:  
+- https://github.com/remla25-team21/operation/pull/11  (Related to A2)
+- https://github.com/remla25-team21/operation/pull/13  (Related to A2)
+- https://github.com/remla25-team21/operation/pull/15  (Related to A3)
+- https://github.com/remla25-team21/app/pull/13        (Related to A3)
+
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/10
+- https://github.com/remla25-team21/operation/pull/14
+- https://github.com/remla25-team21/operation/pull/17
+
+-- Kanta Tanahashi: --  
+Created PR:  
+- https://github.com/remla25-team21/operation/pull/16
+- https://github.com/remla25-team21/operation/pull/12
+
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/15
+- https://github.com/remla25-team21/app/pull/13
+- https://github.com/remla25-team21/app/pull/12
+
+
+-- Yizhen Zang: --
+Created PR: 
+- https://github.com/remla25-team21/operation/pull/17  (Related to A3)
+
+Approved PR: 
+- https://github.com/remla25-team21/operation/pull/11  (Related to A3)
+- https://github.com/remla25-team21/operation/pull/13  (Related to A3)
+
+-- Zeryab Alam: --
+Created PR: 
+- https://github.com/remla25-team21/operation/pull/17  (Related to A2)
+
+Approved PR: 
+- https://github.com/remla25-team21/operation/pull/15 (Related to A3)
+
+-- Raghav Talwar: --  
+Created PR:  
+- https://github.com/remla25-team21/app/pull/12 (Related to A1)
+
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/16
+- https://github.com/remla25-team21/operation/pull/12
