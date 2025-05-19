@@ -44,10 +44,10 @@ Approved PR:
 
 -- Yizhen Zang: --  
 Created PR:  
-- https://github.com/remla25-team21/model-training/pull/1  
-- https://github.com/remla25-team21/lib-ml/pull/3  
+- https://github.com/remla25-team21/model-training/pull/1  (Related to A1)
+- https://github.com/remla25-team21/lib-ml/pull/3  (Related to A1)
 
-Approved PR: https://github.com/remla25-team21/lib-ml/pull/2  
+Approved PR: https://github.com/remla25-team21/lib-ml/pull/2  (Related to A1)
 
 -- Zeryab Alam: --  
 Created PR: https://github.com/remla25-team21/lib-ml/pull/2  
@@ -82,11 +82,11 @@ Approved PR:
 
 -- Yizhen Zang: --  
 Created PR:  
-- https://github.com/remla25-team21/operation/pull/4  
-- https://github.com/remla25-team21/model-training/pull/2  
+- https://github.com/remla25-team21/operation/pull/4  (Related to A2)
+- https://github.com/remla25-team21/model-training/pull/2  (Related to A1)
 
 Approved PR:  
-- https://github.com/remla25-team21/operation/pull/7  
+- https://github.com/remla25-team21/operation/pull/7  (Related to A2)
 
 -- Zeryab Alam: --  
 Created PR:  
@@ -106,3 +106,12 @@ Created PR:
 
 Approved PR:  
 - https://github.com/remla25-team21/operation/pull/14
+
+
+-- Yizhen Zang: --
+Created PR: 
+- https://github.com/remla25-team21/operation/pull/17  (Related to A3)
+
+Approved PR: 
+- https://github.com/remla25-team21/operation/pull/11  (Related to A3)
+- https://github.com/remla25-team21/operation/pull/13  (Related to A3)
