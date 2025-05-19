@@ -105,6 +105,7 @@ Created PR:
 - https://github.com/remla25-team21/app/pull/13        (Related to A3)
 
 Approved PR:  
+- https://github.com/remla25-team21/operation/pull/10
 - https://github.com/remla25-team21/operation/pull/14
 
 
