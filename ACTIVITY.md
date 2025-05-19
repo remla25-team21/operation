@@ -111,6 +111,16 @@ Approved PR:
 - https://github.com/remla25-team21/operation/pull/14
 - https://github.com/remla25-team21/operation/pull/17
 
+-- Kanta Tanahashi: --  
+Created PR:  
+- https://github.com/remla25-team21/operation/pull/16
+- https://github.com/remla25-team21/operation/pull/12
+
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/15
+- https://github.com/remla25-team21/app/pull/13
+- https://github.com/remla25-team21/app/pull/12
+
 
 -- Yizhen Zang: --
 Created PR: 
