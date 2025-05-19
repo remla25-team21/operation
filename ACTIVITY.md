@@ -30,9 +30,9 @@ Approved PR: https://github.com/remla25-team21/app/pull/8
 
 -- Raghav Talwar: --  
 Created PR:  
-- https://github.com/remla25-team21/app/pull/5  
-- https://github.com/remla25-team21/app/pull/4  
-- https://github.com/remla25-team21/app/pull/2  
+- https://github.com/remla25-team21/app/pull/5 (Related to A1)
+- https://github.com/remla25-team21/app/pull/4 (Related to A1)
+- https://github.com/remla25-team21/app/pull/2 (Related to A1)
 
 Approved PR:  
 - https://github.com/remla25-team21/model-training/pull/1  
@@ -75,7 +75,7 @@ Approved PR:
 
 -- Raghav Talwar: --  
 Created PR:  
-- https://github.com/remla25-team21/operation/pull/5  
+- https://github.com/remla25-team21/operation/pull/5 (Related to A2)
 
 Approved PR:  
 - https://github.com/remla25-team21/operation/pull/4  
@@ -116,3 +116,11 @@ Created PR:
 Approved PR: 
 - https://github.com/remla25-team21/operation/pull/11  (Related to A3)
 - https://github.com/remla25-team21/operation/pull/13  (Related to A3)
+
+-- Raghav Talwar: --  
+Created PR:  
+- https://github.com/remla25-team21/app/pull/12 (Related to A1)
+
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/16
+- https://github.com/remla25-team21/operation/pull/12
