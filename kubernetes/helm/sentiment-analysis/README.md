@@ -7,7 +7,7 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 >
 > 1. Make sure your Kubernetes cluster is running (e.g., `minikube start`). 
 >
-> 2. Add the Prometheus Helm chart repository and install the Prometheus + Grafana stack: 
+> 2. Add the Prometheus Helm chart repository and install the Prometheus + Grafana stack. 
 >
 > ```bash
 > helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -22,7 +22,7 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 >
 > ```bash
 >  # Keep this running in a separate terminal
-> kubectl port-forward scv/prometheus-grafana 3300:80
+> kubectl port-forward service/prometheus-grafana 3300:80
 > ```
 >
 > 3. Deploy the sentiment analysis application:
@@ -31,14 +31,16 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 > helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis
 > ```
 >
+> After installing the Prometheus stack, it may take some time for all pods to become ready. You can monitor the status using `kubectl get pods` to ensure they are running before proceeding. 
+>
 > ```bash
 >  # Keep this running in a separate terminal
-> kubectl port-forward svc/app-frontend 3000:3000
+> kubectl port-forward svc/my-sentiment-analysis-app-frontend 3000:3000
 > ```
 >
 > ```bash
 >  # Keep this running in another terminal
-> kubectl port-forward service/app-service 5000:5000
+> kubectl port-forward svc/my-sentiment-analysis-app-service 5000:5000
 > ```
 >
 > 4. Access the interfaces:
@@ -76,11 +78,11 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 5.  Port-forward services (in separate terminals): 
    - Frontend: 
       ```bash
-      kubectl port-forward svc/app-frontend 3000:3000
+      kubectl port-forward svc/my-sentiment-analysis-app-frontend 3000:3000
       ```
    - Backend: 
       ```bash
-      kubectl port-forward svc/app-service 5000:5000 -n default
+      kubectl port-forward svc/my-sentiment-analysis-app-service 5000:5000
       ```
 
 6.  Access the application from [`http://localhost:3000`](http://localhost:3000).
@@ -107,7 +109,7 @@ The app-service includes built-in Prometheus metrics to monitor application usag
 You can access the metrics directly by port-forwarding the app-service and visiting the metrics endpoint:
 
 ```bash
-kubectl port-forward service/app-service 5000:5000
+kubectl port-forward svc/my-sentiment-analysis-app-service 5000:5000
 ```
 
 Then visit [`http://localhost:5000/metrics`](http://localhost:5000/metrics) in your browser.
