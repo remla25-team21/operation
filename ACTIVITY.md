@@ -50,8 +50,10 @@ Created PR:
 Approved PR: https://github.com/remla25-team21/lib-ml/pull/2  (Related to A1)
 
 -- Zeryab Alam: --  
-Created PR: https://github.com/remla25-team21/lib-ml/pull/2  
-Approved PR: https://github.com/remla25-team21/model-service/pull/1  
+Created PR: 
+- https://github.com/remla25-team21/lib-ml/pull/2  (Related to A1)
+Approved PR:
+ https://github.com/remla25-team21/model-service/pull/1  (Related to A1)
 
 
 # Week 3:
@@ -90,10 +92,10 @@ Approved PR:
 
 -- Zeryab Alam: --  
 Created PR:  
-- https://github.com/remla25-team21/operation/pull/8  
+- https://github.com/remla25-team21/operation/pull/8  (Related to A2)
 
 Approved PR:  
-- https://github.com/remla25-team21/operation/pull/5  
+- https://github.com/remla25-team21/operation/pull/5  (Related to A2)
 
 # Week 4:
 
@@ -116,6 +118,13 @@ Created PR:
 Approved PR: 
 - https://github.com/remla25-team21/operation/pull/11  (Related to A3)
 - https://github.com/remla25-team21/operation/pull/13  (Related to A3)
+
+-- Zeryab Alam: --
+Created PR: 
+- https://github.com/remla25-team21/operation/pull/17  (Related to A2)
+
+Approved PR: 
+- https://github.com/remla25-team21/operation/pull/15 (Related to A3)
 
 -- Raghav Talwar: --  
 Created PR:  
