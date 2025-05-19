@@ -1,0 +1,33 @@
+{{- if .Values.ingress.enabled -}}
+{{- $root := . -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $root.Release.Name }}-sentiment-analysis
+  labels:
+    app.kubernetes.io/name: sentiment-analysis
+    app.kubernetes.io/instance: {{ $root.Release.Name }}
+    app.kubernetes.io/version: {{ $root.Chart.AppVersion }}
+    app.kubernetes.io/managed-by: Helm
+  {{- with $root.Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ $root.Values.ingress.className }}
+  rules:
+    {{- range $root.Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ printf "%s-%s" $root.Release.Name $root.Values.appFrontend.name }}
+                port:
+                  number: {{ $root.Values.appFrontend.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}

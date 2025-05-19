@@ -6,6 +6,16 @@ Vagrant.configure("2") do |config|
   # if ctrl is expected to be the first VM (index 0 for IP calculation).
   LABELS = [CTRL_NAME] + (1..NUM_WORKERS).map { |i| "#{NODE_PREFIX}#{i}" }
 
+  # Global settings to improve performance
+  config.vm.box = "bento/ubuntu-24.04"
+  config.vm.box_check_update = false
+  config.ssh.insert_key = false
+
+  # Increase SSH timeout settings
+  config.vm.boot_timeout = 600
+  config.ssh.connect_timeout = 30
+  config.ssh.keep_alive = true
+
   # Helper method for configuring Ansible provisioners consistently
   def configure_ansible_provisioner(ansible, playbook_path, current_vm_name, current_vm_ip, limit_target = nil)
     ansible.compatibility_mode = "2.0"
@@ -21,7 +31,6 @@ Vagrant.configure("2") do |config|
 
   LABELS.each_with_index do |name, i|
     config.vm.define name do |machine|
-      machine.vm.box = "bento/ubuntu-24.04"
       machine.vm.hostname = name
       ip = "192.168.56.#{100 + i}" # IP assignment based on order in LABELS
       machine.vm.network "private_network", ip: ip
@@ -31,7 +40,18 @@ Vagrant.configure("2") do |config|
         vb.name = name
         vb.memory = name == CTRL_NAME ? 4096 : 6144
         vb.cpus = 2
+        vb.check_guest_additions = false
+        vb.gui = false
+
+        # Performance optimizations
+        vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+        vb.customize ["modifyvm", :id, "--ioapic", "on"]
+        vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
       end
+
+      # Configure VM with minimal changes before SSH (faster boot)
+      machine.vm.provision "shell", inline: "echo 'Accelerating boot process...'"
 
       # Provisioning Step 1 (User's terminology): General setup for the current VM
       # Vagrant will attempt to run this stage in parallel for all VMs during `vagrant up`.

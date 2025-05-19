@@ -1,13 +1,13 @@
 services:
   app-frontend:
     container_name: app-frontend
-    #build: "../app/app-frontend"
+    # build: "../../app/app-frontend"
     image: ghcr.io/remla25-team21/app-frontend
     ports:
       - 3000:3000
 
   app-service:
-    #build: "../app/app-service"
+    # build: "../../app/app-service"
     image: ghcr.io/remla25-team21/app-backend
     ports:
       - 5000:5000
@@ -18,7 +18,7 @@ services:
         condition: service_healthy
 
   model-service:
-    #build: "../model-service"
+    # build: "../../model-service"
     container_name: model-service
     image: ghcr.io/remla25-team21/model-service
     healthcheck:

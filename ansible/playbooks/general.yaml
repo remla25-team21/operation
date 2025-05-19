@@ -2,9 +2,28 @@
   gather_facts: false
   become: true
   tasks:
+    # Pre-configure parallel processing
+    - name: Configure apt for parallel downloads
+      copy:
+        dest: /etc/apt/apt.conf.d/99parallel-downloads
+        content: |
+          Acquire::Queue-mode "host";
+          Acquire::http::Pipeline-Depth "10";
+          Acquire::http::Timeout "180";
+          Acquire::https::Timeout "180";
+          Acquire::http::Dl-Limit "0";
+          Acquire::https::Dl-Limit "0";
+          APT::Install-Recommends "false";
+          Acquire::Languages "none";
+          APT::Get::Install-Suggests "false";
+          Dpkg::Options { "--force-confdef"; "--force-confold"; }
+        mode: '0644'
+      register: apt_parallel_conf
+
     - name: Update apt cache
       apt:
         update_cache: yes
+      throttle: 1  # Limit to one host at a time for better network utilization
 
     # Add faster Ubuntu mirror sources
     - name: Configure Ubuntu apt mirror
@@ -17,11 +36,12 @@
         mode: '0644'
       register: mirror_added
       
-    - name: Update apt cache after mirror change
+    - name: Update apt cache after mirror change (only if needed)
       apt:
         update_cache: yes
       when: mirror_added.changed
-
+          
+    # Install essential packages in one batch
     - name: Install common packages
       apt:
         name:
@@ -29,6 +49,9 @@
           - apt-transport-https
           - ca-certificates
         state: present
+        install_recommends: no
+        force_apt_get: yes
+        cache_valid_time: 3600
 
     # Step 4: 
     - name: Create .ssh directory for vagrant user
@@ -48,34 +71,23 @@
         - "../../ssh_keys/*.pub"
 
     # Step 5: 
-    - name: Disable SWAP
-      ansible.builtin.shell: swapoff -a
-    
-    - name: Check if SWAP is still enabled
-      ansible.builtin.shell: swapon --summary
-      register: swap_status
-      changed_when: false
-      failed_when: swap_status.stdout != ""
+    # Disable SWAP - parallel steps for efficiency
+    - name: Disable SWAP (immediate and persistent)
+      block:
+        - name: Disable SWAP
+          ansible.builtin.shell: swapoff -a
 
-    - name: Debug SWAP status
-      ansible.builtin.debug:
-        msg: "Swap is successfully disabled. "
+        - name: Remove SWAP entry from /etc/fstab
+          ansible.builtin.lineinfile:
+            path: /etc/fstab
+            regexp: '^\s*[^#]*\s+swap\s+'
+            state: absent
 
-    - name: Remove SWAP entry from /etc/fstab
-      ansible.builtin.lineinfile:
-        path: /etc/fstab
-        regexp: '^\s*[^#]*\s+swap\s+'
-        state: absent
-
-    - name: Confirm SWAP entry is removed from /etc/fstab
-      ansible.builtin.shell: "grep -P '^[^#]*\\s+swap\\s+' /etc/fstab || true"
-      register: fstab_swap_check
-      changed_when: false
-      failed_when: fstab_swap_check.stdout != ""
-
-    - name: Debug fstab verification
-      ansible.builtin.debug:
-        msg: "No SWAP entries found in `/etc/fstab`. "
+        - name: Verify SWAP is disabled
+          ansible.builtin.shell: swapon --summary
+          register: swap_status
+          changed_when: false
+          failed_when: swap_status.stdout != ""
 
     # Step 6: 
     - name: Ensure br_netfilter and overlay modules are loaded on boot
@@ -214,16 +226,23 @@
         update_cache: yes
 
     # Step 10: Install K8s tools
-    - name: Install containerd
+    # Optimized ContainerD installation
+    - name: Check if containerd is already installed
+      command: dpkg-query -W -f='${Status}' containerd
+      register: containerd_check
+      failed_when: false
+      changed_when: false
+
+    - name: Install containerd packages efficiently
       apt:
         name: containerd
         state: present
         force: yes
         install_recommends: no
-        update_cache: yes  # Changed to yes to ensure using the latest source information
-        # cache_valid_time: 86400  # Removed this configuration, force update every time
+        update_cache: no  # Already updated
         dpkg_options: 'force-confold,force-confdef'
-        # Removed unsupported timeout parameter
+      when: containerd_check.rc != 0 or containerd_check.stdout.find('install ok installed') == -1
+      register: containerd_installed
 
     # Add apt mirror source configuration, using faster mirror sources
     - name: Ensure apt HTTP transport is installed

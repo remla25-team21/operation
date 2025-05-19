@@ -1,0 +1,72 @@
+# model-service
+modelService:
+  name: model-service
+  replicaCount: 1
+  image:
+    repository: ghcr.io/remla25-team21/model-service
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8080
+
+# app-service
+appService:
+  name: app-service
+  replicaCount: 1
+  image:
+    repository: ghcr.io/remla25-team21/app-backend
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 5000
+
+# app-frontend
+appFrontend:
+  name: app-frontend
+  replicaCount: 1
+  image:
+    repository: ghcr.io/remla25-team21/app-frontend
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 3000
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: sentiment-analysis.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+# ConfigMap configuration (to store environment variables)
+configMap:
+  create: true
+  data:
+    MODEL_SERVICE_URL: "http://model-service:8080"
+
+# Prometheus monitoring configuration
+monitoring:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      prometheus: kube-prometheus
+
+# Grafana dashboard configuration
+grafana:
+  dashboardsConfigMaps:
+    sentiment-dashboard: "sentiment-dashboard"
+  additionalDataSources: []
+
+# Secret configuration (just to show that I know how to)
+secret:
+  create: true
+  data:
+    SECRET_KEY: verysecretkey

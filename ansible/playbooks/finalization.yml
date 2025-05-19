@@ -38,8 +38,8 @@
         kubectl wait -n metallb-system -l app=metallb,component=controller --for=condition=ready pod --timeout=60s
       register: wait_result
       failed_when: wait_result.rc != 0
-      retries: 5
-      delay: 10
+      retries: 20
+      delay: 2
       until: wait_result.rc == 0
 
     - name: Create IPAddressPool for MetalLB
@@ -138,8 +138,8 @@
         echo "Waiting for ingress-nginx controller pods..."
         kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/name=ingress-nginx --timeout=120s
       register: ingress_wait_result
-      retries: 5
-      delay: 10
+      retries: 20
+      delay: 2
       until: ingress_wait_result.rc == 0
 
     # Step 22: Install Kubernetes Dashboard
@@ -213,8 +213,8 @@
       shell: |
         kubectl wait deployment -n kubernetes-dashboard kubernetes-dashboard-web --for=condition=Available=True --timeout=180s
       register: dashboard_wait_result
-      retries: 5
-      delay: 15
+      retries: 20
+      delay: 2
       until: dashboard_wait_result.rc == 0
 
     - name: Create Dashboard Ingress
@@ -285,16 +285,8 @@
         line: 'export PATH=$PATH:/home/vagrant/istio-1.25.2/bin'
         state: present
 
-    - name: Install Istio
-      become_user: vagrant
-      shell: |
-        source ~/.bashrc
-        /home/vagrant/istio-1.25.2/bin/istioctl install --set profile=demo -y
-      environment:
-        PATH: "/home/vagrant/istio-1.25.2/bin:{{ ansible_env.PATH }}"
-
     # Step 24: Setup Istio Config
-    - name: Create Istio config
+    - name: Create IstioOperator configuration file for custom installation
       copy:
         dest: /tmp/istio-config.yaml
         content: |
@@ -317,10 +309,10 @@
                     loadBalancerIP: 192.168.56.91
         mode: '0644'
 
-    - name: Apply Istio config
+    - name: Install Istio using demo profile with custom IstioOperator overlay
       become_user: vagrant
       shell: |
-        /home/vagrant/istio-1.25.2/bin/istioctl install -y -f /tmp/istio-config.yaml
+        /home/vagrant/istio-1.25.2/bin/istioctl install --set profile=demo -y -f /tmp/istio-config.yaml
       environment:
         PATH: "/home/vagrant/istio-1.25.2/bin:{{ ansible_env.PATH }}"
       register: istio_custom_output

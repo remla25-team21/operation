@@ -1,0 +1,48 @@
+# define deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+spec:
+  replicas: {{ .Values.appFrontend.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+    spec:
+      containers:
+      - name: {{ .Values.appFrontend.name }}
+        image: {{ .Values.appFrontend.image.repository }}:{{ .Values.appFrontend.image.tag }}
+        ports:
+        - containerPort: {{ .Values.appFrontend.service.port }}
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.appFrontend.service.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+        # showcasing secret usage
+        env:
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-app-secret
+              key: SECRET_KEY
+---
+
+# define service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+spec:
+  selector:
+    app: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+  ports:
+    - port: {{ .Values.appFrontend.service.port }}
+      targetPort: {{ .Values.appFrontend.service.port }}
+  type: {{ .Values.appFrontend.service.type }}
