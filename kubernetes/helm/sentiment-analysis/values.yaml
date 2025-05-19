@@ -58,3 +58,8 @@ monitoring:
     enabled: true
     additionalLabels:
       prometheus: kube-prometheus
+# Secret configuration (just to show that I know how to)
+secret:
+  create: true
+  data:
+    SECRET_KEY: verysecretkey
