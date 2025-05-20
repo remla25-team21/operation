@@ -132,7 +132,7 @@ Approved PR:
 
 -- Zeryab Alam: --
 Created PR: 
-- https://github.com/remla25-team21/operation/pull/17  (Related to A2)
+- https://github.com/remla25-team21/operation/pull/14  (Related to A2)
 
 Approved PR: 
 - https://github.com/remla25-team21/operation/pull/15 (Related to A3)
