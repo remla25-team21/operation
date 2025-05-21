@@ -144,3 +144,33 @@ Created PR:
 Approved PR:  
 - https://github.com/remla25-team21/operation/pull/16
 - https://github.com/remla25-team21/operation/pull/12
+
+# Week 5:
+
+-- Bohong Lu: --  
+Created PR:  
+- https://github.com/remla25-team21/model-training/pull/3  (Related to A4)
+
+Approved PR:  
+
+
+-- Kanta Tanahashi: --  
+Created PR:  
+
+Approved PR:  
+
+
+-- Yizhen Zang: --
+Created PR: 
+
+Approved PR: 
+
+-- Zeryab Alam: --
+Created PR: 
+
+Approved PR: 
+
+-- Raghav Talwar: --  
+Created PR:  
+
+Approved PR:  
