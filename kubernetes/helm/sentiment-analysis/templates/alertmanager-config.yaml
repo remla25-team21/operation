@@ -1,0 +1,32 @@
+{{- if .Values.alertmanager.enabled }}
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: {{ .Release.Name }}-alerts
+  labels:
+    app: alertmanager
+spec:
+  route:
+    groupBy: ['alertname', 'severity']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 4h
+    receiver: 'email-notifications'
+    routes:
+    - matchers:
+      - name: severity
+        value: warning
+      receiver: 'email-notifications'
+  receivers:
+  - name: 'email-notifications'
+    emailConfigs:
+    - to: 'remla25-team21@example.com'
+      from: 'alertmanager@example.com'
+      smarthost: 'smtp.example.com:587'
+      authUsername: 'alertmanager'
+      authPassword:
+        name: {{ .Release.Name }}-app-secret
+        key: smtpPassword
+      requireTLS: true
+      sendResolved: true
+{{- end }} 

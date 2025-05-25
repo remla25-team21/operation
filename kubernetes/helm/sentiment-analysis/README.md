@@ -19,7 +19,7 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 >
 > ```bash
 >  # Keep this running in a separate terminal
-> kubectl port-forward svc/prometheus-operated 9090:9090
+> kubectl -n default port-forward svc/prometheus-kube-prometheus-prometheus 9090
 > ```
 >
 > ```bash
@@ -135,13 +135,27 @@ Then visit [`http://localhost:5000/metrics`](http://localhost:5000/metrics) in y
 4. To access the Prometheus dashboard, you can port-forward the Prometheus service:
 
    ```bash
-   kubectl port-forward svc/prometheus-operated 9090:9090
+   kubectl -n default port-forward svc/prometheus-kube-prometheus-prometheus 9090
    ```
 
    Then visit [`http://localhost:9090`](http://localhost:9090) in your browser and query for the metrics like:
    - `sentiment_predictions_total`
    - `sentiment_positive_ratio`
    - `sentiment_prediction_latency_seconds_bucket`
+
+## Alerting
+
+We implemented a `PrometheusRule` resource in the Helm chart that defines an alert called `HighSentimentPredictionRate`. This alert triggers if the rate of sentiment predictions exceeds 10 requests per minute continuously for one minute. It includes severity labels and detailed annotations such as a summary, a description referencing the app service name, and a runbook URL for troubleshooting.
+
+To test this alert, send more than 10 requests to the model within a minute and wait for the alert to activate.
+
+You can access the Alertmanager dashboard to view and manage alerts by running:
+
+```bash
+kubectl port-forward svc/alertmanager-operated 9093 -n default
+```
+
+It can also be found under Alert tab in Prometheus dashboard.
 
 ### Grafana Dashboard
 Grafana is used to visualize the Prometheus metrics collected from the `app-service`. A custom dashboard is automatically provisioned during deployment using a `ConfigMap`.
