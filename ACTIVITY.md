@@ -138,7 +138,7 @@ Approved PR:
 
 -- Raghav Talwar: --  
 Created PR:  
-- https://github.com/remla25-team21/app/pull/12 (Related to A1)
+- https://github.com/remla25-team21/app/pull/12 (Related to A1/A3)
 
 Approved PR:  
 - https://github.com/remla25-team21/operation/pull/16
@@ -172,6 +172,10 @@ Created PR:
 Approved PR: 
 
 -- Raghav Talwar: --  
-Created PR:  
+Created PR:
+- https://github.com/remla25-team21/operation/pull/21 (Related to A3)
+- https://github.com/remla25-team21/model-training/pull/5 (Related to A4)
+- https://github.com/remla25-team21/model-training/pull/7 (Related to A4)
 
 Approved PR:  
+- https://github.com/remla25-team21/model-service/pull/2 
