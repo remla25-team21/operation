@@ -152,6 +152,8 @@ Created PR:
 - https://github.com/remla25-team21/model-training/pull/3  (Related to A4)
 
 Approved PR:  
+- https://github.com/remla25-team21/operation/pull/20
+- https://github.com/remla25-team21/model-training/pull/8
 
 
 -- Kanta Tanahashi: --  
