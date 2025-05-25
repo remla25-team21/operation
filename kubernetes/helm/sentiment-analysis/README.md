@@ -165,7 +165,7 @@ No manual import is required. The dashboard is automatically loaded by Grafana u
    kubectl port-forward service/prometheus-grafana 3300:80
    ```
 
-2. Open Grafana in your browser: [`http://local`host:3300`](http://localhost:3300)
+2. Open Grafana in your browser: [`http://localhost:3300`](http://localhost:3300)
 
 3. Log in with: 
    * **Username:** `admin` 
