@@ -70,6 +70,15 @@ These steps guide you through setting up the Kubernetes cluster on your local ma
 
 Check [README.md](./kubernetes/helm/sentiment-analysis/README.md) in the `kubernetes/helm/sentiment-analysis` directory for instructions on how to set up monitoring for the application using Prometheus and Grafana.
 
+## ML Configuration Management & ML Testing （Assignment 4）
+
+The primary development for this assignment occurs within the following repositories:
+
+- [`model-training`](https://github.com/remla25-team21/model-training)
+- [`model-service`](https://github.com/remla25-team21/model-service)
+
+Refer to the respective README files in these repositories for detailed information on the implemented solutions.
+
 ## Known Bug: Port Conflict on macOS (AirPlay Receiver)
 
 On macOS, the `app-service` currently binds statically to `localhost:5000`. However, macOS reserves port `5000` for the AirPlay Receiver feature by default. This causes the app-service to fail to start or bind to the port correctly during local development or testing. 

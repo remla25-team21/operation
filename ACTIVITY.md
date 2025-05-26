@@ -26,7 +26,8 @@ Created PR:
 - https://github.com/remla25-team21/operation/pull/2  
 - https://github.com/remla25-team21/app/pull/10  
 
-Approved PR: https://github.com/remla25-team21/app/pull/8  
+Approved PR: 
+- https://github.com/remla25-team21/app/pull/8  
 
 -- Raghav Talwar: --  
 Created PR:  
@@ -47,14 +48,14 @@ Created PR:
 - https://github.com/remla25-team21/model-training/pull/1  (Related to A1)
 - https://github.com/remla25-team21/lib-ml/pull/3  (Related to A1)
 
-Approved PR: https://github.com/remla25-team21/lib-ml/pull/2  (Related to A1)
+Approved PR: 
+- https://github.com/remla25-team21/lib-ml/pull/2  (Related to A1)
 
 -- Zeryab Alam: --  
 Created PR: 
 - https://github.com/remla25-team21/lib-ml/pull/2  (Related to A1)
 Approved PR:
- https://github.com/remla25-team21/model-service/pull/1  (Related to A1)
-
+- https://github.com/remla25-team21/model-service/pull/1  (Related to A1)
 
 # Week 3:
 
@@ -121,7 +122,6 @@ Approved PR:
 - https://github.com/remla25-team21/app/pull/13
 - https://github.com/remla25-team21/app/pull/12
 
-
 -- Yizhen Zang: --
 Created PR: 
 - https://github.com/remla25-team21/operation/pull/17  (Related to A3)
@@ -139,8 +139,47 @@ Approved PR:
 
 -- Raghav Talwar: --  
 Created PR:  
-- https://github.com/remla25-team21/app/pull/12 (Related to A1)
+- https://github.com/remla25-team21/app/pull/12 (Related to A1/A3)
 
 Approved PR:  
 - https://github.com/remla25-team21/operation/pull/16
 - https://github.com/remla25-team21/operation/pull/12
+
+# Week 5:
+
+-- Bohong Lu: --  
+Created PR:  
+- https://github.com/remla25-team21/model-training/pull/3  (Related to A4)
+
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/20
+- https://github.com/remla25-team21/model-training/pull/8
+
+-- Kanta Tanahashi: --  
+Created PR:  
+- https://github.com/remla25-team21/model-training/pull/6
+Approved PR:  
+- https://github.com/remla25-team21/model-training/pull/7
+- https://github.com/remla25-team21/model-training/pull/5
+
+-- Yizhen Zang: --
+Created PR: 
+- https://github.com/remla25-team21/model-training/pull/8  (Related to A4)
+
+Approved PR: 
+- https://github.com/remla25-team21/model-training/pull/6  (Related to A4)
+- https://github.com/remla25-team21/operation/pull/21 (Related to A3)
+
+-- Zeryab Alam: --
+Created PR: 
+
+Approved PR: 
+
+-- Raghav Talwar: --  
+Created PR:
+- https://github.com/remla25-team21/operation/pull/21 (Related to A3)
+- https://github.com/remla25-team21/model-training/pull/5 (Related to A4)
+- https://github.com/remla25-team21/model-training/pull/7 (Related to A4)
+
+Approved PR:  
+- https://github.com/remla25-team21/model-service/pull/2 
