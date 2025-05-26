@@ -26,7 +26,8 @@ Created PR:
 - https://github.com/remla25-team21/operation/pull/2  
 - https://github.com/remla25-team21/app/pull/10  
 
-Approved PR: https://github.com/remla25-team21/app/pull/8  
+Approved PR: 
+- https://github.com/remla25-team21/app/pull/8  
 
 -- Raghav Talwar: --  
 Created PR:  
@@ -165,6 +166,7 @@ Created PR:
 
 Approved PR: 
 - https://github.com/remla25-team21/model-training/pull/6  (Related to A4)
+- https://github.com/remla25-team21/operation/pull/21 (Related to A3)
 
 -- Zeryab Alam: --
 Created PR: 
