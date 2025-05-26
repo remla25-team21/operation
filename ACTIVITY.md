@@ -157,8 +157,10 @@ Approved PR:
 
 -- Kanta Tanahashi: --  
 Created PR:  
-
+- https://github.com/remla25-team21/model-training/pull/6
 Approved PR:  
+- https://github.com/remla25-team21/model-training/pull/7
+- https://github.com/remla25-team21/model-training/pull/5
 
 -- Yizhen Zang: --
 Created PR: 
