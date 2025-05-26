@@ -158,6 +158,7 @@ Approved PR:
 -- Kanta Tanahashi: --  
 Created PR:  
 - https://github.com/remla25-team21/model-training/pull/6
+  
 Approved PR:  
 - https://github.com/remla25-team21/model-training/pull/7
 - https://github.com/remla25-team21/model-training/pull/5
@@ -172,8 +173,11 @@ Approved PR:
 
 -- Zeryab Alam: --
 Created PR: 
-
+- https://github.com/remla25-team21/operation/pull/20 (Related to A3)
+- https://github.com/remla25-team21/model-service/pull/2 (Related to A4)
+  
 Approved PR: 
+- https://github.com/remla25-team21/model-training/pull/8
 
 -- Raghav Talwar: --  
 Created PR:
