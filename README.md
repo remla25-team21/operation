@@ -70,7 +70,7 @@ These steps guide you through setting up the Kubernetes cluster on your local ma
 
 Check [README.md](./kubernetes/helm/sentiment-analysis/README.md) in the `kubernetes/helm/sentiment-analysis` directory for instructions on how to set up monitoring for the application using Prometheus and Grafana.
 
-## Assignment 4: ML Configuration Management & ML Testing
+## ML Configuration Management & ML Testing （Assignment 4）
 
 The primary development for this assignment occurs within the following repositories:
 
