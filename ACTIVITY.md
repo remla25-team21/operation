@@ -187,3 +187,30 @@ Created PR:
 
 Approved PR:  
 - https://github.com/remla25-team21/model-service/pull/2 
+
+# Week 6:
+
+-- Bohong Lu: --  
+Created PR:  
+
+Approved PR:  
+
+-- Kanta Tanahashi: --  
+Created PR:  
+
+Approved PR:  
+
+-- Yizhen Zang: --
+Created PR:  
+
+Approved PR:  
+
+-- Zeryab Alam: --
+Created PR:  
+
+Approved PR:  
+
+-- Raghav Talwar: --  
+Created PR:  
+
+Approved PR:  
