@@ -1,4 +1,4 @@
-# define deployment
+# Deployment for model-service v1 and v2
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,14 +17,42 @@ spec:
     spec:
       containers:
         - name: {{ .Values.modelService.name }}
-          image: "{{ .Values.modelService.image.repository }}:{{ .Values.modelService.image.tag }}"
+          image: "{{ .Values.modelService.image.repository }}"
           imagePullPolicy: {{ .Values.modelService.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.modelService.service.port }}
               protocol: TCP
 ---
-# define service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.modelService.name }}-v2
+  labels:
+    app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+    version: v2
+spec:
+  replicas: {{ .Values.modelService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+        version: v2
+    spec:
+      containers:
+        - name: {{ .Values.modelService.name }}-v2
+          image: "{{ .Values.modelService.image.repository }}"
+          imagePullPolicy: {{ .Values.modelService.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.modelService.service.port }}
+              protocol: TCP
+---
+# Service for model-service
 apiVersion: v1
 kind: Service
 metadata:
