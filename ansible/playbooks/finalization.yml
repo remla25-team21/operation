@@ -8,311 +8,329 @@
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
     kubectl_cmd: "kubectl --kubeconfig=/home/vagrant/kubeconfig"
   tasks:
-    # Step 20: Install MetalLB
-    - name: Copy kubeconfig to remote host
-      copy:
-        src: "{{ playbook_dir }}/../../kubernetes/kubeconfig"
-        dest: /home/vagrant/kubeconfig
-        mode: '0644'
+  # Step 20: Install MetalLB
+  - name: Copy kubeconfig to remote host
+    copy:
+      src: "{{ playbook_dir }}/../../kubernetes/kubeconfig"
+      dest: /home/vagrant/kubeconfig
+      mode: '0644'
 
-    - name: Download MetalLB manifest
-      get_url:
-        url: https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
-        dest: /tmp/metallb-native-0.14.9.yml
-        mode: '0644'
+  - name: Download MetalLB manifest
+    get_url:
+      url: https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
+      dest: /tmp/metallb-native-0.14.9.yml
+      mode: '0644'
 
-    - name: Install MetalLB CRDs
-      become_user: vagrant
-      shell: |
-        kubectl apply -f /tmp/metallb-native-0.14.9.yml --validate=false
-      register: metallb_output
+  - name: Install MetalLB CRDs
+    become_user: vagrant
+    shell: |
+      kubectl apply -f /tmp/metallb-native-0.14.9.yml --validate=false
+    register: metallb_output
 
-    - name: Display MetalLB installation output
-      debug:
-        var: metallb_output.stdout_lines
-      when: metallb_output.changed
+  - name: Display MetalLB installation output
+    debug:
+      var: metallb_output.stdout_lines
+    when: metallb_output.changed
 
-    - name: Wait for MetalLB controller to be ready
-      become_user: vagrant
-      shell: |
-        kubectl wait -n metallb-system -l app=metallb,component=controller --for=condition=ready pod --timeout=60s
-      register: wait_result
-      failed_when: wait_result.rc != 0
-      retries: 20
-      delay: 2
-      until: wait_result.rc == 0
+  - name: Wait for MetalLB controller to be ready
+    become_user: vagrant
+    shell: |
+      kubectl wait -n metallb-system -l app=metallb,component=controller --for=condition=ready pod --timeout=60s
+    register: wait_result
+    failed_when: wait_result.rc != 0
+    retries: 20
+    delay: 2
+    until: wait_result.rc == 0
 
-    - name: Create IPAddressPool for MetalLB
-      copy:
-        dest: /tmp/metallb-ipaddresspool.yml
-        content: |
-          apiVersion: metallb.io/v1beta1
-          kind: IPAddressPool
-          metadata:
-            name: first-pool
-            namespace: metallb-system
-          spec:
-            addresses:
-            - 192.168.56.90-192.168.56.99
+  - name: Create IPAddressPool for MetalLB
+    copy:
+      dest: /tmp/metallb-ipaddresspool.yml
+      content: |
+        apiVersion: metallb.io/v1beta1
+        kind: IPAddressPool
+        metadata:
+          name: first-pool
+          namespace: metallb-system
+        spec:
+          addresses:
+          - 192.168.56.90-192.168.56.99
 
-    - name: Apply IPAddressPool
-      become_user: vagrant
-      shell: |
-        kubectl apply -f /tmp/metallb-ipaddresspool.yml
-      register: pool_output
+  - name: Apply IPAddressPool
+    become_user: vagrant
+    shell: |
+      kubectl apply -f /tmp/metallb-ipaddresspool.yml
+    register: pool_output
 
-    - name: Display IPAddressPool creation output
-      debug:
-        var: pool_output.stdout_lines
-      when: pool_output.changed
+  - name: Display IPAddressPool creation output
+    debug:
+      var: pool_output.stdout_lines
+    when: pool_output.changed
 
-    - name: Create L2Advertisement for MetalLB
-      copy:
-        dest: /tmp/metallb-l2advertisement.yml
-        content: |
-          apiVersion: metallb.io/v1beta1
-          kind: L2Advertisement
-          metadata:
-            name: example
-            namespace: metallb-system
-          spec:
-            ipAddressPools:
-            - first-pool
+  - name: Create L2Advertisement for MetalLB
+    copy:
+      dest: /tmp/metallb-l2advertisement.yml
+      content: |
+        apiVersion: metallb.io/v1beta1
+        kind: L2Advertisement
+        metadata:
+          name: example
+          namespace: metallb-system
+        spec:
+          ipAddressPools:
+          - first-pool
 
-    - name: Apply L2Advertisement
-      become_user: vagrant
-      shell: |
-        kubectl apply -f /tmp/metallb-l2advertisement.yml
-      register: l2adv_output
+  - name: Apply L2Advertisement
+    become_user: vagrant
+    shell: |
+      kubectl apply -f /tmp/metallb-l2advertisement.yml
+    register: l2adv_output
 
-    - name: Display L2Advertisement creation output
-      debug:
-        var: l2adv_output.stdout_lines
-      when: l2adv_output.changed
+  - name: Display L2Advertisement creation output
+    debug:
+      var: l2adv_output.stdout_lines
+    when: l2adv_output.changed
 
-    # Step 21: Install the Nginx Ingress Controller
-    - name: Update Helm repositories once
-      become_user: vagrant
-      shell: helm repo update
-      register: helm_repo_update_output_global
-      failed_when: helm_repo_update_output_global.rc != 0 and "no repositories found" not in helm_repo_update_output_global.stderr
-      changed_when: helm_repo_update_output_global.rc == 0
+  # Step 21: Install the Nginx Ingress Controller
+  - name: Update Helm repositories once
+    become_user: vagrant
+    shell: helm repo update
+    register: helm_repo_update_output_global
+    failed_when: helm_repo_update_output_global.rc != 0 and "no repositories found" not in helm_repo_update_output_global.stderr
+    changed_when: helm_repo_update_output_global.rc == 0
 
-    - name: Add Nginx Ingress Controller Helm repository
-      become_user: vagrant
-      shell: |
-        helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-        # helm repo update # REMOVE from here
-      register: helm_repo_output
+  - name: Add Nginx Ingress Controller Helm repository
+    become_user: vagrant
+    shell: |
+      helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+      # helm repo update # REMOVE from here
+    register: helm_repo_output
 
-    - name: Display Helm repository add output
-      debug:
-        var: helm_repo_output.stdout_lines
-      when: helm_repo_output.changed
+  - name: Display Helm repository add output
+    debug:
+      var: helm_repo_output.stdout_lines
+    when: helm_repo_output.changed
 
-    - name: Create Nginx Ingress values file
-      copy:
-        dest: /tmp/ingress-nginx-values.yml
-        content: |
-          controller:
-            service:
-              loadBalancerIP: 192.168.56.90  # TODO: Might be changed to a range
-        mode: '0644'
+  - name: Create Nginx Ingress values file
+    copy:
+      dest: /tmp/ingress-nginx-values.yml
+      content: |
+        controller:
+          service:
+            loadBalancerIP: 192.168.56.90  # TODO: Might be changed to a range
+      mode: '0644'
 
-    - name: Install Nginx Ingress Controller
-      become_user: vagrant
-      shell: |
-        helm install ingress-nginx ingress-nginx/ingress-nginx --values /tmp/ingress-nginx-values.yml --namespace ingress-nginx --create-namespace
-      register: ingress_install_output
-      failed_when: ingress_install_output.rc != 0 and "cannot re-use a name that is still in use" not in ingress_install_output.stderr
+  - name: Install Nginx Ingress Controller
+    become_user: vagrant
+    shell: |
+      helm install ingress-nginx ingress-nginx/ingress-nginx --values /tmp/ingress-nginx-values.yml --namespace ingress-nginx --create-namespace
+    register: ingress_install_output
+    failed_when: ingress_install_output.rc != 0 and "cannot re-use a name that is still in use" not in ingress_install_output.stderr
 
-    - name: Display Nginx Ingress installation output
-      debug:
-        var: ingress_install_output.stdout_lines
-      when: ingress_install_output.changed
+  - name: Display Nginx Ingress installation output
+    debug:
+      var: ingress_install_output.stdout_lines
+    when: ingress_install_output.changed
 
-    - name: Wait for Nginx Ingress controller to be ready
-      become_user: vagrant
-      shell: |
-        kubectl get pods -n ingress-nginx
-        echo "Waiting for ingress-nginx controller pods..."
-        kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/name=ingress-nginx --timeout=120s
-      register: ingress_wait_result
-      retries: 20
-      delay: 2
-      until: ingress_wait_result.rc == 0
+  - name: Wait for Nginx Ingress controller to be ready
+    become_user: vagrant
+    shell: |
+      kubectl get pods -n ingress-nginx
+      echo "Waiting for ingress-nginx controller pods..."
+      kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/name=ingress-nginx --timeout=120s
+    register: ingress_wait_result
+    retries: 20
+    delay: 2
+    until: ingress_wait_result.rc == 0
 
-    # Step 22: Install Kubernetes Dashboard
-    - name: Add Kubernetes Dashboard Helm repository
-      become_user: vagrant
-      shell: |
-        helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-        # helm repo update # REMOVE from here
-      register: dashboard_repo_output
+  # Step 22: Install Kubernetes Dashboard
+  - name: Add Kubernetes Dashboard Helm repository
+    become_user: vagrant
+    shell: |
+      helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+      # helm repo update # REMOVE from here
+    register: dashboard_repo_output
 
-    - name: Display Dashboard repo add output
-      debug:
-        var: dashboard_repo_output.stdout_lines
-      when: dashboard_repo_output.changed
+  - name: Display Dashboard repo add output
+    debug:
+      var: dashboard_repo_output.stdout_lines
+    when: dashboard_repo_output.changed
 
-    - name: Install Kubernetes Dashboard
-      become_user: vagrant
-      shell: |
-        helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kubernetes-dashboard --create-namespace
-      register: dashboard_install_output
-      failed_when: dashboard_install_output.rc != 0 and "cannot re-use a name that is still in use" not in dashboard_install_output.stderr
+  - name: Install Kubernetes Dashboard
+    become_user: vagrant
+    shell: |
+      helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kubernetes-dashboard --create-namespace
+    register: dashboard_install_output
+    failed_when: dashboard_install_output.rc != 0 and "cannot re-use a name that is still in use" not in dashboard_install_output.stderr
 
-    - name: Display Dashboard installation output
-      debug:
-        var: dashboard_install_output.stdout_lines
-      when: dashboard_install_output.changed
-      
-    - name: Create admin-user ServiceAccount
-      copy:
-        dest: /tmp/dashboard-adminuser.yml
-        content: |
-          apiVersion: v1
-          kind: ServiceAccount
-          metadata:
-            name: admin-user
-            namespace: kubernetes-dashboard
-        mode: '0644'
+  - name: Display Dashboard installation output
+    debug:
+      var: dashboard_install_output.stdout_lines
+    when: dashboard_install_output.changed
 
-    - name: Apply admin-user ServiceAccount
-      become_user: vagrant
-      shell: |
-        kubectl apply -f /tmp/dashboard-adminuser.yml
-      register: sa_output
+  - name: Create admin-user ServiceAccount
+    copy:
+      dest: /tmp/dashboard-adminuser.yml
+      content: |
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: admin-user
+          namespace: kubernetes-dashboard
+      mode: '0644'
 
-    - name: Create ClusterRoleBinding for admin-user
-      copy:
-        dest: /tmp/dashboard-adminuser-role.yml
-        content: |
-          apiVersion: rbac.authorization.k8s.io/v1
-          kind: ClusterRoleBinding
-          metadata:
-            name: admin-user
-          roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: ClusterRole
-            name: cluster-admin
-          subjects:
-          - kind: ServiceAccount
-            name: admin-user
-            namespace: kubernetes-dashboard
-        mode: '0644'
+  - name: Apply admin-user ServiceAccount
+    become_user: vagrant
+    shell: |
+      kubectl apply -f /tmp/dashboard-adminuser.yml
+    register: sa_output
 
-    - name: Apply ClusterRoleBinding
-      become_user: vagrant
-      shell: |
-        kubectl apply -f /tmp/dashboard-adminuser-role.yml
-      register: crb_output
+  - name: Create ClusterRoleBinding for admin-user
+    copy:
+      dest: /tmp/dashboard-adminuser-role.yml
+      content: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRoleBinding
+        metadata:
+          name: admin-user
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: cluster-admin
+        subjects:
+        - kind: ServiceAccount
+          name: admin-user
+          namespace: kubernetes-dashboard
+      mode: '0644'
 
-    - name: Wait for Kubernetes Dashboard to be ready
-      become_user: vagrant
-      shell: |
-        kubectl wait deployment -n kubernetes-dashboard kubernetes-dashboard-web --for=condition=Available=True --timeout=180s
-      register: dashboard_wait_result
-      retries: 20
-      delay: 2
-      until: dashboard_wait_result.rc == 0
+  - name: Apply ClusterRoleBinding
+    become_user: vagrant
+    shell: |
+      kubectl apply -f /tmp/dashboard-adminuser-role.yml
+    register: crb_output
 
-    - name: Create Dashboard Ingress
-      copy:
-        dest: /tmp/dashboard-ingress.yml
-        content: |
-          apiVersion: networking.k8s.io/v1
-          kind: Ingress
-          metadata:
-            name: kubernetes-dashboard
-            namespace: kubernetes-dashboard
-            annotations:
-              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          spec:
-            ingressClassName: nginx
-            rules:
-            - host: dashboard.local
-              http:
-                paths:
-                - path: /
-                  pathType: Prefix
-                  backend:
-                    service:
-                      name: kubernetes-dashboard-kong-proxy
-                      port:
-                        number: 443
-        mode: '0644'
+  - name: Wait for Kubernetes Dashboard to be ready
+    become_user: vagrant
+    shell: |
+      kubectl wait deployment -n kubernetes-dashboard kubernetes-dashboard-web --for=condition=Available=True --timeout=180s
+    register: dashboard_wait_result
+    retries: 20
+    delay: 2
+    until: dashboard_wait_result.rc == 0
 
-    - name: Apply Dashboard Ingress
-      become_user: vagrant
-      shell: |
-        kubectl apply -f /tmp/dashboard-ingress.yml
-      register: ingress_output
-
-    - name: Print instructions for accessing dashboard
-      debug:
-        msg:
-          - "Kubernetes Dashboard has been installed."
-          - "To access it, add 'dashboard.local' to your hosts file pointing to 192.168.56.90"
-          - "To get a login token, run: kubectl -n kubernetes-dashboard create token admin-user"
-
-    - name: Make .kube directory
-      file: path=/root/.kube state=directory
-    - name: Copy kubeconfig
-      copy:
-        src: "{{ playbook_dir }}/../../kubernetes/kubeconfig"
-        dest: /root/.kube/config
-
-    # Step 23: Install Istio
-    - name: Download Istio 1.25.2
-      become_user: vagrant
-      get_url:
-        url: https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz
-        dest: /home/vagrant/istio-1.25.2-linux-amd64.tar.gz
-        mode: '0644'
-
-    - name: Extract Istio archive
-      become_user: vagrant
-      unarchive:
-        src: /home/vagrant/istio-1.25.2-linux-amd64.tar.gz
-        dest: /home/vagrant/
-        remote_src: yes
-
-    - name: Add istioctl to PATH
-      become_user: vagrant
-      lineinfile:
-        path: /home/vagrant/.bashrc
-        line: 'export PATH=$PATH:/home/vagrant/istio-1.25.2/bin'
-        state: present
-
-    # Step 24: Setup Istio Config
-    - name: Create IstioOperator configuration file for custom installation
-      copy:
-        dest: /tmp/istio-config.yaml
-        content: |
-          apiVersion: install.istio.io/v1alpha1
-          kind: IstioOperator
-          spec:
-            components:
-              ingressGateways:
-              - name: istio-ingressgateway
-                enabled: true
-                k8s:
+  - name: Create Dashboard Ingress
+    copy:
+      dest: /tmp/dashboard-ingress.yml
+      content: |
+        apiVersion: networking.k8s.io/v1
+        kind: Ingress
+        metadata:
+          name: kubernetes-dashboard
+          namespace: kubernetes-dashboard
+          annotations:
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+        spec:
+          ingressClassName: nginx
+          rules:
+          - host: dashboard.local
+            http:
+              paths:
+              - path: /
+                pathType: Prefix
+                backend:
                   service:
-                    ports:
-                    - name: http2
-                      port: 80
-                      targetPort: 8080
-                    - name: https
-                      port: 443
-                      targetPort: 8443
-                    loadBalancerIP: 192.168.56.91
-        mode: '0644'
+                    name: kubernetes-dashboard-kong-proxy
+                    port:
+                      number: 443
+      mode: '0644'
 
-    - name: Install Istio using demo profile with custom IstioOperator overlay
-      become_user: vagrant
-      shell: |
-        /home/vagrant/istio-1.25.2/bin/istioctl install --set profile=demo -y -f /tmp/istio-config.yaml
-      environment:
-        PATH: "/home/vagrant/istio-1.25.2/bin:{{ ansible_env.PATH }}"
-      register: istio_custom_output
+  - name: Apply Dashboard Ingress
+    become_user: vagrant
+    shell: |
+      kubectl apply -f /tmp/dashboard-ingress.yml
+    register: ingress_output
+
+  - name: Print instructions for accessing dashboard
+    debug:
+      msg:
+      - "Kubernetes Dashboard has been installed."
+      - "To access it, add 'dashboard.local' to your hosts file pointing to 192.168.56.90"
+      - "To get a login token, run: kubectl -n kubernetes-dashboard create token admin-user"
+
+  - name: Make .kube directory
+    file: path=/root/.kube state=directory
+  - name: Copy kubeconfig
+    copy:
+      src: "{{ playbook_dir }}/../../kubernetes/kubeconfig"
+      dest: /root/.kube/config
+
+  # Step 23: Install Istio
+  - name: Download Istio 1.25.2
+    become_user: vagrant
+    get_url:
+      url: https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz
+      dest: /home/vagrant/istio-1.25.2-linux-amd64.tar.gz
+      mode: '0644'
+
+  - name: Extract Istio archive
+    become_user: vagrant
+    unarchive:
+      src: /home/vagrant/istio-1.25.2-linux-amd64.tar.gz
+      dest: /home/vagrant/
+      remote_src: yes
+
+  - name: Add istioctl to PATH
+    become_user: vagrant
+    lineinfile:
+      path: /home/vagrant/.bashrc
+      line: 'export PATH=$PATH:/home/vagrant/istio-1.25.2/bin'
+      state: present
+
+  # Step 24: Setup Istio Config
+  - name: Create IstioOperator configuration file for custom installation
+    copy:
+      dest: /tmp/istio-config.yaml
+      content: |
+        apiVersion: install.istio.io/v1alpha1
+        kind: IstioOperator
+        spec:
+          components:
+            ingressGateways:
+            - name: istio-ingressgateway
+              enabled: true
+              k8s:
+                service:
+                  ports:
+                  - name: http2
+                    port: 80
+                    targetPort: 8080
+                  - name: https
+                    port: 443
+                    targetPort: 8443
+                  loadBalancerIP: 192.168.56.91
+      mode: '0644'
+
+  - name: Install Istio using demo profile with custom IstioOperator overlay
+    become_user: vagrant
+    shell: |
+      /home/vagrant/istio-1.25.2/bin/istioctl install --set profile=demo -y -f /tmp/istio-config.yaml
+    environment:
+      PATH: "/home/vagrant/istio-1.25.2/bin:{{ ansible_env.PATH }}"
+    register: istio_custom_output
+
+  # Installing Istio Addons
+  - name: Install Prometheus for Istio
+    become_user: vagrant
+    shell: "{{ kubectl_cmd }} apply -f /home/vagrant/istio-1.25.2/samples/addons/prometheus.yaml"
+
+  - name: Install Jaeger for Istio
+    become_user: vagrant
+    shell: "{{ kubectl_cmd }} apply -f /home/vagrant/istio-1.25.2/samples/addons/jaeger.yaml"
+
+  - name: Install Kiali for Istio
+    become_user: vagrant
+    shell: "{{ kubectl_cmd }} apply -f /home/vagrant/istio-1.25.2/samples/addons/kiali.yaml"
+
+  # Enable Istio auto-discovery 
+  - name: Enable Istio automatic injection for the default namespace
+    become_user: vagrant
+    shell: "{{ kubectl_cmd }} label ns default istio-injection=enabled --overwrite"
