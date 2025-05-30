@@ -1,14 +1,14 @@
+# Alternative ConfigMap Template
 {{- if .Values.configMap.create }} 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-app-configmap
 data:
+  MODEL_SERVICE_URL: "http://{{ .Release.Name }}-{{ .Values.modelService.name }}:{{ .Values.modelService.service.port }}" # Always generated
   {{- range $key, $value := .Values.configMap.data }}
-  {{- if eq $key "MODEL_SERVICE_URL" }}
-  MODEL_SERVICE_URL: "http://{{ $.Release.Name }}-{{ $.Values.modelService.name }}:{{ $.Values.modelService.service.port }}"
-  {{- else }}
-  {{ $key }}: "{{ $value }}"
+  {{- if ne $key "MODEL_SERVICE_URL" }} # Only process other keys
+  {{ $key }}: {{ $value | quote }}
   {{- end }}
   {{- end }}
 {{- end }}

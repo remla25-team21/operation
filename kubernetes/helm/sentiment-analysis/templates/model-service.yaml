@@ -1,22 +1,25 @@
-# Deployment for model-service v1 and v2
+# Deployment for model-service v1
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.modelService.name }}
+  name: {{ .Release.Name }}-{{ .Values.modelService.name }}-v1
   labels:
     app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+    version: v1
 spec:
   replicas: {{ .Values.modelService.replicaCount }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+      version: v1
   template:
     metadata:
       labels:
         app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+        version: v1
     spec:
       containers:
-        - name: {{ .Values.modelService.name }}
+        - name: {{ .Values.modelService.name }}-v1
           image: "{{ .Values.modelService.image.repository }}"
           imagePullPolicy: {{ .Values.modelService.image.pullPolicy }}
           ports:
@@ -24,6 +27,7 @@ spec:
               containerPort: {{ .Values.modelService.service.port }}
               protocol: TCP
 ---
+# Deployment for model-service v2
 apiVersion: apps/v1
 kind: Deployment
 metadata:

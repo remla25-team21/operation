@@ -40,16 +40,14 @@ ingress:
   className: "nginx"
   annotations: {}
   hosts:
-    - host: sentiment-analysis.local
-      paths:
-        - path: /
-          pathType: Prefix
+  - host: sentiment-analysis.local
+    paths:
+    - path: /
+      pathType: Prefix
 
 # ConfigMap configuration (to store environment variables)
 configMap:
   create: true
-  data:
-    MODEL_SERVICE_URL: "http://model-service:8080"
 
 # Prometheus monitoring configuration
 monitoring:
@@ -63,7 +61,7 @@ monitoring:
 prometheusRules:
   enabled: true
   additionalLabels:
-    release: prometheus 
+    release: prometheus
 
 # Grafana dashboard configuration
 grafana:
@@ -89,7 +87,7 @@ alertmanager:
       smtp_auth_password: '{{ .Values.secret.data.smtpPassword }}'
       smtp_require_tls: true
     route:
-      group_by: ['alertname', 'severity']
+      group_by: [ 'alertname', 'severity' ]
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 4h
