@@ -1,37 +1,82 @@
-# define deployment
+# define deployment v1
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+  name: {{ .Release.Name }}-{{ .Values.appFrontend.name }}-v1
 spec:
   replicas: {{ .Values.appFrontend.replicaCount }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+      version: v1
   template:
     metadata:
       labels:
         app: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+        version: v1
     spec:
       containers:
-      - name: {{ .Values.appFrontend.name }}
-        image: {{ .Values.appFrontend.image.repository }}:{{ .Values.appFrontend.image.tag }}
+      - name: {{ .Values.appFrontend.name }} 
+        image: {{ .Values.appFrontend.image.repository }}:{{ .Values.appFrontend.image.tag | default "latest" }} # Assuming this tag is for v1
         ports:
         - containerPort: {{ .Values.appFrontend.service.port }}
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: {{ .Values.appFrontend.service.port }}
-          initialDelaySeconds: 10
-          periodSeconds: 30
-          timeoutSeconds: 5
-        # showcasing secret usage
+        # readinessProbe:
+        #   httpGet:
+        #     path: /health 
+        #     port: {{ .Values.appFrontend.service.port }}
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 30
+        #   timeoutSeconds: 5
         env:
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-app-secret
               key: SECRET_KEY
+        - name: APP_API_BASE_URL 
+          value: "http://192.168.56.91/api/app-service"
+        - name: FRONTEND_VERSION
+          value: "v1"
+---
+# define deployment v2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.appFrontend.name }}-v2
+spec:
+  replicas: {{ .Values.appFrontend.replicaCountV2 | default .Values.appFrontend.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+        version: v2
+    spec:
+      containers:
+      - name: {{ .Values.appFrontend.name }} 
+        image: {{ .Values.appFrontend.image.repository }}:{{ .Values.appFrontend.image.tagV2 | default .Values.appFrontend.image.tag | default "latest" }}
+        ports:
+        - containerPort: {{ .Values.appFrontend.service.port }}
+        # readinessProbe: 
+        #   httpGet:
+        #     path: /health 
+        #     port: {{ .Values.appFrontend.service.port }}
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 30
+        #   timeoutSeconds: 5
+        env:
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-app-secret
+              key: SECRET_KEY
+        - name: APP_API_BASE_URL 
+          value: "http://192.168.56.91/api/app-service"
+        - name: FRONTEND_VERSION
+          value: "v2"
 ---
 
 # define service

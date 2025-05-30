@@ -76,4 +76,5 @@ vagrant ssh -c "kubectl -n kubernetes-dashboard create token admin-user" ctrl
 
 echo -e "${GREEN}All steps completed successfully!${NC}"
 
-rm ctrl.log node-1.log node-2.log -rf
+# changed to not throw nan error when the files do not exist
+rm -f ctrl.log node-1.log node-2.log
