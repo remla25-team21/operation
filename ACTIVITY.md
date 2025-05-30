@@ -1,4 +1,4 @@
-# Week 2:
+![image](https://github.com/user-attachments/assets/2482fe60-5e12-4a9d-9a88-f932affbe7cb)# Week 2:
 
 -- Bohong Lu: --  
 Created PR:  
@@ -192,9 +192,11 @@ Approved PR:
 
 -- Bohong Lu: --  
 Created PR:  
+- https://github.com/remla25-team21/app/pull/16 (Related to A5)
 
 Approved PR:  
 - https://github.com/remla25-team21/model-service/pull/3
+- https://github.com/remla25-team21/app/pull/14
 
 -- Kanta Tanahashi: --  
 Created PR:  
