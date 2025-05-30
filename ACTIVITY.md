@@ -194,6 +194,7 @@ Approved PR:
 Created PR:  
 
 Approved PR:  
+- https://github.com/remla25-team21/model-service/pull/3
 
 -- Kanta Tanahashi: --  
 Created PR:  
