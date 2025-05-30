@@ -12,111 +12,116 @@ This is the central repository for a REMLA project by Group 21. The application 
 
 - [`app`](https://github.com/remla25-team21/app): Contains the application frontend and backend (user interface and service logic).
 
-## How to start the application (Assignment 1)
+## How to Start the Application (Assignment 1)
 
-1. Clone the repository
+1. Clone the repository: 
    ```bash
    git clone https://github.com/remla25-team21/operation.git
    ```
-2. Navigate into the project directory.
-3. Clone the repository
+2. Navigate into the project directory and start the app with Docker Compose: 
    ```bash
    cd kubernetes
    docker-compose pull && docker-compose up -d
    ```
 
-The frontend will be available at http://localhost:3000 by default. You can open it up in your browser and type in your review.
+The frontend will be available at [`http://localhost:3000`](http://localhost:3000) by default. 
 
 ## Kubernetes Cluster Provisioning (Assignment 2)
 
 These steps guide you through setting up the Kubernetes cluster on your local machine using Vagrant and Ansible, and deploying the Kubernetes Dashboard.
 
-1. **Install GNU Parallel**:
+1. Install GNU parallel:
    Before running the setup script, make sure GNU parallel is installed on your system:
-
-   For Debian/Ubuntu:
-
-   ```bash
-   sudo apt-get install parallel
-   ```
-
-   For Red Hat/CentOS:
-
-   ```bash
-   sudo yum install parallel
-   ```
-
-   For macOS:
-
-   ```bash
-   brew install parallel
-   ```
-
-2. **Run the Setup Script**:
-   Execute the provided setup script which handles the entire setup process:
-
+   - For Debian/Ubuntu:
+      ```bash
+      sudo apt-get install parallel
+      ```
+   - For Red Hat/CentOS:
+      ```bash
+      sudo yum install parallel
+      ```
+   - For macOS:
+      ```bash
+      brew install parallel
+      ```
+2. Run the setup script:
    ```bash
    chmod +x setup_cluster.sh
    ./setup_cluster.sh
    ```
-
-3. **Access Kubernetes Dashboard**:
-
-   - After the script completes, open your web browser and navigate to: `https://dashboard.local` (**HTTPS** is required).
+3. Access Kubernetes sashboard:
+   - After the script completes, open your web browser and navigate to: [`https://dashboard.local`](https://dashboard.local) (**HTTPS** is required).
    - You will see a token displayed in your terminal. Copy and paste this token into the Kubernetes Dashboard login page.
-
-4. **Remove the Cluster**:
-   If you want to remove the cluster, run the following command:
+4. Remove the cluster:
+   If you want to remove the cluster, run the following command: 
    ```bash
    vagrant destroy -f
    ```
-   This will remove all the VMs and the Kubernetes cluster.
+   This will remove all the VMs and the Kubernetes cluster. 
 
 ## Kubernetes Cluster Monitoring (Assignment 3)
 
-Check [README.md](./kubernetes/helm/sentiment-analysis/README.md) in the `kubernetes/helm/sentiment-analysis` directory for instructions on how to set up monitoring for the application using Prometheus and Grafana.
+Refer to [README.md](./kubernetes/helm/sentiment-analysis/README.md) in the `kubernetes/helm/sentiment-analysis` directory for instructions to set up Prometheus and Grafana for monitoring. 
 
 ## ML Configuration Management & ML Testing （Assignment 4）
 
-The primary development for this assignment occurs within the following repositories:
-
+Work for Assignment 4 is mainly in the following repositories:
 - [`model-training`](https://github.com/remla25-team21/model-training)
 - [`model-service`](https://github.com/remla25-team21/model-service)
 
-Refer to the respective README files in these repositories for detailed information on the implemented solutions.
+See their READMEs for setup and testing details. 
 
 ## Istio Service Mesh（Assignment 5）
 
-Run the following command to start up the local Kubernetes cluster. (Make sure that you have GNU Parallel installed. Look at the section of assignment 2)
+Run the following command to start up the local Kubernetes cluster. (Make sure that you have GNU Parallel installed. Details in [Section 2](#kubernetes-cluster-provisioning-assignment-2))
 
+### Deploy the Istio-based Setup 
+1. Start the local cluster: 
+   ```bash
+   chmod +x setup_cluster.sh
+   ./setup_cluster.sh
+   ```
+2. SSH into the control node:  
+   ```bash
+   vagrant ssh ctrl
+   ```
+3. Deploy the application using Helm: 
+   ```bash
+   cd /vagrant
+   helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis
+   ```
+> [!NOTE]
+> It may take a few minutes for all pods to become ready. 
+> You can monitor the status with: 
+>  ```bash
+>  kubectl get pods
+>  ```
+4. Run the ingress tunnel in another terminal on the host machine: 
+   ```bash
+   minikube tunnel
+   ```
+5. Access the frontend from [`http://192.168.56.91`](http://192.168.56.91). 
+
+### Verify Sticky Sessions
+Sticky routing is enabled in `DestinationRule`. You can use `curl `to simulate multiple users: 
+```bash
+curl -H "user: A" http://192.168.56.91/
+curl -H "user: B" http://192.168.56.91/
 ```
-chmod +x setup_cluster.sh
-./setup_cluster.sh
-```
+Users A and B should always see the same version on each reload. 
 
-SSH into the ctrl node.
+## Known Issue: macOS Port Conflict (AirPlay Receiver)
 
-```
-vagrant ssh ctrl
-```
-
-And then run
-
-```
-cd /vagrant
-helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis
-```
-
-You should be able to access the frontend from http://192.168.56.91/
-
-## Known Bug: Port Conflict on macOS (AirPlay Receiver)
-
-On macOS, the `app-service` currently binds statically to `localhost:5000`. However, macOS reserves port `5000` for the AirPlay Receiver feature by default. This causes the app-service to fail to start or bind to the port correctly during local development or testing.
+If `app-service` fails to bind to port 5000, macOS's AirPlay Receiver may be using it. 
 
 **Temporary Workaround**:
 
 1. Go to System Settings -> General -> Airdrop & Handoff and switch off Airplay Receiver.
-2. Go to terminal and use the following commands: `lsof -i :5000` `kill -9 <PID>`
+2. Go to terminal and use kill any process on port 5000: 
+   ```bash
+   lsof -i :5000
+   kill -9 <PID>
+   ```
 
 **Long Term Fix**:
 
@@ -124,4 +129,4 @@ We plan to eventually change `app-service` to accomodate environment variables w
 
 ## Activity Tracking
 
-We maintain an overview of each team member's contributions in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/docs/readme-update/ACTIVITY.md).
+See in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/docs/readme-update/ACTIVITY.md) for an overview of team contributions. 
