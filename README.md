@@ -12,7 +12,7 @@ This is the central repository for a REMLA project by Group 21. The application 
 
 - [`app`](https://github.com/remla25-team21/app): Contains the application frontend and backend (user interface and service logic).
 
-## How to start the application (Assignment 1)
+## How to Start the Application (Assignment 1)
 
 1. Clone the repository
    ```bash
@@ -107,7 +107,7 @@ cd /vagrant
 helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis
 ```
 
-You should be able to access the frontend from http://192.168.56.91/
+It may take a few minutes for all pods to become ready. You can monitor the status using `kubectl get pods` to ensure they are running. Once initialization is done, You should be able to access the frontend from http://192.168.56.91/
 
 ## Known Bug: Port Conflict on macOS (AirPlay Receiver)
 
