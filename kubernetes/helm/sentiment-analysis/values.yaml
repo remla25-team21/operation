@@ -16,7 +16,8 @@ appService:
   replicaCount: 1
   image:
     repository: ghcr.io/remla25-team21/app-backend
-    tag: latest
+    tag: "5.0.latest"       # used for v1
+    tagV2: "5.1.latest"     # used for v2
     pullPolicy: Always
   service:
     type: ClusterIP
@@ -28,7 +29,8 @@ appFrontend:
   replicaCount: 1
   image:
     repository: ghcr.io/remla25-team21/app-frontend
-    tag: latest
+    tag: "5.0.latest"       # used for v1
+    tagV2: "5.1.latest"     # used for v2
     pullPolicy: Always
   service:
     type: ClusterIP

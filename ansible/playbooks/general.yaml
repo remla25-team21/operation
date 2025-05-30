@@ -64,6 +64,7 @@
       install_recommends: no
       force_apt_get: yes
       cache_valid_time: 3600
+    throttle: 1
 
   # Step 4: 
   - name: Create .ssh directory for vagrant user
@@ -276,6 +277,7 @@
       - kubectl=1.32.4-1.1
       state: present
       allow_downgrade: yes
+    throttle: 1
 
   # Step 11: Configure Containerd
   - name: Create containerd config directory
