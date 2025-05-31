@@ -34,7 +34,7 @@ spec:
               name: {{ .Release.Name }}-app-secret
               key: SECRET_KEY
         - name: APP_API_BASE_URL 
-          value: "http://192.168.56.91/api/app-service"
+          value: "http://192.168.56.91/api/app-service"  # TODO: Must be changed for local minikube testing
         - name: FRONTEND_VERSION
           value: "v1"
 ---
@@ -74,7 +74,7 @@ spec:
               name: {{ .Release.Name }}-app-secret
               key: SECRET_KEY
         - name: APP_API_BASE_URL 
-          value: "http://192.168.56.91/api/app-service"
+          value: "http://192.168.56.91/api/app-service"  # TODO: Must be changed for local minikube testing
         - name: FRONTEND_VERSION
           value: "v2"
 ---

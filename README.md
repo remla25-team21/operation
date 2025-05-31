@@ -179,7 +179,6 @@ This alternative approach uses Minikube directly on your local machine without V
    ```bash
    istioctl install -y
    kubectl apply -f kubernetes/istio-addons/prometheus.yaml
-   kubectl apply -f kubernetes/istio-addons/grafana.yaml
    kubectl apply -f kubernetes/istio-addons/jaeger.yaml
    kubectl apply -f kubernetes/istio-addons/kiali.yaml
    kubectl label ns default istio-injection=enabled --overwrite
@@ -196,7 +195,7 @@ This alternative approach uses Minikube directly on your local machine without V
    ```bash
    kubectl -n monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
    kubectl -n monitoring port-forward service/prometheus-grafana 3300:80
-   kubectl -n m
+   kubectl -n istio-system port-forward svc/kiali 20001:20001
    ```
 
    > Note: Keep these commands running in separate terminals.
@@ -204,10 +203,10 @@ This alternative approach uses Minikube directly on your local machine without V
 7. Access different interfaces:
 
    ```bash
-   minikube tunnel
+   kubectl get svc istio-ingressgateway -n istio-system
    ```
 
-   - Application: Access the url output by `minikube tunnel`
+   - Application: Access the url output by `minikube tunnel` as EXTERNAL-IP.
    - Prometheus: [`http://localhost:9090`](http://localhost:9090)
    - Grafana: [`http://localhost:3300`](http://localhost:3300)
 
