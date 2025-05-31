@@ -154,8 +154,6 @@ This alternative approach uses Minikube directly on your local machine without V
 
 We provide an automated script that handles the entire setup process:
 
-For Linux/Mac users:
-
 ```bash
 chmod +x start_minikube.sh
 ./start_minikube.sh --step 1
@@ -165,15 +163,9 @@ minikube tunnel  # Keep this running in a separate terminal
 ./start_minikube.sh --step 2
 ```
 
-For Windows users:
-
-```cmd
-:: Step 1: Setup infrastructure (Minikube, Prometheus, Istio)
-start_minikube.bat --step 1
-
-:: Step 2: Deploy application
-start_minikube.bat --step 2
-```
+> [!NOTE]
+>
+> Please refer to the [Manual Setup and Deploy](#manual-setup-and-deploy) section below if you encounter any issues with the script or prefer to run commands individually.
 
 This script will:
 
@@ -224,7 +216,13 @@ If you prefer to run commands individually:
    kubectl label ns default istio-injection=enabled --overwrite
    ```
 
-5. Deploy the application using Helm:
+5. Open the tunnel for Istio ingress gateway:
+
+   ```bash
+   minikube tunnel  # Keep this running in a `separate` terminal
+   ```
+
+6. Deploy the application using Helm:
 
    ```bash
    GATEWAY_IP=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -232,7 +230,7 @@ If you prefer to run commands individually:
    helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis --set istio.ingressGateway.host=$GATEWAY_IP
    ```
 
-6. Forward necessary ports in separate terminals:
+7. Forward necessary ports in separate terminals:
 
    ```bash
    kubectl -n monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
@@ -242,10 +240,9 @@ If you prefer to run commands individually:
 
    > Note: Keep these commands running in separate terminals.
 
-7. Access different interfaces:
+8. Access different interfaces:
 
    ```bash
-   minikube tunnel  # Keep this running in a separate terminal
    kubectl get svc istio-ingressgateway -n istio-system
    ```
 
