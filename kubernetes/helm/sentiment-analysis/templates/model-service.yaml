@@ -67,5 +67,6 @@ spec:
   ports:
     - port: {{ .Values.modelService.service.port }}
       targetPort: {{ .Values.modelService.service.port }}
+      name: http-model  # Updated to follow Istio naming convention
       protocol: TCP
   type: {{ .Values.modelService.service.type }}

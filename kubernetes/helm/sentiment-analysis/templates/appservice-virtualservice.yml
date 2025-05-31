@@ -5,7 +5,9 @@ metadata:
 spec:
   hosts:
     - {{ .Release.Name }}-{{ .Values.appService.name }}
-  http:
+  gateways:
+    - mesh  # Internal service mesh communication
+  http:            
     # Rule for requests coming from frontend v1
     - name: "from-frontend-v1-to-app-service-v1"
       match:
@@ -35,3 +37,27 @@ spec:
             host: {{ .Release.Name }}-{{ .Values.appService.name }}
             subset: v1 # Randomly picked. this can be v1 or v2
           weight: 100
+---
+# Create a separate VirtualService for external gateway access
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.appService.name }}-gateway-vs
+spec:
+  hosts:
+    - "*"  # Wildcard host only for gateway bound services
+  gateways:
+    - {{ .Release.Name }}-gateway  # Only associate with the gateway
+  http:
+    # Rule for requests coming from gateway path
+    - name: "api-gateway-path"
+      match:
+        - uri:
+            prefix: "/api/app-service"
+      rewrite:
+        uri: "/"  # Remove the prefix before forwarding
+      route:
+        - destination:
+            host: {{ .Release.Name }}-{{ .Values.appService.name }}
+            port:
+              number: {{ .Values.appService.service.port }}

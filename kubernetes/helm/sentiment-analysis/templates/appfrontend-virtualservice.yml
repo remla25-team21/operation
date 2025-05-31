@@ -8,27 +8,23 @@ spec:
   hosts:
     - "*" 
   http:
-    - name: "route-to-app-service"
+    - name: "canary-group"
       match:
-        - uri:
-            prefix: "/api/app-service/" 
-      rewrite: 
-        uri: "/"
+        - headers:
+            user:
+              regex: "^.{0,2}[0-1]"  # ~10% if last char 0 or 1 in first 3 chars
+          uri:
+            prefix: /
       route:
         - destination:
-            host: {{ .Release.Name }}-{{ .Values.appService.name }} 
-            port:
-              number: {{ .Values.appService.service.port }} 
-    - name: "route-to-frontend" 
-      match:
-        - uri:
-            prefix: / #
-      route:
-        - destination:
-            host: {{ .Release.Name }}-{{ .Values.appFrontend.name }} 
-            subset: v1
-          weight: 90
-        - destination:
-            host: {{ .Release.Name }}-{{ .Values.appFrontend.name }} 
+            host: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
             subset: v2
-          weight: 10
+
+    - name: "default-group"
+      match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+            subset: v1

@@ -16,7 +16,8 @@ appService:
   replicaCount: 1
   image:
     repository: ghcr.io/remla25-team21/app-backend
-    tag: latest
+    tag: "5.0.latest"       # used for v1
+    tagV2: "5.1.latest"     # used for v2
     pullPolicy: Always
   service:
     type: ClusterIP
@@ -28,11 +29,20 @@ appFrontend:
   replicaCount: 1
   image:
     repository: ghcr.io/remla25-team21/app-frontend
-    tag: latest
+    tag: "5.0.latest"       # used for v1
+    tagV2: "5.1.latest"     # used for v2
     pullPolicy: Always
   service:
     type: ClusterIP
     port: 3000
+
+# Istio Gateway configuration
+istio:
+  ingressGateway:
+    # You can override this value during installation with --set istio.ingressGateway.host=<IP address>
+      host: ""  # Default is empty, will be handled by template logic
+      scheme: "http"
+      apiPath: "/api/app-service"
 
 # Ingress configuration
 ingress:
