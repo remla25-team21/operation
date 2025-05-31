@@ -115,7 +115,8 @@ Run the following command to start up the local Kubernetes cluster. (Make sure t
 
    ```bash
    cd /vagrant
-   helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis
+   GATEWAY_IP=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis --set istio.ingressGateway.host=$GATEWAY_IP
    ```
 
    > [!NOTE]
@@ -187,7 +188,9 @@ This alternative approach uses Minikube directly on your local machine without V
 5. Deploy the application using Helm:
 
    ```bash
-   helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis
+   GATEWAY_IP=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+   helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis --set istio.ingressGateway.host=$GATEWAY_IP
    ```
 
 6. Forward necessary ports in separate terminals:

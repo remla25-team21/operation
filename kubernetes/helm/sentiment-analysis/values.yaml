@@ -36,6 +36,14 @@ appFrontend:
     type: ClusterIP
     port: 3000
 
+# Istio Gateway configuration
+istio:
+  ingressGateway:
+    # You can override this value during installation with --set istio.ingressGateway.host=<IP address>
+      host: ""  # Default is empty, will be handled by template logic
+      scheme: "http"
+      apiPath: "/api/app-service"
+
 # Ingress configuration
 ingress:
   enabled: true
