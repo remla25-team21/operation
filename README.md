@@ -157,6 +157,8 @@ We provide an automated script that handles the entire setup process:
 ```bash
 chmod +x start_minikube.sh
 ./start_minikube.sh
+
+minikube tunnel  # Keep this running in a separate terminal
 ```
 
 This script will:
