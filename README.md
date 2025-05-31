@@ -154,6 +154,8 @@ This alternative approach uses Minikube directly on your local machine without V
 
 We provide an automated script that handles the entire setup process:
 
+For Linux/Mac users:
+
 ```bash
 chmod +x start_minikube.sh
 ./start_minikube.sh --step 1
@@ -161,6 +163,16 @@ chmod +x start_minikube.sh
 minikube tunnel  # Keep this running in a separate terminal
 
 ./start_minikube.sh --step 2
+```
+
+For Windows users:
+
+```cmd
+:: Step 1: Setup infrastructure (Minikube, Prometheus, Istio)
+start_minikube.bat --step 1
+
+:: Step 2: Deploy application
+start_minikube.bat --step 2
 ```
 
 This script will:
@@ -188,11 +200,11 @@ If you prefer to run commands individually:
 2. Start and configure Minikube:
 
    ```bash
-   minikube start [--memory=8192 --cpus=8 --driver=docker]
+   minikube start  --memory=4096 --cpus=4 --driver=docker
    minikube addons enable ingress
    ```
 
-   > Note: Resource requirements (8GB RAM, 8 CPUs) can be adjusted based on your machine's capabilities.
+   > Note: Resource requirements (4GB RAM, 4 CPUs) can be adjusted based on your machine's capabilities.
 
 3. Install Prometheus stack using Helm:
 
