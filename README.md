@@ -163,6 +163,10 @@ minikube tunnel  # Keep this running in a separate terminal
 ./start_minikube.sh --step 2
 ```
 
+> [!NOTE]
+>
+> Please refer to the [Manual Setup and Deploy](#manual-setup-and-deploy) section below if you encounter any issues with the script or prefer to run commands individually.
+
 This script will:
 
 - Delete any existing Minikube clusters
@@ -188,11 +192,11 @@ If you prefer to run commands individually:
 2. Start and configure Minikube:
 
    ```bash
-   minikube start [--memory=8192 --cpus=8 --driver=docker]
+   minikube start  --memory=4096 --cpus=4 --driver=docker
    minikube addons enable ingress
    ```
 
-   > Note: Resource requirements (8GB RAM, 8 CPUs) can be adjusted based on your machine's capabilities.
+   > Note: Resource requirements (4GB RAM, 4 CPUs) can be adjusted based on your machine's capabilities.
 
 3. Install Prometheus stack using Helm:
 
@@ -212,7 +216,13 @@ If you prefer to run commands individually:
    kubectl label ns default istio-injection=enabled --overwrite
    ```
 
-5. Deploy the application using Helm:
+5. Open the tunnel for Istio ingress gateway:
+
+   ```bash
+   minikube tunnel  # Keep this running in a `separate` terminal
+   ```
+
+6. Deploy the application using Helm:
 
    ```bash
    GATEWAY_IP=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -220,7 +230,7 @@ If you prefer to run commands individually:
    helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis --set istio.ingressGateway.host=$GATEWAY_IP
    ```
 
-6. Forward necessary ports in separate terminals:
+7. Forward necessary ports in separate terminals:
 
    ```bash
    kubectl -n monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
@@ -230,10 +240,9 @@ If you prefer to run commands individually:
 
    > Note: Keep these commands running in separate terminals.
 
-7. Access different interfaces:
+8. Access different interfaces:
 
    ```bash
-   minikube tunnel  # Keep this running in a separate terminal
    kubectl get svc istio-ingressgateway -n istio-system
    ```
 
