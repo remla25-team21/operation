@@ -193,6 +193,7 @@ Approved PR:
 -- Bohong Lu: --  
 Created PR:  
 - https://github.com/remla25-team21/app/pull/16 (Related to A5)
+- https://github.com/remla25-team21/operation/pull/27  (Related to A5)
 
 Approved PR:  
 - https://github.com/remla25-team21/model-service/pull/3
@@ -205,6 +206,7 @@ Approved PR:
 
 -- Yizhen Zang: --
 Created PR:  
+- https://github.com/remla25-team21/operation/pull/27  (Related to A5)
 
 Approved PR:  
 
