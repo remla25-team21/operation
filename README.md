@@ -150,7 +150,30 @@ Users `111` and `999` should always see the same version on each reload.
 
 This alternative approach uses Minikube directly on your local machine without Vagrant/Ansible.
 
-#### Setup and Deploy
+#### Quick Start with Automated Script
+
+We provide an automated script that handles the entire setup process:
+
+```bash
+chmod +x start_minikube.sh
+./start_minikube.sh
+```
+
+This script will:
+
+- Delete any existing Minikube clusters
+- Start Minikube with appropriate resources
+- Install Prometheus stack
+- Install Istio and its add-ons
+- Deploy the application
+- Start the Minikube tunnel
+- Display access URLs for all services
+
+The script will output instructions for accessing all components when it completes.
+
+#### Manual Setup and Deploy
+
+If you prefer to run commands individually:
 
 1. Clean up any existing Minikube clusters:
 
