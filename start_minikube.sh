@@ -72,7 +72,7 @@ fi
 echo
 echo -e "${GREEN}===========================${NC}"
 echo -e "${GREEN}Access Your Services:${NC}"
-echo -e "${YELLOW}1. Run 'minikube tunnel' in a separate terminal${NC}"
+echo -e "${YELLOW}1. Run ${NC}minikube tunnel${YELLOW} in a separate terminal${NC}"
 echo -e "${YELLOW}2. Application URL:${NC} http://$INTERNAL_IP"
 echo
 echo -e "${YELLOW}To access dashboards, run these commands in separate terminals:${NC}"
