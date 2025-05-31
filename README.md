@@ -179,6 +179,7 @@ This alternative approach uses Minikube directly on your local machine without V
    ```bash
    istioctl install -y
    kubectl apply -f kubernetes/istio-addons/prometheus.yaml
+   kubectl apply -f kubernetes/istio-addons/grafana.yaml
    kubectl apply -f kubernetes/istio-addons/jaeger.yaml
    kubectl apply -f kubernetes/istio-addons/kiali.yaml
    kubectl label ns default istio-injection=enabled --overwrite
@@ -195,16 +196,18 @@ This alternative approach uses Minikube directly on your local machine without V
    ```bash
    kubectl -n monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
    kubectl -n monitoring port-forward service/prometheus-grafana 3300:80
-   kubectl port-forward svc/my-sentiment-analysis-app-frontend 3000:3000
-   kubectl port-forward svc/my-sentiment-analysis-app-service 5000:5000
+   kubectl -n m
    ```
 
    > Note: Keep these commands running in separate terminals.
 
 7. Access different interfaces:
 
-   - Application frontend: [`http://localhost:3000`](http://localhost:3000)
-   - Application backend (Flasgger API, testing only): [`http://localhost:5000/apidocs/`](http://localhost:5000/apidocs/)
+   ```bash
+   minikube tunnel
+   ```
+
+   - Application: Access the url output by `minikube tunnel`
    - Prometheus: [`http://localhost:9090`](http://localhost:9090)
    - Grafana: [`http://localhost:3300`](http://localhost:3300)
 
