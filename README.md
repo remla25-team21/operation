@@ -164,31 +164,49 @@ This alternative approach uses Minikube directly on your local machine without V
    minikube addons enable ingress
    ```
 
-   > [!NOTE]
-   > Resource requirements (8GB RAM, 8 CPUs) can be adjusted based on your machine's capabilities.
+   > Note: Resource requirements (8GB RAM, 8 CPUs) can be adjusted based on your machine's capabilities.
 
-3. Install Istio and its add-ons:
+3. Install Prometheus stack using Helm:
+
+   ```bash
+   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+   helm repo update
+   helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+   ```
+
+4. Install Istio and its add-ons:
 
    ```bash
    istioctl install
    kubectl apply -f kubernetes/istio-addons/prometheus.yaml
    kubectl apply -f kubernetes/istio-addons/jaeger.yaml
    kubectl apply -f kubernetes/istio-addons/kiali.yaml
+   kubectl label ns default istio-injection=enabled --overwrite
    ```
 
-4. Deploy the application using Helm:
+5. Deploy the application using Helm:
 
    ```bash
    helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis
    ```
 
-5. Run the ingress tunnel in another terminal:
+6. Forward necessary ports in separate terminals:
 
    ```bash
-   minikube tunnel --bind-address=localhost
+   kubectl -n monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
+   kubectl -n monitoring port-forward service/prometheus-grafana 3300:80
+   kubectl port-forward svc/my-sentiment-analysis-app-frontend 3000:3000
+   kubectl port-forward svc/my-sentiment-analysis-app-service 5000:5000
    ```
 
-6. Access the frontend from [`http://localhost`](http://localhost).
+   > Note: Keep these commands running in separate terminals.
+
+7. Access different interfaces:
+
+   - Application frontend: [`http://localhost:3000`](http://localhost:3000)
+   - Application backend (Flasgger API, testing only): [`http://localhost:5000/apidocs/`](http://localhost:5000/apidocs/)
+   - Prometheus: [`http://localhost:9090`](http://localhost:9090)
+   - Grafana: [`http://localhost:3300`](http://localhost:3300)
 
 #### Verify Sticky Sessions
 
