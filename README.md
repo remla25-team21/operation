@@ -203,6 +203,7 @@ This alternative approach uses Minikube directly on your local machine without V
 7. Access different interfaces:
 
    ```bash
+   minikube tunnel  # Keep this running in a separate terminal
    kubectl get svc istio-ingressgateway -n istio-system
    ```
 
