@@ -10,82 +10,115 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}===== Minikube Setup Script for Sentiment Analysis App =====${NC}"
-echo -e "${YELLOW}This script will set up a complete environment with Minikube, Istio, and deploy the application.${NC}"
-echo
 
-# Check if necessary tools are installed
-for tool in minikube kubectl helm istioctl; do
-  if ! command -v $tool &> /dev/null; then
-    echo -e "${RED}Error: $tool is not installed. Please install it first.${NC}"
-    exit 1
-  fi
-done
-
-echo -e "${BLUE}[1/7]${NC} Cleaning up any existing Minikube clusters..."
-minikube delete --all > /dev/null 2>&1 || true
-
-echo -e "${BLUE}[2/7]${NC} Starting Minikube..."
-minikube start --memory=4096 --cpus=4 --driver=docker
-minikube addons enable ingress
-echo -e "${GREEN}Minikube started successfully!${NC}"
-
-echo -e "${BLUE}[3/7]${NC} Installing Prometheus stack..."
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts > /dev/null 2>&1
-helm repo update > /dev/null 2>&1
-helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
-echo -e "${GREEN}Prometheus stack installed!${NC}"
-
-echo -e "${BLUE}[4/7]${NC} Installing Istio and its add-ons..."
-istioctl install -y
-kubectl apply -f kubernetes/istio-addons/prometheus.yaml
-kubectl apply -f kubernetes/istio-addons/jaeger.yaml
-kubectl apply -f kubernetes/istio-addons/kiali.yaml
-kubectl label ns default istio-injection=enabled --overwrite
-echo -e "${GREEN}Istio installed!${NC}"
-
-echo -e "${BLUE}[5/7]${NC} Deploying the application..."
-GATEWAY_IP=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
-
-# Wait for the external IP to be assigned
-ATTEMPTS=0
-MAX_ATTEMPTS=30
-while [ "$GATEWAY_IP" = "pending" ] && [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
-    echo -e "${YELLOW}Waiting for istio-ingressgateway external IP... (attempt $((ATTEMPTS+1))/${MAX_ATTEMPTS})${NC}"
-    sleep 5
-    GATEWAY_IP=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
-    ATTEMPTS=$((ATTEMPTS+1))
-done
-
-if [ "$GATEWAY_IP" = "pending" ]; then
-    echo -e "${YELLOW}No external IP found after waiting. Will use 'localhost' for deployment.${NC}"
-    GATEWAY_IP="localhost"
+# Argument parsing
+if [ "$#" -ne 2 ] || [ "$1" != "--step" ]; then
+  echo -e "${RED}Usage: $0 --step <1|2>${NC}"
+  echo -e "${YELLOW}  --step 1: Initial setup (Minikube, Istio, Prometheus, App deployment).${NC}"
+  echo -e "${YELLOW}            You will be prompted to run 'sudo minikube tunnel' manually after this step.${NC}"
+  echo -e "${YELLOW}  --step 2: Display access URLs (run after 'sudo minikube tunnel' is active).${NC}"
+  exit 1
 fi
 
-helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis --set istio.ingressGateway.host=$GATEWAY_IP
-echo -e "${GREEN}Application deployed!${NC}"
+STEP=$2
 
-echo -e "${BLUE}[6/7]${NC} Waiting for pods to be ready..."
-kubectl wait --for=condition=ready pod --all --timeout=300s || true
-echo -e "${GREEN}All ready pods are now available!${NC}"
+if [ "$STEP" == "1" ]; then
+  echo -e "${BLUE}Executing Step 1: Initial Setup...${NC}"
+  echo
 
-# Start minikube tunnel in background and save PID
-echo -e "${BLUE}[7/7]${NC} Starting Minikube tunnel in the background..."
-minikube tunnel > /dev/null 2>&1 &
-TUNNEL_PID=$!
-echo $TUNNEL_PID > minikube_tunnel.pid
-echo -e "${GREEN}Minikube tunnel started (PID: $TUNNEL_PID)${NC}"
+  # Check if necessary tools are installed
+  for tool in minikube kubectl helm istioctl; do
+    if ! command -v $tool &> /dev/null; then
+      echo -e "${RED}Error: $tool is not installed. Please install it first.${NC}"
+      exit 1
+    fi
+  done
+  echo -e "${GREEN}All necessary tools are installed.${NC}"
 
-# Get the actual external IP after tunnel is established
-sleep 5
-EXTERNAL_IP=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "localhost")
+  echo -e "${BLUE}[1/6]${NC} Cleaning up any existing Minikube clusters..."
+  minikube delete --all > /dev/null 2>&1 || true
 
-echo
-echo -e "${GREEN}===========================${NC}"
-echo -e "${GREEN}Setup Complete! Access your services:${NC}"
-echo -e "${YELLOW}Access your application at:${NC} http://$EXTERNAL_IP"
-echo -e "${YELLOW}Prometheus dashboard:${NC} Run in a new terminal: kubectl -n monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090"
-echo -e "${YELLOW}Grafana dashboard:${NC} Run in a new terminal: kubectl -n monitoring port-forward service/prometheus-grafana 3300:80"
-echo -e "${YELLOW}Kiali dashboard:${NC} Run in a new terminal: kubectl -n istio-system port-forward svc/kiali 20001:20001"
-echo
-echo -e "${YELLOW}To stop the Minikube tunnel when done:${NC} kill $(cat minikube_tunnel.pid)"
-echo -e "${GREEN}===========================${NC}"
+  echo -e "${BLUE}[2/6]${NC} Starting Minikube..."
+  minikube start --memory=4096 --cpus=4 --driver=docker
+  minikube addons enable ingress
+  echo -e "${GREEN}Minikube started successfully!${NC}"
+
+  echo -e "${BLUE}[3/6]${NC} Installing Prometheus stack..."
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts > /dev/null 2>&1
+  helm repo update > /dev/null 2>&1
+  helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+  echo -e "${GREEN}Prometheus stack installed!${NC}"
+
+  echo -e "${BLUE}[4/6]${NC} Installing Istio and its add-ons..."
+  istioctl install -y
+  kubectl apply -f kubernetes/istio-addons/prometheus.yaml
+  kubectl apply -f kubernetes/istio-addons/jaeger.yaml
+  kubectl apply -f kubernetes/istio-addons/kiali.yaml
+  kubectl label ns default istio-injection=enabled --overwrite
+  echo -e "${GREEN}Istio installed!${NC}"
+
+  echo -e "${BLUE}[5/6]${NC} Deploying the application..."
+  # For Helm deployment, we'll use 'localhost' as the host for the Istio gateway.
+  # The actual access IP will be determined in Step 2 after 'minikube tunnel' is running.
+  GATEWAY_IP_FOR_HELM_VALUES="localhost"
+  echo -e "${YELLOW}Using '$GATEWAY_IP_FOR_HELM_VALUES' for istio.ingressGateway.host in Helm chart.${NC}"
+  helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis --set istio.ingressGateway.host=$GATEWAY_IP_FOR_HELM_VALUES
+  echo -e "${GREEN}Application deployed!${NC}"
+
+  echo -e "${BLUE}[6/6]${NC} Waiting for pods to be ready..."
+  kubectl wait --for=condition=ready pod --all --timeout=300s || true
+  echo -e "${GREEN}Pod readiness check complete.${NC}"
+
+  echo
+  echo -e "${GREEN}======================================================${NC}"
+  echo -e "${GREEN}Step 1 Completed Successfully!${NC}"
+  echo -e "${YELLOW}Next Steps:${NC}"
+  echo -e "${YELLOW}1. Open a NEW terminal window.${NC}"
+  echo -e "${YELLOW}2. Run the following command in the new terminal (it requires root privileges and will run in the foreground):${NC}"
+  echo -e "   ${GREEN}sudo minikube tunnel${NC}"
+  echo -e "${YELLOW}3. Keep the 'minikube tunnel' command running.${NC}"
+  echo -e "${YELLOW}4. Once the tunnel is active, run the following command to get access URLs:${NC}"
+  echo -e "   ${GREEN}$0 --step 2${NC}"
+  echo -e "${GREEN}======================================================${NC}"
+
+elif [ "$STEP" == "2" ]; then
+  echo -e "${BLUE}Executing Step 2: Displaying Access Information...${NC}"
+  echo -e "${YELLOW}Ensure 'sudo minikube tunnel' is running in another terminal.${NC}"
+  echo
+
+  echo -e "${BLUE}Waiting a few seconds for network routes to establish...${NC}"
+  sleep 5
+
+  EXTERNAL_IP=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null)
+
+  if [ -z "$EXTERNAL_IP" ] || [ "$EXTERNAL_IP" == "<pending>" ] || [ "$EXTERNAL_IP" == "pending" ]; then
+      echo -e "${RED}Could not determine external IP for istio-ingressgateway.${NC}"
+      echo -e "${YELLOW}This usually means 'sudo minikube tunnel' is not running or not working correctly.${NC}"
+      echo -e "${YELLOW}Attempting to use 'localhost'. If this doesn't work, please verify your 'minikube tunnel' setup.${NC}"
+      EXTERNAL_IP="localhost"
+  else
+      echo -e "${GREEN}Successfully retrieved External IP: $EXTERNAL_IP${NC}"
+  fi
+
+  echo
+  echo -e "${GREEN}===========================${NC}"
+  echo -e "${GREEN}Access Your Services:${NC}"
+  echo -e "${YELLOW}Application URL:${NC} http://$EXTERNAL_IP"
+  echo
+  echo -e "${YELLOW}To access dashboards, run these commands in separate terminals:${NC}"
+  echo -e "${YELLOW}Prometheus Dashboard:${NC} kubectl -n monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090"
+  echo -e "${YELLOW}Grafana Dashboard:${NC}    kubectl -n monitoring port-forward service/prometheus-grafana 3300:80"
+  echo -e "${YELLOW}Kiali Dashboard:${NC}      kubectl -n istio-system port-forward svc/kiali 20001:20001"
+  echo
+  echo -e "${YELLOW}Important:${NC}"
+  echo -e "${YELLOW}- The 'sudo minikube tunnel' command must remain running in its terminal to access the Application URL.${NC}"
+  echo -e "${YELLOW}- To stop access, close the 'minikube tunnel' terminal or press Ctrl+C in it.${NC}"
+  echo -e "${GREEN}===========================${NC}"
+
+else
+  echo -e "${RED}Invalid step: '$STEP'. Please use --step 1 or --step 2.${NC}"
+  echo -e "${RED}Usage: $0 --step <1|2>${NC}"
+  exit 1
+fi
+
+echo -e "${GREEN}Script finished.${NC}"
