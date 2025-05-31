@@ -6,14 +6,18 @@ spec:
   hosts:
     - {{ .Release.Name }}-{{ .Values.modelService.name }}
   http:
-    - match:
-        - sourceLabels:
-            version: v2
+    - name: "canary-group"
+      match:
+        - headers:
+            user:
+              regex: "^.{0,2}[0-1]"
       route:
         - destination:
             host: {{ .Release.Name }}-{{ .Values.modelService.name }}
             subset: v2
-    - route:
+
+    - name: "default-group"
+      route:
         - destination:
             host: {{ .Release.Name }}-{{ .Values.modelService.name }}
             subset: v1

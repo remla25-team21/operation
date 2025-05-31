@@ -105,10 +105,10 @@ Run the following command to start up the local Kubernetes cluster. (Make sure t
 ### Verify Sticky Sessions
 Sticky routing is enabled in `DestinationRule`. You can use `curl `to simulate multiple users: 
 ```bash
-curl -H "user: A" http://192.168.56.91/
-curl -H "user: B" http://192.168.56.91/
+for i in {1..5}; do curl -s -H "user: 111" http://192.168.56.91/env-config.js; done
+for i in {1..5}; do curl -s -H "user: 999" http://192.168.56.91/env-config.js; done
 ```
-Users A and B should always see the same version on each reload. 
+Users `111` and `999` should always see the same version on each reload. 
 
 ## Known Issue: macOS Port Conflict (AirPlay Receiver)
 
