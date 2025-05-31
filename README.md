@@ -156,9 +156,11 @@ We provide an automated script that handles the entire setup process:
 
 ```bash
 chmod +x start_minikube.sh
-./start_minikube.sh
+./start_minikube.sh --step 1
 
 minikube tunnel  # Keep this running in a separate terminal
+
+./start_minikube.sh --step 2
 ```
 
 This script will:
@@ -235,17 +237,18 @@ If you prefer to run commands individually:
    kubectl get svc istio-ingressgateway -n istio-system
    ```
 
-   - Application: Access the url output by `minikube tunnel` as EXTERNAL-IP.
+   - Application: Access the url output by `kubectl get svc istio-ingressgateway -n istio-system` as [EXTERNAL-IP].
    - Prometheus: [`http://localhost:9090`](http://localhost:9090)
    - Grafana: [`http://localhost:3300`](http://localhost:3300)
+   - Kiali: [`http://localhost:20001`](http://localhost:20001)
 
 #### Verify Sticky Sessions
 
 For this setup, test sticky sessions with:
 
 ```bash
-for i in {1..5}; do curl -s -H "user: 111" http://localhost:3000/env-config.js; done
-for i in {1..5}; do curl -s -H "user: 999" http://localhost:3000/env-config.js; done
+for i in {1..5}; do curl -s -H "user: 111" http://[EXTERNAL-IP]/env-config.js; done
+for i in {1..5}; do curl -s -H "user: 999" http://[EXTERNAL-IP]/env-config.js; done
 ```
 
 ## Known Issue: macOS Port Conflict (AirPlay Receiver)
