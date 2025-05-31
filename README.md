@@ -160,7 +160,7 @@ This alternative approach uses Minikube directly on your local machine without V
 2. Start and configure Minikube:
 
    ```bash
-   minikube start --memory=8192 --cpus=8 --driver=docker
+   minikube start [--memory=8192 --cpus=8 --driver=docker]
    minikube addons enable ingress
    ```
 
@@ -177,7 +177,7 @@ This alternative approach uses Minikube directly on your local machine without V
 4. Install Istio and its add-ons:
 
    ```bash
-   istioctl install
+   istioctl install -y
    kubectl apply -f kubernetes/istio-addons/prometheus.yaml
    kubectl apply -f kubernetes/istio-addons/jaeger.yaml
    kubectl apply -f kubernetes/istio-addons/kiali.yaml
@@ -213,8 +213,8 @@ This alternative approach uses Minikube directly on your local machine without V
 For this setup, test sticky sessions with:
 
 ```bash
-for i in {1..5}; do curl -s -H "user: 111" http://localhost/env-config.js; done
-for i in {1..5}; do curl -s -H "user: 999" http://localhost/env-config.js; done
+for i in {1..5}; do curl -s -H "user: 111" http://localhost:3000/env-config.js; done
+for i in {1..5}; do curl -s -H "user: 999" http://localhost:3000/env-config.js; done
 ```
 
 ## Known Issue: macOS Port Conflict (AirPlay Receiver)
