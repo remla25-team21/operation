@@ -49,12 +49,38 @@ Metric scraping is enabled using pod annotations:
   - distinct Docker images and Kubernetes labels 
   - Istio `DestinationRule` definitions that define subsets `v1` and `v2` 
   - Istio `VirtualService` routes 90% of traffic to `v1` and 10% to `v2` 
-- Sticky sessions ensure consistent routing for users during the experiment, enabled via custom headers such as `curl -H "user: alice" http://[EXTERNAL-IP]/env-config.js`. 
+- Sticky sessions ensure consistent routing for users during the experiment, enabled via custom headers such as `curl -H "user: 10" http://[EXTERNAL-IP]/env-config.js`. 
 
 ### Routing Flow 
-User Request -> Istio’s Ingress Gateway -> VirtualService -> DestinationRule (v1 / v2 subset) -> versioned app pods. 
+User Request -> Istio’s Ingress Gateway -> VirtualService -> DestinationRule (`v1`/`v2` subset) -> versioned app pods. 
 
-## Grafana Dashboard  
+### Replication Steps 
+1. Follow instructions in [`READM.md`](https://github.com/remla25-team21/operation/blob/main/README.md) to setup the application. 
+2. Add the Prometheus Helm chart repository and install the Prometheus + Grafana stack inside the `ctrl` node: 
+   ```bash
+   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+   helm repo update
+   ```
+3. Port-forward Prometheus in a separate terminal of the `ctrl` node: 
+   ```bash
+   kubectl -n monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
+   ```
+4. Port-forward Grafana in a separate terminal of the `ctrl` node: 
+   ```bash
+   kubectl -n monitoring port-forward svc/prometheus-grafana 3300:80
+   ```
+5. Run the following commands in your host machine: 
+   ```bash
+   vagrant ssh ctrl -- -L 9090:localhost:9090 -L 3300:localhost:3300
+   ```
+6. Run the script to simulate the traffic: 
+   ```bash
+   chmod +x simulate_traffic.sh
+   ./simulate_traffic.sh
+   ```
+7. Open Grafana in your browser: [`http://localhost:3300`](http://localhost:3300). Login with `admin / prom-operator`, navigate to Dashboards -> Browse, and open the dashboard titled "CE - UI Variant A/B Test". 
+
+## Grafana Dashboard 
 A Grafana dashboard was created to compare the two versions using: 
   - `sum by (container) (model_usage_total)` 
   - `histogram_quantile(0.5, rate(user_star_ratings_bucket[30m]))` (median rating) 
