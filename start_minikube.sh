@@ -72,6 +72,9 @@ if [[ "$STEP" == "1" ]]; then
   kubectl apply -f kubernetes/istio-addons/kiali.yaml
   kubectl label ns default istio-injection=enabled --overwrite
   echo -e "${GREEN}Istio installed!${NC}"
+
+  kubectl apply -f kubernetes/rate-limit.yaml
+  echo -e "${GREEN}Rate limiter up and running!${NC}"
   
   echo -e "${GREEN}Infrastructure setup complete! (Step 1)${NC}"
   echo -e "${YELLOW}To deploy the application, run: $0 --step 2${NC}"
