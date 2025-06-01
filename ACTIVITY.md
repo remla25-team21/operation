@@ -205,10 +205,14 @@ Created PR:
 Approved PR:  
 
 -- Yizhen Zang: --
-Created PR:  
+Created PR: 
+- https://github.com/remla25-team21/operation/pull/26  (Related to A5)
 - https://github.com/remla25-team21/operation/pull/27  (Related to A5)
+- https://github.com/remla25-team21/operation/pull/28  (Related to A5)
 
-Approved PR:  
+Approved PR: 
+- https://github.com/remla25-team21/operation/pull/25  (Related to A5)
+- https://github.com/remla25-team21/app/pull/17  (Related to A5)
 
 -- Zeryab Alam: --
 Created PR:  
