@@ -43,7 +43,7 @@ Metric scraping is enabled using pod annotations:
     annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
-        prometheus.io/port: "8080"
+        prometheus.io/port: "15"
 ```
 
 The Prometheus instance is installed via Helm and configured using the `kubernetes/istio-addons/prometheus.yaml` file. 
