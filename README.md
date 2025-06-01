@@ -127,13 +127,7 @@ Run the following command to start up the local Kubernetes cluster. (Make sure t
    > kubectl get pods
    >  ```
    >
-4. Run the ingress tunnel in another terminal on the host machine:
-
-   ```bash
-   minikube tunnel
-   ```
-
-5. Access the frontend from [`http://192.168.56.91`](http://192.168.56.91).
+4. Access the frontend from [`http://192.168.56.91`](http://192.168.56.91).
 
 #### Verify Sticky Sessions
 
