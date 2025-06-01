@@ -33,9 +33,9 @@ The following changes were implemented between version `v1` (control) and `v2` (
 
 ## Metrics 
 Prometheus scrapes and aggregates the following metrics: 
-  - `model_usage_total{version="vX"}`: The number of predictions per version. 
-  - `user_star_ratings{version="vX"}`: Satisfaction score distribution. 
-  - `user_session_duration_seconds{version="vX"}`: Duration of session activity. 
+  - `model_usage_total`: The number of predictions. 
+  - `user_star_ratings`: Satisfaction score distribution. 
+  - `user_session_duration_seconds`: Duration of session activity. 
 
 ### Prometheus Configuration 
 Metric scraping is enabled using pod annotations:
@@ -43,7 +43,7 @@ Metric scraping is enabled using pod annotations:
     annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
-        prometheus.io/port: "15"
+        prometheus.io/port: "8080"
 ```
 
 The Prometheus instance is installed via Helm and configured using the `kubernetes/istio-addons/prometheus.yaml` file. 
@@ -64,7 +64,7 @@ User Request -> Istio’s Ingress Gateway -> VirtualService -> DestinationRule (
 
 ## Grafana Dashboard  
 A Grafana dashboard was created to compare the two versions using: 
-  - `sum by (version) (model_usage_total)`
+  - `sum by (container) (model_usage_total)`
   - `rate(user_session_duration_seconds_sum[30m]) / rate(user_session_duration_seconds_count[30m])`
   - `histogram_quantile(0.5, rate(user_star_ratings_bucket[30m]))` (median rating)
 
