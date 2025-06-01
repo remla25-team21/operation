@@ -126,7 +126,7 @@ Run the following command to start up the local Kubernetes cluster. (Make sure t
    > ```bash
    > kubectl get pods
    >  ```
-   >
+
 4. Access the frontend from [`http://192.168.56.91`](http://192.168.56.91).
 
 #### Verify Sticky Sessions

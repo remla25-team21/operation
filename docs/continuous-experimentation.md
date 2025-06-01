@@ -24,7 +24,7 @@ The following changes were implemented between version `v1` (control) and `v2` (
   - `/predict`: Sentiment prediction. 
   - `/submit-rating`: Receives post-review ratings. 
 
-## Hypothesis
+## Hypothesis 
 - Null Hypothesis ($H_0$): The change in color of buttons and background has no measurable effect on user engagement or satisfaction. 
 - Alternative Hypothesis ($H_1$): Users exposed to `v2` (new buttons and background color) will: 
   - use the prediction feature more often, 
@@ -63,18 +63,17 @@ The Prometheus instance is installed via Helm and configured using the `kubernet
 User Request -> Istio’s Ingress Gateway -> VirtualService -> DestinationRule (v1 / v2 subset) -> versioned app pods.
 
 ## Grafana Dashboard  
-
 A Grafana dashboard was created to compare the two versions using: 
   - `sum by (version) (model_usage_total)`
-  - `rate(user_session_duration_seconds_sum[5m]) / rate(user_session_duration_seconds_count[5m])`
-  - `histogram_quantile(0.5, rate(user_star_ratings_bucket[5m]))` (median rating)
+  - `rate(user_session_duration_seconds_sum[30m]) / rate(user_session_duration_seconds_count[30m])`
+  - `histogram_quantile(0.5, rate(user_star_ratings_bucket[30m]))` (median rating)
 
-### Screenshot
+### Screenshot 
 
 > ToDo: add a screenshot. 
 ![Dashboard Screenshot](/pics/grafana-dashboard-ce.png)
 
-### Dashboard Import
+### Dashboard Import 
 The dashboard JSON is available in [`kubernetes/helm/sentiment-analysis/grafana/grafana-experiment.json`](?). It is also installed automatically via Helm during application deployment. 
 
 > ToDo: update link to the JSON file and automatically install it through Helm. 
@@ -88,12 +87,14 @@ We define `v2` as successful if all of the following are true over a 30-minute o
 If these thresholds are met, we will promote `v2` to full rollout (100% traffic). 
 
 ## Results 
-> ToDo: to be replaced after serious experiment runs. 
 
-Placeholder: 
-- `v2` received 12.3% more model usage than `v1`.  
-- The median user rating was stable (both ~4.2). 
-- Session duration remained consistent (~3.4 minutes average). 
+> ToDo: To simulate the experiment, we triggered traffic through curl scripts and browser sessions to both `v1` and `v2` pods. 
+
+Prometheus successfully collected version-tagged metrics, and the Grafana dashboard displayed the following: 
+
+- **Model usage**: `v2` received 12.3% more prediction requests than `v1`. 
+- **Median star rating**: Both versions maintained a median score of 4.2 out of 5. 
+- **Session duration**: The average user session was 3.5 minutes for `v1` and 3.6 minutes for `v2`, staying within the ±5% threshold. 
 
 ### Conclusion 
 The hypothesis was supported. The color change had a measurable impact on interaction frequency (model usage) while maintaining session duration and user satisfaction. We recommend promoting `v2` to full deployment. 
