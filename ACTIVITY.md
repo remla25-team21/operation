@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/2482fe60-5e12-4a9d-9a88-f932affbe7cb)# Week 2:
+# Week 2:
 
 -- Bohong Lu: --  
 Created PR:  
