@@ -217,5 +217,9 @@ Approved PR:
 
 -- Raghav Talwar: --  
 Created PR:  
+- https://github.com/remla25-team21/app/pull/14 (Related to A5)
+- https://github.com/remla25-team21/app/pull/17 (Related to A5)
 
 Approved PR:  
+- https://github.com/remla25-team21/app/pull/15
+- https://github.com/remla25-team21/app/pull/16
