@@ -48,8 +48,11 @@ Metric scraping is enabled using pod annotations:
 - Two versions (`v1` and `v2`) are deployed in parallel as separate Kubernetes deployments. 
 - Istio Gateway and VirtualService are both exposed via IngressGateway. 
 - DestinationRules define subsets for `v1` and `v2`. 
-- Canary routing (90/10 split) is enforced with sticky sessions using the `user` header. 
+- Canary routing (50/50 split) is enforced with sticky sessions using the `user` header. 
 - Consistent backend–frontend versioning ensured by matching routing headers. 
+
+> [!NOTE]
+> In the production setup, the app service uses a 90/10 routing strategy. The 50/50 split is applied only during this experiment to ensure fair comparison of model usage between versions. 
 
 ### Request Routing Flow 
 User Request -> Istio’s Ingress Gateway -> VirtualService -> DestinationRule (`v1`/`v2` subset) -> versioned app pods. 
