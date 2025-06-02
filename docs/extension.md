@@ -12,9 +12,9 @@ Our repositories (`app`, `model-service`, `model-training`, `lib-ml`, `lib-versi
 **Repository-Specific Evidence**:
 | Repository | Issue | File |
 |------------|-------|------|
-| model-service | Unpinned Flask/gunicorn | [requirements.txt](https://github.com/remla25-team21/model-service/blob/main/requirements.txt) |
+| model-service | Unpinned Flask | [requirements.txt](https://github.com/remla25-team21/model-service/blob/main/requirements.txt) |
 | model-training | No version constraints | [requirements.txt](https://github.com/remla25-team21/model-training/blob/main/requirements.txt) |
-| app | Missing tests | [No test directory](https://github.com/remla25-team21/app) |
+| app | Lack of tests(fail to capture bugs caused by dependency changes) | [No test directory](https://github.com/remla25-team21/app) |
 | lib-ml | No version metadata | [No \_\_version\_\_.py](https://github.com/remla25-team21/lib-ml) |
 | model-service | Submodule not locked | [.gitmodules](https://github.com/remla25-team21/model-service/blob/main/.gitmodules) |
 
