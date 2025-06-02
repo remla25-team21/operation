@@ -187,3 +187,55 @@ Created PR:
 
 Approved PR:  
 - https://github.com/remla25-team21/model-service/pull/2 
+
+# Week 6:
+
+-- Bohong Lu: --  
+Created PR:  
+- https://github.com/remla25-team21/app/pull/16 (Related to A5)
+- https://github.com/remla25-team21/operation/pull/27 (Related to A5)
+- https://github.com/remla25-team21/operation/pull/31 (Related to A5)
+
+Approved PR:  
+- https://github.com/remla25-team21/model-service/pull/3
+- https://github.com/remla25-team21/app/pull/14
+- https://github.com/remla25-team21/operation/pull/28
+- https://github.com/remla25-team21/operation/pull/29
+- https://github.com/remla25-team21/operation/pull/30
+
+-- Kanta Tanahashi: --  
+Created PR:  
+- https://github.com/remla25-team21/operation/pull/25
+- https://github.com/remla25-team21/app/pull/15
+Approved PR:
+- https://github.com/remla25-team21/operation/pull/26
+- https://github.com/remla25-team21/operation/pull/30
+
+-- Yizhen Zang: --
+Created PR: 
+- https://github.com/remla25-team21/operation/pull/26  (Related to A5)
+- https://github.com/remla25-team21/operation/pull/27  (Related to A5)
+- https://github.com/remla25-team21/operation/pull/28  (Related to A5)
+
+Approved PR: 
+- https://github.com/remla25-team21/operation/pull/25  (Related to A5)
+- https://github.com/remla25-team21/app/pull/17  (Related to A5)
+- https://github.com/remla25-team21/operation/pull/30  (Related to A5)
+
+-- Zeryab Alam: --
+Created PR:  
+- https://github.com/remla25-team21/operation/pull/29 (Related to A5)
+- https://github.com/remla25-team21/operation/pull/31 (Related to A5)
+
+Approved PR:  
+- https://github.com/remla25-team21/operation/pull/27 (Related to A5)
+
+-- Raghav Talwar: --  
+Created PR:  
+- https://github.com/remla25-team21/app/pull/14 (Related to A5)
+- https://github.com/remla25-team21/app/pull/17 (Related to A5)
+- https://github.com/remla25-team21/operation/pull/30 (Related to A5)
+
+Approved PR:  
+- https://github.com/remla25-team21/app/pull/15
+- https://github.com/remla25-team21/app/pull/16
