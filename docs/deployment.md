@@ -22,12 +22,32 @@ _routing diagram_
 
 ## 3. Data Flow & Runtime Architecture
 
-_data flow diagram_
+The entrypoint of our application is its frontend. When a user types a review and submits it, the frontend is configured to send this request to a URL like `http://192.168.49.2/api/app-service/predict`. The hostname (`192.168.49.2` in this example) must resolve to the externally accessible IP address of the Istio Ingress Gateway. When running a local cluster using Minikube, this IP is provided by running the `minikube tunnel` command and using the `EXTERNAL-IP` assigned to the `istio-ingressgateway` service.
 
-Describe how data moves through the system
-controller routing requests n shi
-- From user to frontend to model service
-- Response back to frontend
+The Istio Ingress Gateway is the component responsible for receiving these incoming external requests where the routing logic defined in VirtualServices take over.  The external VirtualService  checks the request path and then routes the request to `app-service` and also performs URI rewriting (changing `/api/app-service/predict` to `/predict`) before forwarding the request.
+
+The internal VirtualService for `app-service` will then check the `app-version` header and perform one of the following actions:
+- If `app-version: "v1"` is present, the request is routed to `subset: v1` of the `app-service`.
+- If `app-version: "v2"` is present, the request is routed to `subset: v2` of the `app-service`.
+- If the header is missing or doesn't match, the request defaults to `subset: v1` of the `app-service`.
+
+The request is finally handled by an actual pod of the selected `app-service` version.
+
+Upon receiving the request, `app-service` will: 
+- Increment the request count for A/B testing metrics.
+- Forwards the input data to an external `MODEL_SERVICE_URL` to get a sentiment prediction.
+
+`model-service` receives this request and:
+- preprocesses the incoming reveiew using a pre-loaded vectorizer from `model-training` GitHub Release using a function loaded from `lib-ml`.
+- feeds these features to a pre-loaded machine learning model (also pulled from `model-training` GitHub Release) using a `lib-ml` function and gets the prediction
+- Return this output as a numerical representation (0 means negative, 1 means positive).
+
+`app-service` will then perform the following actions based on the output by `model-serivce`:
+- Updates Prometheus metrics for total predictions (by sentiment), the ratio of positive sentiments, and prediction latency. These metrics are made available through `/metrics` endpoint and this endpoint is configured to be hit every 15 seconds by Prometheus. 
+- Returns the prediction result (or an error) from the model service back to the client.
+
+![image](https://github.com/user-attachments/assets/bcb20cba-fb47-4ac3-8c97-a50ef4265e7b)
+
 
 ## 4. Dynamic Routing & Canary Releases
 
