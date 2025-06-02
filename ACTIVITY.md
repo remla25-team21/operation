@@ -213,6 +213,7 @@ Created PR:
 Approved PR: 
 - https://github.com/remla25-team21/operation/pull/25  (Related to A5)
 - https://github.com/remla25-team21/app/pull/17  (Related to A5)
+- https://github.com/remla25-team21/operation/pull/30  (Related to A5)
 
 -- Zeryab Alam: --
 Created PR:  
@@ -223,6 +224,7 @@ Approved PR:
 Created PR:  
 - https://github.com/remla25-team21/app/pull/14 (Related to A5)
 - https://github.com/remla25-team21/app/pull/17 (Related to A5)
+- https://github.com/remla25-team21/operation/pull/30 (Related to A5)
 
 Approved PR:  
 - https://github.com/remla25-team21/app/pull/15
