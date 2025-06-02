@@ -22,7 +22,21 @@ The application is monitored using Prometheus, Grafana, Kiali etc, each tracking
 
 _k8 cluster overview diagram_
 
-### 2.2 k8s monitoring Config
+### 2.2 Kubernetes Monitoring Configuration
+
+Monitoring is configured via the integration of the following tools:
+- **Prometheus:**
+    - Scrapes the `/metrics` endpoints of all services at 15 second intervals
+    - Retrieves `total_requests`, `latency`, and `positive_predictions_ratio`
+- **Grafana:**
+    - Visualises the Prometheus metrics via dashboards
+- **Kiali:**
+    - Connects to Istio to monitor inter-service communication
+    - Visualizes inter-service traffic flow and latency 
+    - Updates it's graph every 15 seconds using Istio telemetry data
+- **Jaegar:**
+    - Collects and stores distributed traces across all services
+    - Enables complete end-to-end request lifecycle tracking for debugging
 
 ## 3. Data Flow & Runtime Architecture
 
