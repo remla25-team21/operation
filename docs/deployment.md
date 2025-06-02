@@ -1,7 +1,18 @@
 # Deployment Documentation   
 
 ## 1. Overall System Architecture
-_diagram showing overall architecture and pods and gateway_
+
+The application is deployed on a Kubernetes cluster and uses the Istio service mesh for advanced traffic management.  
+The application is composed of three core components, in addition to the gateway. Each component is deployed with Istio sidecars that manage internal routing:
+
+- **`istio-ingressgateway`**: Acts as the entry point into the system, managing all external traffic entering the Kubernetes cluster.
+- **`app-frontend`**: Handles user interactions and communicates with the `app-service`. It has two active versions (`v1`, `v2`).
+- **`app-service`**: Processes requests from the frontend and forwards them to the `model-service`. It also has two versions (`v1`, `v2`).
+- **`model-service`**: Performs the core tasks and currently runs a single version (`v1`).
+
+The application is monitored using Prometheus, Grafana, Kiali etc, each tracking or displaying different metrics.
+
+![Application Architecture Overview](images/app-overview.png)
 
 ## 2. Deployment Resources & Configuration
 
