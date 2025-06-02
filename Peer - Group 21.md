@@ -11,7 +11,7 @@ The tags to be reviewed for this assignment for each repository are the followin
 - [`model-service`](https://github.com/remla25-team21/model-service): [v1.1.0](https://github.com/remla25-team21/model-service/releases/tag/v1.1.0) 
 - [`lib-version`](https://github.com/remla25-team21/lib-version): [v0.4.0](https://github.com/remla25-team21/lib-version/releases/tag/v0.4.0) 
 - [`app`](https://github.com/remla25-team21/app): [v5.1.0](https://github.com/remla25-team21/app/releases/tag/v5.1.0) 
-- [`operation`](https://github.com/remla25-team21/operation): [v4.0.0](https://github.com/remla25-team21/operation/releases/tag/v4.0.0) 
+- [`operation`](https://github.com/remla25-team21/operation): [v5.0.0](https://github.com/remla25-team21/operation/releases/tag/v5.0.0) 
 
 ## Required Information 
 
