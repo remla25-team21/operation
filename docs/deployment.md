@@ -62,5 +62,56 @@ Upon receiving the request, `app-service` will:
 
 ## 4. Dynamic Routing & Canary Releases
 
-- Canary releases
+Our system leverages Istio service mesh to implement sophisticated dynamic routing and canary release strategies through [VirtualService](https://istio.io/latest/docs/reference/config/networking/virtual-service/) and [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/) resources. This configuration enables us to dynamically control traffic distribution between multiple service versions without modifying service definitions or restarting deployments.
 
+Dynamic routing is implemented across two core components in our deployment:
+
+- **`app-frontend`** - Frontend service maintaining two concurrent versions:
+  - `app-frontend:v1` - baseline version with original UI design
+  - `app-frontend:v2` - experimental version with modified color scheme (background and buttons)
+
+- **`app-service`** - Application service also maintaining dual versions:
+  - `app-service:v1` - baseline version  
+  - `app-service:v2` - enhanced version with additional metrics collection
+
+Each version is distinguished through Kubernetes labels (`version: v1` and `version: v2`), with DestinationRules leveraging these labels to define corresponding traffic subsets.
+
+![image](./images/routing.png)
+
+Our system operates in two distinct routing modes depending on the operational context:
+
+1. **Production Mode (90/10 split)**: Standard canary release pattern where 90% of users experience the stable v1 version and 10% are exposed to the experimental v2 version
+
+2. **Experimentation Mode (50/50 split)**: A/B testing configuration that provides equal traffic distribution to ensure statistical significance in comparing user behavior between versions
+
+**Sticky Session Routing**
+
+The system employs sticky session routing based on the `user` header to ensure consistent user experience:
+
+- Users are deterministically assigned to either v1 or v2 based on their identifier
+- Once assigned, users remain on the same version throughout their session
+- This approach eliminates version-switching confusion and provides reliable experimental data
+
+*For detailed configuration, see [app-frontend VirtualService](kubernetes/helm/sentiment-analysis/templates/appfrontend-virtualservice.yml) and [DestinationRule](kubernetes/helm/sentiment-analysis/templates/appfrontend-destinationrule.yml) in the repository.*
+
+**Routing Logic Flow:**
+
+```
+Incoming Request
+       │
+       ▼
+┌─────────────────┐
+│ Check Headers   │
+│ app-version: ?  │
+└─────────────────┘
+       │
+       ├─── "v1" ────► App-Service v1
+       │
+       ├─── "v2" ────► App-Service v2
+       │
+       └─── missing ──► App-Service v1 (default)
+```
+
+This approach ensures that frontend and backend versions remain synchronized, maintaining consistency in both user experience and metrics collection.
+
+*See [app-service VirtualService configuration](kubernetes/helm/sentiment-analysis/templates/appservice-virtualservice.yml) for implementation details.*
