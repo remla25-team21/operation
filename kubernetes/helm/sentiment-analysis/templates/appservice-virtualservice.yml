@@ -36,7 +36,6 @@ spec:
         - destination:
             host: {{ .Release.Name }}-{{ .Values.appService.name }}
             subset: v1 # Randomly picked. this can be v1 or v2
-          weight: 100
 ---
 # Create a separate VirtualService for external gateway access
 apiVersion: networking.istio.io/v1beta1
@@ -49,15 +48,47 @@ spec:
   gateways:
     - {{ .Release.Name }}-gateway  # Only associate with the gateway
   http:
-    # Rule for requests coming from gateway path
-    - name: "api-gateway-path"
+    - name: "route-to-app-service-v1"
+      match:
+        - uri:
+            prefix: "/api/app-service"
+          headers:
+            app-version:
+              exact: "v1"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: {{ .Release.Name }}-{{ .Values.appService.name }}
+            subset: v1
+            port:
+              number: {{ .Values.appService.service.port }}
+
+    - name: "route-to-app-service-v2"
+      match:
+        - uri:
+            prefix: "/api/app-service"
+          headers:
+            app-version:
+              exact: "v2"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: {{ .Release.Name }}-{{ .Values.appService.name }}
+            subset: v2
+            port:
+              number: {{ .Values.appService.service.port }}
+
+    - name: "default-fallback"
       match:
         - uri:
             prefix: "/api/app-service"
       rewrite:
-        uri: "/"  # Remove the prefix before forwarding
+        uri: "/"
       route:
         - destination:
             host: {{ .Release.Name }}-{{ .Values.appService.name }}
+            subset: v1  # default to v1 only
             port:
               number: {{ .Values.appService.service.port }}

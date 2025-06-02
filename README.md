@@ -125,26 +125,20 @@ Run the following command to start up the local Kubernetes cluster. (Make sure t
    >
    > ```bash
    > kubectl get pods
-   >  ```
-   >
-4. Run the ingress tunnel in another terminal on the host machine:
+   > ```
 
-   ```bash
-   minikube tunnel
-   ```
-
-5. Access the frontend from [`http://192.168.56.91`](http://192.168.56.91).
+4. Access the frontend from [`http://192.168.56.91`](http://192.168.56.91).
 
 #### Verify Sticky Sessions
 
 Sticky routing is enabled in `DestinationRule`. You can use `curl` to simulate multiple users:
 
 ```bash
-for i in {1..5}; do curl -s -H "user: 111" http://192.168.56.91/env-config.js; done
-for i in {1..5}; do curl -s -H "user: 999" http://192.168.56.91/env-config.js; done
+for i in {1..5}; do curl -s -H "user: 6" http://192.168.56.91/env-config.js; done
+for i in {1..5}; do curl -s -H "user: 10" http://192.168.56.91/env-config.js; done
 ```
 
-Users `111` and `999` should always see the same version on each reload.
+Users `6` and `10` should always see the same version on each reload.
 
 ### Method 2: Using Local Minikube
 
@@ -256,9 +250,12 @@ If you prefer to run commands individually:
 For this setup, test sticky sessions with:
 
 ```bash
-for i in {1..5}; do curl -s -H "user: 111" http://[EXTERNAL-IP]/env-config.js; done
-for i in {1..5}; do curl -s -H "user: 999" http://[EXTERNAL-IP]/env-config.js; done
+for i in {1..5}; do curl -s -H "user: 6" http://[EXTERNAL-IP]/env-config.js; done
+for i in {1..5}; do curl -s -H "user: 10" http://[EXTERNAL-IP]/env-config.js; done
 ```
+### Continuous Experimentation 
+
+We used Istio’s traffic routing to run an A/B test between two frontend versions. Prometheus collected usage and satisfaction metrics, and the outcome was visualized in Grafana. Details are in [`docs/continuous-experimentation.md`](https://github.com/remla25-team21/operation/blob/main/docs/continuous-experimentation.md). 
 
 ## Known Issue: macOS Port Conflict (AirPlay Receiver)
 
@@ -280,4 +277,4 @@ We plan to eventually change `app-service` to accomodate environment variables w
 
 ## Activity Tracking
 
-See in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/docs/readme-update/ACTIVITY.md) for an overview of team contributions.
+See in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/main/ACTIVITY.md) for an overview of team contributions. 
