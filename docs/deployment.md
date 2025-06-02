@@ -22,14 +22,21 @@ The application is monitored using Prometheus, Grafana, Kiali etc, each tracking
 
 _k8 cluster overview diagram_
 
-### 2.2 k8s monitoring Config
+### 2.2 Kubernetes Monitoring Configuration
 
-### 2.3 Istio Configuration
-- Gateway setup
-- VirtualService & DestinationRules
-- Routing logic
-
-_routing diagram_
+Monitoring is configured via the integration of the following tools:
+- **Prometheus:**
+    - Scrapes the `/metrics` endpoints of all services at 15 second intervals
+    - Retrieves `total_requests`, `latency`, and `positive_predictions_ratio`
+- **Grafana:**
+    - Visualises the Prometheus metrics via dashboards
+- **Kiali:**
+    - Connects to Istio to monitor inter-service communication
+    - Visualizes inter-service traffic flow and latency 
+    - Updates it's graph every 15 seconds using Istio telemetry data
+- **Jaegar:**
+    - Collects and stores distributed traces across all services
+    - Enables complete end-to-end request lifecycle tracking for debugging
 
 ## 3. Data Flow & Runtime Architecture
 
@@ -43,6 +50,9 @@ The internal VirtualService for `app-service` will then check the `app-version` 
 - If the header is missing or doesn't match, the request defaults to `subset: v1` of the `app-service`.
 
 The request is finally handled by an actual pod of the selected `app-service` version.
+
+The above discussed Istio configuration and routing logic can be visualized in the diagram below:
+![Istio Congiguration](images/istio-config.png)
 
 Upon receiving the request, `app-service` will: 
 - Increment the request count for A/B testing metrics.
