@@ -1,30 +1,62 @@
-# define deployment
+# Deployment for model-service v1
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.modelService.name }}
+  name: {{ .Release.Name }}-{{ .Values.modelService.name }}-v1
   labels:
     app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+    version: v1
 spec:
   replicas: {{ .Values.modelService.replicaCount }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+      version: v1
   template:
     metadata:
       labels:
         app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+        version: v1
     spec:
       containers:
-        - name: {{ .Values.modelService.name }}
-          image: "{{ .Values.modelService.image.repository }}:{{ .Values.modelService.image.tag }}"
+        - name: {{ .Values.modelService.name }}-v1
+          image: "{{ .Values.modelService.image.repository }}"
           imagePullPolicy: {{ .Values.modelService.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.modelService.service.port }}
               protocol: TCP
 ---
-# define service
+# Deployment for model-service v2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.modelService.name }}-v2
+  labels:
+    app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+    version: v2
+spec:
+  replicas: {{ .Values.modelService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+        version: v2
+    spec:
+      containers:
+        - name: {{ .Values.modelService.name }}-v2
+          image: "{{ .Values.modelService.image.repository }}"
+          imagePullPolicy: {{ .Values.modelService.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.modelService.service.port }}
+              protocol: TCP
+---
+# Service for model-service
 apiVersion: v1
 kind: Service
 metadata:
@@ -35,5 +67,6 @@ spec:
   ports:
     - port: {{ .Values.modelService.service.port }}
       targetPort: {{ .Values.modelService.service.port }}
+      name: http-model  # Updated to follow Istio naming convention
       protocol: TCP
   type: {{ .Values.modelService.service.type }}

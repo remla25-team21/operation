@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.modelService.name }}-vs
+spec:
+  hosts:
+    - {{ .Release.Name }}-{{ .Values.modelService.name }}
+  http:
+    - name: "canary-group"
+      match:
+        - headers:
+            user:
+              regex: "^.{0,2}[0-1]"
+      route:
+        - destination:
+            host: {{ .Release.Name }}-{{ .Values.modelService.name }}
+            subset: v2
+
+    - name: "default-group"
+      route:
+        - destination:
+            host: {{ .Release.Name }}-{{ .Values.modelService.name }}
+            subset: v1

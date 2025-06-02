@@ -1,0 +1,25 @@
+{{- if .Values.prometheusRules.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Release.Name }}-rules
+  namespace: default
+  labels:
+    release: prometheus
+    {{- with .Values.prometheusRules.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  groups:
+    - name: {{ .Release.Name }}.rules
+      rules:
+        - alert: HighSentimentPredictionRate
+          expr: rate(sentiment_predictions_total[1m]) > 10
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High sentiment prediction rate detected"
+            description: "The service {{ .Values.appService.name }}-{{ .Release.Name }} is receiving more than 10 sentiment predictions per minute"
+            runbook_url: "https://example.com/runbooks/high-sentiment-prediction-rate"
+{{- end }}

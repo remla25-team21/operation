@@ -1,27 +1,74 @@
-# define deployment
+# Deployment for appService v1
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.appService.name }}
+  name: {{ .Release.Name }}-{{ .Values.appService.name }}-v1
   labels:
     app: {{ .Release.Name }}-{{ .Values.appService.name }}
+    version: v1
 spec:
   replicas: {{ .Values.appService.replicaCount }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}-{{ .Values.appService.name }}
+      version: v1
   template:
     metadata:
       labels:
         app: {{ .Release.Name }}-{{ .Values.appService.name }}
+        version: v1
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
         prometheus.io/port: "{{ .Values.appService.service.port }}"
     spec:
       containers:
-      - name: {{ .Values.appService.name }}
+      - name: {{ .Values.appService.name }}-v1
         image: {{ .Values.appService.image.repository }}:{{ .Values.appService.image.tag }}
+        imagePullPolicy: {{ .Values.appService.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.appService.service.port }}
+          name: http
+          protocol: TCP
+        envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-app-configmap
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.appService.service.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+
+---
+# Deployment for appService v2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.appService.name }}-v2
+  labels:
+    app: {{ .Release.Name }}-{{ .Values.appService.name }}
+    version: v2
+spec:
+  replicas: {{ .Values.appService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.appService.name }}
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.appService.name }}
+        version: v2
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "{{ .Values.appService.service.port }}"
+    spec:
+      containers:
+      - name: {{ .Values.appService.name }}-v2
+        image: {{ .Values.appService.image.repository }}:{{ .Values.appService.image.tagV2 | default .Values.appService.image.tag }}
         imagePullPolicy: {{ .Values.appService.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.appService.service.port }}
@@ -55,6 +102,6 @@ spec:
   ports:
     - port: {{ .Values.appService.service.port }}
       targetPort: {{ .Values.appService.service.port }}
-      name: http
+      name: http-api
       protocol: TCP
   type: {{ .Values.appService.service.type }}

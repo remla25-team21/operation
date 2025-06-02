@@ -1,312 +1,326 @@
 - hosts: all
-  gather_facts: false
+  gather_facts: true
   become: true
   tasks:
-    # Pre-configure parallel processing
-    - name: Configure apt for parallel downloads
-      copy:
-        dest: /etc/apt/apt.conf.d/99parallel-downloads
-        content: |
-          Acquire::Queue-mode "host";
-          Acquire::http::Pipeline-Depth "10";
-          Acquire::http::Timeout "180";
-          Acquire::https::Timeout "180";
-          Acquire::http::Dl-Limit "0";
-          Acquire::https::Dl-Limit "0";
-          APT::Install-Recommends "false";
-          Acquire::Languages "none";
-          APT::Get::Install-Suggests "false";
-          Dpkg::Options { "--force-confdef"; "--force-confold"; }
-        mode: '0644'
-      register: apt_parallel_conf
+  # Pre-configure parallel processing
+  - name: Configure apt for parallel downloads
+    copy:
+      dest: /etc/apt/apt.conf.d/99parallel-downloads
+      content: |
+        Acquire::Queue-mode "host";
+        Acquire::http::Pipeline-Depth "10";
+        Acquire::http::Timeout "180";
+        Acquire::https::Timeout "180";
+        Acquire::http::Dl-Limit "0";
+        Acquire::https::Dl-Limit "0";
+        APT::Install-Recommends "false";
+        Acquire::Languages "none";
+        APT::Get::Install-Suggests "false";
+        Dpkg::Options { "--force-confdef"; "--force-confold"; }
+      mode: '0644'
+    register: apt_parallel_conf
 
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-      throttle: 1  # Limit to one host at a time for better network utilization
+  - name: Update apt cache
+    apt:
+      update_cache: yes
+    throttle: 1 # Limit to one host at a time for better network utilization
 
-    # Add faster Ubuntu mirror sources
-    - name: Configure Ubuntu apt mirror
-      ansible.builtin.copy:
-        dest: /etc/apt/sources.list.d/official-ubuntu-mirrors.list
-        content: |
-          deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
-          deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
-        mode: '0644'
-      register: mirror_added
-      
-    - name: Update apt cache after mirror change (only if needed)
-      apt:
-        update_cache: yes
-      when: mirror_added.changed
-          
-    # Install essential packages in one batch
-    - name: Install common packages
-      apt:
-        name:
-          - curl
-          - apt-transport-https
-          - ca-certificates
-        state: present
-        install_recommends: no
-        force_apt_get: yes
-        cache_valid_time: 3600
+  # Add faster Ubuntu mirror sources
+  - name: Configure Ubuntu apt mirror
+    ansible.builtin.copy:
+      dest: /etc/apt/sources.list.d/official-ubuntu-mirrors.list
+      content: |
+        {% if ansible_architecture == "aarch64" or ansible_architecture == "arm64" %}
+        deb http://ports.ubuntu.com/ubuntu-ports/ noble main restricted universe multiverse
+        deb http://ports.ubuntu.com/ubuntu-ports/ noble-security main restricted universe multiverse
+        deb http://ports.ubuntu.com/ubuntu-ports/ noble-updates main restricted universe multiverse
+        {% elif ansible_architecture == "x86_64" %}
+        deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
+        deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
+        deb http://archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
+        {% else %}
+        # Fallback or error for other unhandled architectures
+        # Or use a generic one and hope for the best, though not ideal
+        deb http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
+        deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
+        deb http://archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
+        {% endif %}
+      mode: '0644'
+    register: mirror_added
 
-    # Step 4: 
-    - name: Create .ssh directory for vagrant user
-      file:
-        path: /home/vagrant/.ssh
-        state: directory
-        owner: vagrant
-        group: vagrant
-        mode: '0700'
+  - name: Update apt cache after mirror change (only if needed)
+    apt:
+      update_cache: yes
+    when: mirror_added.changed
 
-    - name: Register all public SSH keys
-      ansible.posix.authorized_key:
-        user: vagrant
-        state: present
-        key: "{{ lookup('file', item) }}"
-      with_fileglob:
-        - "../../ssh_keys/*.pub"
+  # Install essential packages in one batch
+  - name: Install common packages
+    apt:
+      name:
+      - curl
+      - apt-transport-https
+      - ca-certificates
+      state: present
+      install_recommends: no
+      force_apt_get: yes
+      cache_valid_time: 3600
+    throttle: 1
 
-    # Step 5: 
-    # Disable SWAP - parallel steps for efficiency
-    - name: Disable SWAP (immediate and persistent)
-      block:
-        - name: Disable SWAP
-          ansible.builtin.shell: swapoff -a
+  # Step 4: 
+  - name: Create .ssh directory for vagrant user
+    file:
+      path: /home/vagrant/.ssh
+      state: directory
+      owner: vagrant
+      group: vagrant
+      mode: '0700'
 
-        - name: Remove SWAP entry from /etc/fstab
-          ansible.builtin.lineinfile:
-            path: /etc/fstab
-            regexp: '^\s*[^#]*\s+swap\s+'
-            state: absent
+  - name: Register all public SSH keys
+    ansible.posix.authorized_key:
+      user: vagrant
+      state: present
+      key: "{{ lookup('file', item) }}"
+    with_fileglob:
+    - "../../ssh_keys/*.pub"
 
-        - name: Verify SWAP is disabled
-          ansible.builtin.shell: swapon --summary
-          register: swap_status
-          changed_when: false
-          failed_when: swap_status.stdout != ""
+  # Step 5: 
+  # Disable SWAP - parallel steps for efficiency
+  - name: Disable SWAP (immediate and persistent)
+    block:
+    - name: Disable SWAP
+      ansible.builtin.shell: swapoff -a
 
-    # Step 6: 
-    - name: Ensure br_netfilter and overlay modules are loaded on boot
-      ansible.builtin.copy:
-        dest: /etc/modules-load.d/k8s.conf
-        content: |
-          overlay
-          br_netfilter
-        owner: root
-        group: root
-        mode: '0644'
+    - name: Remove SWAP entry from /etc/fstab
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        regexp: '^\s*[^#]*\s+swap\s+'
+        state: absent
 
-    - name: Load br_netfilter module immediately
-      community.general.modprobe:
-        name: br_netfilter
-        state: present
-
-    - name: Load overlay module immediately
-      community.general.modprobe:
-        name: overlay
-        state: present
-
-    - name: Verify br_netfilter is loaded
-      ansible.builtin.shell: lsmod | grep -w br_netfilter
-      register: br_netfilter_check
+    - name: Verify SWAP is disabled
+      ansible.builtin.shell: swapon --summary
+      register: swap_status
       changed_when: false
-      failed_when: br_netfilter_check.stdout == ""
-      tags: verify
+      failed_when: swap_status.stdout != ""
 
-    - name: Verify overlay is loaded
-      ansible.builtin.shell: lsmod | grep -w overlay
-      register: overlay_check
-      changed_when: false
-      failed_when: overlay_check.stdout == ""
-      tags: verify
+  # Step 6: 
+  - name: Ensure br_netfilter and overlay modules are loaded on boot
+    ansible.builtin.copy:
+      dest: /etc/modules-load.d/k8s.conf
+      content: |
+        overlay
+        br_netfilter
+      owner: root
+      group: root
+      mode: '0644'
 
-    - name: Confirm modules listed in /etc/modules-load.d/k8s.conf
-      ansible.builtin.shell: cat /etc/modules-load.d/k8s.conf
-      register: modules_file_check
-      changed_when: false
-      failed_when: "'overlay' not in modules_file_check.stdout or 'br_netfilter' not in modules_file_check.stdout"
-      tags: verify
+  - name: Load br_netfilter module immediately
+    community.general.modprobe:
+      name: br_netfilter
+      state: present
 
-    # Step 7: 
-    - name: Enable net.ipv4.ip_forward
-      ansible.posix.sysctl:
-        name: net.ipv4.ip_forward
-        value: '1'
-        state: present
-        sysctl_set: yes
-        reload: yes
+  - name: Load overlay module immediately
+    community.general.modprobe:
+      name: overlay
+      state: present
 
-    - name: Enable net.bridge.bridge-nf-call-iptables
-      ansible.posix.sysctl:
-        name: net.bridge.bridge-nf-call-iptables
-        value: '1'
-        state: present
-        sysctl_set: yes
-        reload: yes
+  - name: Verify br_netfilter is loaded
+    ansible.builtin.shell: lsmod | grep -w br_netfilter
+    register: br_netfilter_check
+    changed_when: false
+    failed_when: br_netfilter_check.stdout == ""
+    tags: verify
 
-    - name: Enable net.bridge.bridge-nf-call-ip6tables
-      ansible.posix.sysctl:
-        name: net.bridge.bridge-nf-call-ip6tables
-        value: '1'
-        state: present
-        sysctl_set: yes
-        reload: yes
+  - name: Verify overlay is loaded
+    ansible.builtin.shell: lsmod | grep -w overlay
+    register: overlay_check
+    changed_when: false
+    failed_when: overlay_check.stdout == ""
+    tags: verify
 
-    - name: Confirm IPv4 forwarding is enabled
-      ansible.builtin.shell: sysctl net.ipv4.ip_forward
-      register: ipv4_forward
-      changed_when: false
-      failed_when: "'1' not in ipv4_forward.stdout"
+  - name: Confirm modules listed in /etc/modules-load.d/k8s.conf
+    ansible.builtin.shell: cat /etc/modules-load.d/k8s.conf
+    register: modules_file_check
+    changed_when: false
+    failed_when: "'overlay' not in modules_file_check.stdout or 'br_netfilter' not in modules_file_check.stdout"
+    tags: verify
 
-    - name: Confirm iptables bridge call is enabled
-      ansible.builtin.shell: sysctl net.bridge.bridge-nf-call-iptables
-      register: nf_call_iptables
-      changed_when: false
-      failed_when: "'1' not in nf_call_iptables.stdout"
+  # Step 7: 
+  - name: Enable net.ipv4.ip_forward
+    ansible.posix.sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      state: present
+      sysctl_set: yes
+      reload: yes
 
-    - name: Confirm ip6tables bridge call is enabled
-      ansible.builtin.shell: sysctl net.bridge.bridge-nf-call-ip6tables
-      register: nf_call_ip6tables
-      changed_when: false
-      failed_when: "'1' not in nf_call_ip6tables.stdout"
-    
-    # Step 8: 
-    - name: Copy static /etc/hosts file to all nodes
-      ansible.builtin.copy:
-        src: ../inventory/hosts
-        dest: /etc/hosts
-        owner: root
-        group: root
-        mode: '0644'
-      tags: update_hosts
+  - name: Enable net.bridge.bridge-nf-call-iptables
+    ansible.posix.sysctl:
+      name: net.bridge.bridge-nf-call-iptables
+      value: '1'
+      state: present
+      sysctl_set: yes
+      reload: yes
 
-    # Step 9: Add kubernetes repository
-    - name: Create keyring directory
-      file:
-        path: /etc/apt/keyrings
-        state: directory
-        mode: '0755'
+  - name: Enable net.bridge.bridge-nf-call-ip6tables
+    ansible.posix.sysctl:
+      name: net.bridge.bridge-nf-call-ip6tables
+      value: '1'
+      state: present
+      sysctl_set: yes
+      reload: yes
 
-    # Add apt configuration to improve download speed
-    - name: Create apt.conf.d directory
-      file:
-        path: /etc/apt/apt.conf.d
-        state: directory
-        mode: '0755'
+  - name: Confirm IPv4 forwarding is enabled
+    ansible.builtin.shell: sysctl net.ipv4.ip_forward
+    register: ipv4_forward
+    changed_when: false
+    failed_when: "'1' not in ipv4_forward.stdout"
 
-    - name: Configure apt for faster downloads
-      copy:
-        dest: /etc/apt/apt.conf.d/99faster-downloads
-        content: |
-          Acquire::Queue-mode "host";
-          Acquire::http::Pipeline-Depth "5";
-          Acquire::http::Timeout "180";
-          Acquire::https::Timeout "180";
-          APT::Install-Recommends "false";
-        mode: '0644'
+  - name: Confirm iptables bridge call is enabled
+    ansible.builtin.shell: sysctl net.bridge.bridge-nf-call-iptables
+    register: nf_call_iptables
+    changed_when: false
+    failed_when: "'1' not in nf_call_iptables.stdout"
 
-    - name: Add Kubernetes GPG key
-      ansible.builtin.apt_key:
-        url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
-        keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-        state: present
+  - name: Confirm ip6tables bridge call is enabled
+    ansible.builtin.shell: sysctl net.bridge.bridge-nf-call-ip6tables
+    register: nf_call_ip6tables
+    changed_when: false
+    failed_when: "'1' not in nf_call_ip6tables.stdout"
 
-    - name: Add Kubernetes APT repository
-      ansible.builtin.apt_repository:
-        repo: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /
-        filename: kubernetes
-        state: present
+  # Step 8: 
+  - name: Copy static /etc/hosts file to all nodes
+    ansible.builtin.copy:
+      src: ../inventory/hosts
+      dest: /etc/hosts
+      owner: root
+      group: root
+      mode: '0644'
+    tags: update_hosts
 
-    - name: Update apt cache after adding Kubernetes repo
-      apt:
-        update_cache: yes
+  # Step 9: Add kubernetes repository
+  - name: Create keyring directory
+    file:
+      path: /etc/apt/keyrings
+      state: directory
+      mode: '0755'
 
-    # Step 10: Install K8s tools
-    # Optimized ContainerD installation
-    - name: Check if containerd is already installed
-      command: dpkg-query -W -f='${Status}' containerd
-      register: containerd_check
-      failed_when: false
-      changed_when: false
+  # Add apt configuration to improve download speed
+  - name: Create apt.conf.d directory
+    file:
+      path: /etc/apt/apt.conf.d
+      state: directory
+      mode: '0755'
 
-    - name: Install containerd packages efficiently
-      apt:
-        name: containerd
-        state: present
-        force: yes
-        install_recommends: no
-        update_cache: no  # Already updated
-        dpkg_options: 'force-confold,force-confdef'
-      when: containerd_check.rc != 0 or containerd_check.stdout.find('install ok installed') == -1
-      register: containerd_installed
+  - name: Configure apt for faster downloads
+    copy:
+      dest: /etc/apt/apt.conf.d/99faster-downloads
+      content: |
+        Acquire::Queue-mode "host";
+        Acquire::http::Pipeline-Depth "5";
+        Acquire::http::Timeout "180";
+        Acquire::https::Timeout "180";
+        APT::Install-Recommends "false";
+      mode: '0644'
 
-    # Add apt mirror source configuration, using faster mirror sources
-    - name: Ensure apt HTTP transport is installed
-      apt:
-        name: apt-transport-https
-        state: present
-        update_cache: yes
+  - name: Add Kubernetes GPG key
+    ansible.builtin.apt_key:
+      url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
+      keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      state: present
 
-    - name: Install runc
-      apt:
-        name: runc
-        state: present
+  - name: Add Kubernetes APT repository
+    ansible.builtin.apt_repository:
+      repo: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /
+      filename: kubernetes
+      state: present
 
-    - name: Install Kubernetes tools
-      apt:
-        name:
-          - kubelet=1.32.4-1.1
-          - kubeadm=1.32.4-1.1
-          - kubectl=1.32.4-1.1
-        state: present
-        allow_downgrade: yes
-        
-    # Step 11: Configure Containerd
-    - name: Create containerd config directory
-      file:
-        path: /etc/containerd
-        state: directory
-        mode: '0755'
+  - name: Update apt cache after adding Kubernetes repo
+    apt:
+      update_cache: yes
 
-    - name: Generate default containerd config
-      shell: containerd config default > /etc/containerd/config.toml
-      args:
-        creates: /etc/containerd/config.toml
+  # Step 10: Install K8s tools
+  # Optimized ContainerD installation
+  - name: Check if containerd is already installed
+    command: dpkg-query -W -f='${Status}' containerd
+    register: containerd_check
+    failed_when: false
+    changed_when: false
 
-    - name: Disable AppArmor in containerd config
-      lineinfile:
-        path: /etc/containerd/config.toml
-        regexp: '^\s*disable_apparmor\s*='
-        line: '            disable_apparmor = true'
-        state: present
+  - name: Install containerd packages efficiently
+    apt:
+      name: containerd
+      state: present
+      force: yes
+      install_recommends: no
+      update_cache: no # Already updated
+      dpkg_options: 'force-confold,force-confdef'
+    when: containerd_check.rc != 0 or containerd_check.stdout.find('install ok installed') == -1
+    register: containerd_installed
 
-    - name: Update sandbox image in containerd config
-      lineinfile:
-        path: /etc/containerd/config.toml
-        regexp: '^\s*sandbox_image\s*='
-        line: '            sandbox_image = "registry.k8s.io/pause:3.10"'
-        state: present
+  # Add apt mirror source configuration, using faster mirror sources
+  - name: Ensure apt HTTP transport is installed
+    apt:
+      name: apt-transport-https
+      state: present
+      update_cache: yes
 
-    - name: Enable SystemdCgroup in containerd config
-      lineinfile:
-        path: /etc/containerd/config.toml
-        regexp: '^\s*SystemdCgroup\s*='
-        line: '          SystemdCgroup = true'
-        state: present
+  - name: Install runc
+    apt:
+      name: runc
+      state: present
 
-    - name: Restart containerd
-      service:
-        name: containerd
-        state: restarted
-        enabled: yes
+  - name: Install Kubernetes tools
+    apt:
+      name:
+      - kubelet=1.32.4-1.1
+      - kubeadm=1.32.4-1.1
+      - kubectl=1.32.4-1.1
+      state: present
+      allow_downgrade: yes
+    throttle: 1
 
-    # Step 12: Start and enable kubelet
-    - name: Enable and start kubelet
-      service:
-        name: kubelet
-        state: started
-        enabled: yes
+  # Step 11: Configure Containerd
+  - name: Create containerd config directory
+    file:
+      path: /etc/containerd
+      state: directory
+      mode: '0755'
+
+  - name: Generate default containerd config
+    shell: containerd config default > /etc/containerd/config.toml
+    args:
+      creates: /etc/containerd/config.toml
+
+  - name: Disable AppArmor in containerd config
+    lineinfile:
+      path: /etc/containerd/config.toml
+      regexp: '^\s*disable_apparmor\s*='
+      line: '            disable_apparmor = true'
+      state: present
+
+  - name: Update sandbox image in containerd config
+    lineinfile:
+      path: /etc/containerd/config.toml
+      regexp: '^\s*sandbox_image\s*='
+      line: '            sandbox_image = "registry.k8s.io/pause:3.10"'
+      state: present
+
+  - name: Enable SystemdCgroup in containerd config
+    lineinfile:
+      path: /etc/containerd/config.toml
+      regexp: '^\s*SystemdCgroup\s*='
+      line: '          SystemdCgroup = true'
+      state: present
+
+  - name: Restart containerd
+    service:
+      name: containerd
+      state: restarted
+      enabled: yes
+
+  # Step 12: Start and enable kubelet
+  - name: Enable and start kubelet
+    service:
+      name: kubelet
+      state: started
+      enabled: yes

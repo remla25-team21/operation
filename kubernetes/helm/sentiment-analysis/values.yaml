@@ -16,7 +16,8 @@ appService:
   replicaCount: 1
   image:
     repository: ghcr.io/remla25-team21/app-backend
-    tag: latest
+    tag: "5.0.latest"       # used for v1
+    tagV2: "5.1.latest"     # used for v2
     pullPolicy: Always
   service:
     type: ClusterIP
@@ -28,11 +29,20 @@ appFrontend:
   replicaCount: 1
   image:
     repository: ghcr.io/remla25-team21/app-frontend
-    tag: latest
+    tag: "5.0.latest"       # used for v1
+    tagV2: "5.1.latest"     # used for v2
     pullPolicy: Always
   service:
     type: ClusterIP
     port: 3000
+
+# Istio Gateway configuration
+istio:
+  ingressGateway:
+    # You can override this value during installation with --set istio.ingressGateway.host=<IP address>
+      host: ""  # Default is empty, will be handled by template logic
+      scheme: "http"
+      apiPath: "/api/app-service"
 
 # Ingress configuration
 ingress:
@@ -40,16 +50,14 @@ ingress:
   className: "nginx"
   annotations: {}
   hosts:
-    - host: sentiment-analysis.local
-      paths:
-        - path: /
-          pathType: Prefix
+  - host: sentiment-analysis.local
+    paths:
+    - path: /
+      pathType: Prefix
 
 # ConfigMap configuration (to store environment variables)
 configMap:
   create: true
-  data:
-    MODEL_SERVICE_URL: "http://model-service:8080"
 
 # Prometheus monitoring configuration
 monitoring:
@@ -58,6 +66,12 @@ monitoring:
     enabled: true
     additionalLabels:
       prometheus: kube-prometheus
+
+# PrometheusRules configuration
+prometheusRules:
+  enabled: true
+  additionalLabels:
+    release: prometheus
 
 # Grafana dashboard configuration
 grafana:
@@ -70,3 +84,30 @@ secret:
   create: true
   data:
     SECRET_KEY: verysecretkey
+    smtpPassword: ""
+
+# AlertManager configuration for email alerts
+alertmanager:
+  enabled: true
+  config:
+    global:
+      smtp_smarthost: 'smtp.example.com:587'
+      smtp_from: 'alertmanager@example.com'
+      smtp_auth_username: 'alertmanager'
+      smtp_auth_password: '{{ .Values.secret.data.smtpPassword }}'
+      smtp_require_tls: true
+    route:
+      group_by: [ 'alertname', 'severity' ]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      receiver: 'email-notifications'
+      routes:
+      - match:
+          severity: warning
+        receiver: 'email-notifications'
+    receivers:
+    - name: 'email-notifications'
+      email_configs:
+      - to: 'remla25-team21@example.com'
+        send_resolved: true
