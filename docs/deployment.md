@@ -17,10 +17,48 @@ The application is monitored using Prometheus, Grafana, Kiali etc, each tracking
 ## 2. Deployment Resources & Configuration
 
 ### 2.1 Kubernetes Resources
-- Deployments, Services
-- ConfigMaps, Secrets
+The following tables outline all essential Kubernetes resources that can be found under `helm/sentiment-analysis/templates`:
 
-_k8 cluster overview diagram_
+**Gateway Resources**
+| File               | Type     | Description                                                                                          |
+|--------------------|----------|------------------------------------------------------------------------------------------------------|
+| ingress.yaml       | Ingress  | Configures HTTP routing with Helm templating, routing to app-frontend       |
+| istio-ingress.yaml | Gateway  | Defines an Istio Gateway to manage external HTTP traffic entering the mesh via the ingress gateway   |
+
+
+**Application Resources**
+| File                             | Type                   | Description                                                                                          |
+|----------------------------------|------------------------|------------------------------------------------------------------------------------------------------|
+| app-frontend.yaml                | Deployment & Service   | Deploys a container hosting 2 different versions of the app-frontend separated via the image tag.   |
+| appfrontend-destinationrule.yml | DestinationRule        | Provides 2 different versions of app-frontend                                                        |
+| appfrontend-visualservice.yml   | VirtualService         | Handles direction of users to the different versions of app-frontend                                 |
+| app-service.yaml                | Deployment & Service   | Deploys a container hosting 2 different versions of the app-service separated via the image tag.    |
+| appservice-destinationrule.yml  | DestinationRule        | Provides 2 different versions of app-service                                                         |
+| appservice-visualservice.yml    | VirtualService         | Routes users to different versions of app-service based on requests coming from app-frontend        |
+| model-service.yaml              | Deployment & Service   | Deploys a container with 2 instances of model-service using the same image, treated as one version  |
+| model-service-destinationrule.yml| DestinationRule        | Provides logical separation for model-service traffic (same image)          |
+| model-service-visualservice.yml  | VirtualService         | Routes requests to the model-service instance      s             |
+
+**Monitoring Resources**
+| File                   | Type              | Description                                                                                                  |
+|------------------------|-------------------|--------------------------------------------------------------------------------------------------------------|
+| alertmanager-config.yaml | AlertmanagerConfig | Defines routing and receiver configuration for alerts & warnings            |
+| prometheusrule.yaml     | PrometheusRule     | Specifies alerting rules      |
+| servicemonitor.yaml     | ServiceMonitor     | Configures scraping of `/metrics` endpoint from app-service for Prometheus monitoring every 15 seconds       |
+
+**Miscellaneous**
+| File                          | Type        | Description                                                                                             |
+|-------------------------------|-------------|---------------------------------------------------------------------------------------------------------|
+| app-configmap.yaml            | ConfigMap   | Provides configuration data for the application     |
+| grafana-dashboard-configmap.yaml | ConfigMap   | Contains dashboard definitions and Prometheus queries for Grafana visualizations                        |
+| secret.yaml                   | Secret      | Stores sensitive data as key-value pairs using Kubernetes Secret                |
+
+The following table outlines additional Istio monitoring resources located under `kubernetes/istio-addons`:
+| File          | Description                                             |
+|---------------|---------------------------------------------------------|
+| jaegar.yaml   | Configures Jaeger for distributed tracing               |
+| kiali.yaml    | Sets up Kiali for monitoring and managing Istio service mesh |
+| prometheus.yaml | Deploys Prometheus for metrics collection and monitoring |
 
 ### 2.2 Kubernetes Monitoring Configuration
 
