@@ -20,8 +20,11 @@ The tags to be reviewed for this assignment for each repository are the followin
 - A high-level overview and architecture of the sentiment analysis application 
 - Docker Compose usage instructions for local development 
 - Detailed Helm deployment instructions 
-- Monitoring setup with Prometheus, Grafana, and a custom dashboard 
-- ML configuration management with DVC, pylint, flake8 and bandit, and ML testing with pytest
+- Monitoring setup with Prometheus and Grafana 
+- ML configuration management with DVC, pylint, flake8, and bandit 
+- ML testing with pytest 
+- Istio-based deployment with Gateway, VirtualService, DestinationRule, and sticky session routing 
+- Continuous Experimentation (A/B test using Istio and CE metrics dashboard) 
 
 ## Review Scope 
 
