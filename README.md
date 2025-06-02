@@ -250,9 +250,12 @@ If you prefer to run commands individually:
 For this setup, test sticky sessions with:
 
 ```bash
-for i in {1..5}; do curl -s -H "user: 111" http://[EXTERNAL-IP]/env-config.js; done
-for i in {1..5}; do curl -s -H "user: 999" http://[EXTERNAL-IP]/env-config.js; done
+for i in {1..5}; do curl -s -H "user: 6" http://[EXTERNAL-IP]/env-config.js; done
+for i in {1..5}; do curl -s -H "user: 10" http://[EXTERNAL-IP]/env-config.js; done
 ```
+### Continuous Experimentation 
+
+We used Istio’s traffic routing to run an A/B test between two frontend versions. Prometheus collected usage and satisfaction metrics, and the outcome was visualized in Grafana. Details are in [`docs/continuous-experimentation.md`](https://github.com/remla25-team21/operation/blob/main/docs/continuous-experimentation.md). 
 
 ## Known Issue: macOS Port Conflict (AirPlay Receiver)
 
@@ -274,4 +277,4 @@ We plan to eventually change `app-service` to accomodate environment variables w
 
 ## Activity Tracking
 
-See in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/docs/readme-update/ACTIVITY.md) for an overview of team contributions.
+See in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/main/ACTIVITY.md) for an overview of team contributions. 
