@@ -1,29 +1,49 @@
 services:
   app-frontend:
     container_name: app-frontend
-    # build: "../../app/app-frontend"
-    image: ghcr.io/remla25-team21/app-frontend
+    build: "../../app/app-frontend"
+    #image: ghcr.io/remla25-team21/app-frontend
     ports:
       - 3000:3000
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - REACT_APP_BACKEND_URL=http://app-service:5000
+    restart: always
 
   app-service:
-    # build: "../../app/app-service"
-    image: ghcr.io/remla25-team21/app-backend
+    container_name: app-service
+    build: "../../app/app-service"
+    #image: ghcr.io/remla25-team21/app-backend
     ports:
       - 5000:5000
+    volumes:
+      - ./logs:/app/logs
     environment:
-      - MODEL_SERVICE_URL=http://model-service:8080
+      - MODEL_SERVICE_URL=http://model-service:${MODEL_SERVICE_PORT}
+    restart: always
     depends_on:
       model-service:
         condition: service_healthy
 
   model-service:
-    # build: "../../model-service"
     container_name: model-service
-    image: ghcr.io/remla25-team21/model-service
+    build: "../../model-service"
+    #image: ghcr.io/remla25-team21/model-service
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - PORT=${MODEL_SERVICE_PORT}
+    restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      test: curl -f "http://localhost:${MODEL_SERVICE_PORT:-8080}" || exit 1
       interval: 30s
       retries: 5
       start_period: 10s
       timeout: 10s
+    secrets:
+      - my_secret
+
+secrets:
+  my_secret:
+    file: ./secrets/very_secret.txt
