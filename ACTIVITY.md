@@ -239,3 +239,35 @@ Created PR:
 Approved PR:  
 - https://github.com/remla25-team21/app/pull/15
 - https://github.com/remla25-team21/app/pull/16
+
+# Week 7:
+
+-- Bohong Lu: --  
+Created PR:  
+- https://github.com/remla25-team21/.github/pull/1 (Related to Final Submission)
+
+Approved PR:  
+- https://github.com/remla25-team21/model-service/pull/3
+
+-- Kanta Tanahashi: --  
+Created PR:  
+- https://github.com/remla25-team21/model-service/pull/3 (Related to A1)
+
+Approved PR:
+
+-- Yizhen Zang: --  
+Created PR:   
+Approved PR: 
+- https://github.com/remla25-team21/.github/pull/2
+
+-- Zeryab Alam: --  
+Created PR:    
+Approved PR:  
+
+
+-- Raghav Talwar: --  
+Created PR:  
+- https://github.com/remla25-team21/.github/pull/2 (Related to Final Submission)
+
+Approved PR:  
+- https://github.com/remla25-team21/.github/pull/1
