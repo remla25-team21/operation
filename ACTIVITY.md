@@ -279,6 +279,7 @@ Created PR:
 - https://github.com/remla25-team21/lib-ml/pull/4 (Related to A1)
 
 Approved PR:  
+- https://github.com/remla25-team21/operation/pull/33
 
 -- Kanta Tanahashi: --  
 Created PR:  
@@ -287,6 +288,7 @@ Approved PR:
 
 -- Yizhen Zang: --  
 Created PR:   
+- https://github.com/remla25-team21/operation/pull/33  (Related to A3)
 
 Approved PR: 
 
