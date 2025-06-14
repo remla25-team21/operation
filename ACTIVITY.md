@@ -271,3 +271,32 @@ Created PR:
 
 Approved PR:  
 - https://github.com/remla25-team21/.github/pull/1
+
+# Week 8:
+
+-- Bohong Lu: --  
+Created PR:  
+- https://github.com/remla25-team21/lib-ml/pull/4 (Related to A1)
+
+Approved PR:  
+
+-- Kanta Tanahashi: --  
+Created PR:  
+
+Approved PR:
+
+-- Yizhen Zang: --  
+Created PR:   
+
+Approved PR: 
+
+-- Zeryab Alam: --  
+Created PR:    
+
+Approved PR:  
+
+
+-- Raghav Talwar: --  
+Created PR:  
+
+Approved PR:  
