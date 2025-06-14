@@ -76,6 +76,24 @@ Monitoring is configured via the integration of the following tools:
     - Collects and stores distributed traces across all services
     - Enables complete end-to-end request lifecycle tracking for debugging
 
+### 2.3 Vagrant Deployment Configuration
+
+The Vagrant deployment automates the setting up of Kubernetes with Istio. Using a multi-stage Ansible approach, it automatically spins up a complete, production-like cluster in a virtual environment.
+
+#### 2.3.1 Infrastructure Layout
+
+The Vagrant environment provisions the following virtual machines:
+- **Controller Node (`ctrl`):** Master node running at `192.168.56.100`
+  - Hosts Kubernetes control plane components
+  - Serves as the primary entry point for kubectl commands
+- **Worker Node (`node`):** Worker nodes running at `192.168.56.101` & `192.168.56.102`
+  - Execute application workloads and pods
+  - Provide compute resources for the sentiment analysis application
+
+#### 2.3.2 Deployment Pipeline
+write more bs
+
+
 ## 3. Data Flow & Runtime Architecture
 
 The entrypoint of our application is its frontend. When a user types a review and submits it, the frontend is configured to send this request to a URL like `http://192.168.49.2/api/app-service/predict`. The hostname (`192.168.49.2` in this example) must resolve to the externally accessible IP address of the Istio Ingress Gateway. When running a local cluster using Minikube, this IP is provided by running the `minikube tunnel` command and using the `EXTERNAL-IP` assigned to the `istio-ingressgateway` service.
