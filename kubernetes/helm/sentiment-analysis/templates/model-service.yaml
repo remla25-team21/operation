@@ -26,6 +26,14 @@ spec:
             - name: http
               containerPort: {{ .Values.modelService.service.port }}
               protocol: TCP
+          volumeMounts:
+            - name: shared-volume
+              mountPath: /app/shared
+      volumes:
+        - name: shared-volume
+          hostPath:
+            path: /mnt/shared
+            type: Directory
 ---
 # Deployment for model-service v2
 apiVersion: apps/v1

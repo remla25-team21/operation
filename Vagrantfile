@@ -35,6 +35,8 @@ Vagrant.configure("2") do |config|
       ip = "192.168.56.#{100 + i}" # IP assignment based on order in LABELS
       machine.vm.network "private_network", ip: ip
 
+      machine.vm.synced_folder "./shared", "/mnt/shared", create: true
+
       # Configure resources
       machine.vm.provider "virtualbox" do |vb|
         vb.name = name
