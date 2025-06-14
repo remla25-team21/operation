@@ -236,11 +236,7 @@ No manual import is required. The dashboard is automatically loaded by Grafana u
    * **Username:** `admin` 
    * **Password:** `prom-operator` (default) 
 
-4. Navigate to **Dashboards -> Browse** and open the dashboard titled "Dashboard".
-
-Here’s a section you can **append near the end of the README** (e.g., after “Accessing Grafana”) to guide users on how to **verify the volume mount via Minikube** — specifically for `/mnt/shared` in the `model-service`:
-
----
+4. Navigate to **Dashboards -> Browse** and open the dashboard titled "Dashboard". 
 
 ## Verifying HostPath Volume Mount (Shared Folder)
 The `model-service` (`v1`) is configured to mount a directory from the Minikube host (`/mnt/shared`) into the container at `/app/shared`. This allows all pods to access the same shared host directory. You can verify that this volume mount is working by following the steps below. 
