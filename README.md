@@ -3,14 +3,28 @@
 This is the central repository for a REMLA project by Group 21. The application performs sentiment analysis on user feedback using a machine learning model. This repository orchestrates the following components hosted in separate repositories:
 
 - [`model-training`](https://github.com/remla25-team21/model-training): Contains the machine learning training pipeline.
-
 - [`lib-ml`](https://github.com/remla25-team21/lib-ml): Contains data pre-processing logic used across components.
-
 - [`model-service`](https://github.com/remla25-team21/model-service): A wrapper service for the trained ML model. Exposes API endpoints to interact with the model.
-
 - [`lib-version`](https://github.com/remla25-team21/lib-version): A version-aware utility library that exposes version metadata.
+- [`app`](https://github.com/remla25-team21/app): Contains the application frontend and backend (user interface and service logic). 
 
-- [`app`](https://github.com/remla25-team21/app): Contains the application frontend and backend (user interface and service logic).
+## Table of Contents 
+
+- [How to Start the Application (Assignment 1)](#how-to-start-the-application-assignment-1)
+- [Kubernetes Cluster Provisioning (Assignment 2)](#kubernetes-cluster-provisioning-assignment-2)
+- [Kubernetes Cluster Monitoring (Assignment 3)](#kubernetes-cluster-monitoring-assignment-3)
+- [ML Configuration Management \& ML Testing （Assignment 4）](#ml-configuration-management--ml-testing-assignment-4)
+- [Istio Service Mesh（Assignment 5）](#istio-service-meshassignment-5)
+   - [Method 1: Using Vagrant/Ansible Cluster](#method-1-using-vagrantansible-cluster)
+      - [Deploy the Istio-based Setup](#deploy-the-istio-based-setup)
+      - [Verify Sticky Sessions](#verify-sticky-sessions)
+   - [Method 2: Using Local Minikube](#method-2-using-local-minikube)
+      - [Quick Start with Automated Script](#quick-start-with-automated-script)
+      - [Manual Setup and Deploy](#manual-setup-and-deploy)
+      - [Verify Sticky Sessions](#verify-sticky-sessions-1)
+   - [Continuous Experimentation](#continuous-experimentation)
+- [Known Issue: macOS Port Conflict (AirPlay Receiver)](#known-issue-macos-port-conflict-airplay-receiver)
+- [Activity Tracking](#activity-tracking)
 
 ## How to Start the Application (Assignment 1)
 
@@ -265,7 +279,6 @@ If `app-service` fails to bind to port 5000, macOS's AirPlay Receiver may be usi
 
 1. Go to System Settings -> General -> Airdrop & Handoff and switch off Airplay Receiver.
 2. Go to terminal and use kill any process on port 5000:
-
    ```bash
    lsof -i :5000
    kill -9 <PID>
