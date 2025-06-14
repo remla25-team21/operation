@@ -78,7 +78,7 @@ Monitoring is configured via the integration of the following tools:
 
 ### 2.3 Vagrant Deployment Configuration
 
-The Vagrant deployment automates the setting up of Kubernetes with Istio. Using a multi-stage Ansible approach, it automatically spins up a complete, production-like cluster in a virtual environment.
+The Vagrant deployment automates the setting up of Kubernetes with Istio. Using a multi-stage Ansible approach, it automatically spins up a complete, production-like cluster in a virtual environment. 
 
 #### 2.3.1 Infrastructure Layout
 
@@ -91,8 +91,19 @@ The Vagrant environment provisions the following virtual machines:
   - Provide compute resources for the sentiment analysis application
 
 #### 2.3.2 Deployment Pipeline
-write more bs
 
+- **Base Setup** (`general.yml`: all nodes):
+  - System tuning, SSH keys, Kubernetes prep
+  - Installs containerd, kubelet/kubeadm/kubectl (v1.32.4)
+- **Control Plane** (`ctrl.yml`: controller only):
+  - `kubeadm init` with Flannel CNI (eth1, CIDR: 10.244.0.0/16)
+  - Sets up `kubeconfig`, Helm
+- **Worker Join** (`node.yml`: nodes):
+  - Auto-joins workers to the cluster with token validation
+- **Networking & Observability** (`finalization.yml`):
+  - MetalLB (IP pool: `192.168.56.90-99`) + Nginx Ingress
+  - Istio (v1.25.2), gateway IP (192.168.56.91)
+  - Monitoring: Prometheus, Jaeger, Kiali + Kubernetes Dashboard
 
 ## 3. Data Flow & Runtime Architecture
 
