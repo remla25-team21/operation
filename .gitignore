@@ -4,3 +4,4 @@ kubeconfig
 *.log
 
 .DS_Store
+istio*/
