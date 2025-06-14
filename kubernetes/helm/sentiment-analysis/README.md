@@ -60,19 +60,17 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 > 6. In Grafana, log in with `admin / prom-operator`. Go to **Dashboards -> Browse** and open the pre-provisioned dashboard titled "Dashboard". 
 > 
 ## Table of Contents
-- [Sentiment Analysis Helm Chart](#sentiment-analysis-helm-chart)
-  - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
-  - [Prometheus Monitoring](#prometheus-monitoring)
-    - [Available Metrics](#available-metrics)
-    - [Accessing Metrics](#accessing-metrics)
-    - [Setting Up Prometheus](#setting-up-prometheus)
-  - [Alerting](#alerting)
-  - [Grafana Dashboard](#grafana-dashboard)
-    - [Dashboard Features](#dashboard-features)
-    - [Automatic Provisioning](#automatic-provisioning)
-    - [Accessing Grafana](#accessing-grafana)
-  - [Verifying HostPath Volume Mount (Shared Folder)](#verifying-hostpath-volume-mount-shared-folder)
+- [Installation](#installation)
+- [Prometheus Monitoring](#prometheus-monitoring)
+   - [Available Metrics](#available-metrics)
+   - [Accessing Metrics](#accessing-metrics)
+   - [Setting Up Prometheus](#setting-up-prometheus)
+- [Alerting](#alerting)
+- [Grafana Dashboard](#grafana-dashboard)
+   - [Dashboard Features](#dashboard-features)
+   - [Automatic Provisioning](#automatic-provisioning)
+   - [Accessing Grafana](#accessing-grafana)
+- [Verifying HostPath Volume Mount (Shared Folder)](#verifying-hostpath-volume-mount-shared-folder)
 
 ## Installation
 
