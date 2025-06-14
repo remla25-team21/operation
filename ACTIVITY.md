@@ -122,7 +122,7 @@ Approved PR:
 - https://github.com/remla25-team21/app/pull/13
 - https://github.com/remla25-team21/app/pull/12
 
--- Yizhen Zang: --
+-- Yizhen Zang: --  
 Created PR: 
 - https://github.com/remla25-team21/operation/pull/17  (Related to A3)
 
@@ -130,7 +130,7 @@ Approved PR:
 - https://github.com/remla25-team21/operation/pull/11  (Related to A3)
 - https://github.com/remla25-team21/operation/pull/13  (Related to A3)
 
--- Zeryab Alam: --
+-- Zeryab Alam: --  
 Created PR: 
 - https://github.com/remla25-team21/operation/pull/14  (Related to A2)
 
@@ -163,7 +163,7 @@ Approved PR:
 - https://github.com/remla25-team21/model-training/pull/7
 - https://github.com/remla25-team21/model-training/pull/5
 
--- Yizhen Zang: --
+-- Yizhen Zang: --  
 Created PR: 
 - https://github.com/remla25-team21/model-training/pull/8  (Related to A4)
 
@@ -171,7 +171,7 @@ Approved PR:
 - https://github.com/remla25-team21/model-training/pull/6  (Related to A4)
 - https://github.com/remla25-team21/operation/pull/21 (Related to A3)
 
--- Zeryab Alam: --
+-- Zeryab Alam: --  
 Created PR: 
 - https://github.com/remla25-team21/operation/pull/20 (Related to A3)
 - https://github.com/remla25-team21/model-service/pull/2 (Related to A4)
@@ -211,7 +211,7 @@ Approved PR:
 - https://github.com/remla25-team21/operation/pull/26
 - https://github.com/remla25-team21/operation/pull/30
 
--- Yizhen Zang: --
+-- Yizhen Zang: --  
 Created PR: 
 - https://github.com/remla25-team21/operation/pull/26  (Related to A5)
 - https://github.com/remla25-team21/operation/pull/27  (Related to A5)
@@ -222,7 +222,7 @@ Approved PR:
 - https://github.com/remla25-team21/app/pull/17  (Related to A5)
 - https://github.com/remla25-team21/operation/pull/30  (Related to A5)
 
--- Zeryab Alam: --
+-- Zeryab Alam: --  
 Created PR:  
 - https://github.com/remla25-team21/operation/pull/29 (Related to A5)
 - https://github.com/remla25-team21/operation/pull/31 (Related to A5)
@@ -263,7 +263,6 @@ Approved PR:
 -- Zeryab Alam: --  
 Created PR:    
 Approved PR:  
-
 
 -- Raghav Talwar: --  
 Created PR:  
