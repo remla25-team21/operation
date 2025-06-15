@@ -282,6 +282,7 @@ Created PR:
 
 Approved PR: 
 - https://github.com/remla25-team21/operation/pull/33  (A3)
+- https://github.com/remla25-team21/operation/pull/34  (A5)
 
 -- Kanta Tanahashi: --  
 Created PR: 
