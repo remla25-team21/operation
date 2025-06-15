@@ -237,8 +237,9 @@ No manual import is required. The dashboard is automatically loaded by Grafana u
 4. Navigate to **Dashboards -> Browse** and open the dashboard titled "Dashboard". 
 
 ## Verifying HostPath Volume Mount (Shared Folder)
-The `model-service` (`v1`) is configured to mount a directory from the Minikube host (`/mnt/shared`) into the container at `/app/shared`. This allows all pods to access the same shared host directory. You can verify that this volume mount is working by following the steps below. 
+The `model-service` (`v1`) is configured to mount a directory from the Minikube host (`/mnt/shared`) into the container at `/app/shared`. This allows all pods to access the same shared host directory. You can verify that the volume mount is working using either Minikube or the Vagrant-based multi-VM setup, depending on your deployment method. 
 
+### Method A: Using Local Minikube 
 1. SSH into Minikube and create a test file: 
    ```bash
    minikube ssh
@@ -254,7 +255,7 @@ The `model-service` (`v1`) is configured to mount a directory from the Minikube 
    ```
    Look for the pod with a name like `my-sentiment-analysis-model-service-v1-xxxx`. 
 
-3. Exec into the pod and check the mount
+3. Exec into the pod and verify the mount
    ```bash
    kubectl exec -it <your-model-service-pod> -- /bin/bash
    ```
@@ -267,4 +268,33 @@ The `model-service` (`v1`) is configured to mount a directory from the Minikube 
    hello from host
    ```
 
-This confirms that the `hostPath` volume is correctly mounted from the Minikube VM into the pod.
+This confirms the `hostPath` volume correctly maps the Minikube VM's `/mnt/shared` into the container.
+
+
+### With Vagrantfile-Based Multi-VM Kubernetes Setup 
+
+If you deployed the application using [Method 1: Using Vagrant/Ansible Cluster](../../../README.md#method-1-using-vagrantansible-cluster), , follow these steps: 
+
+1. Add a test file from the host machine (same directory as `Vagrantfile`):
+   ```bash
+   mkdir -p shared
+   echo "hello from vagrant host" > shared/vagrant-check.txt
+   ```
+2. Check inside the VM:
+   ```bash
+   vagrant ssh ctrl
+   cat /mnt/shared/vagrant-check.txt
+   ```
+   Expected output is "hello from vagrant host". 
+
+3. Check from inside the Pod:
+   - Find your model-service pod with `kubectl get pods`. 
+   - Exec into it:
+      ```bash
+      kubectl exec -it <your-model-service-pod> -- /bin/bash
+      ls /app/shared
+      cat /app/shared/vagrant-check.txt
+      ```
+   You should see "hello from vagrant host" again. 
+
+This confirms the shared host directory is mounted into both the VM and the pod via Kubernetes `hostPath`. 
