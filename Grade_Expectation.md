@@ -114,12 +114,14 @@ This file summarizes the expected rubric outcomes for the project, according to 
 
 ## ✅ Kubernetes & Monitoring
 
-## Kubernetes Usage: **Good**
+## Kubernetes Usage: **Excellent**
 - The application is deployed to a Kubernetes cluster with a working Deployment and Service.
 - The app is accessible through an Ingress and IngressController.
 - The model service location is defined through an environment variable.
 - The model service can be relocated by updating the Kubernetes config (e.g., changing the service name or port).
 - A ConfigMap and Secret are used appropriately to demonstrate knowledge of Kubernetes resources.
+- All VMs mount the same shared VirtualBox folder (`./shared`) to `/mnt/shared` inside the VM. 
+- The `model-service-v1` Deployment mounts the shared path using a Kubernetes `hostPath` volume, making shared host storage accessible from within the container at `/app/shared`. 
 
 ## Helm Installation: **Excellent**
 - The Helm chart covers the complete deployment.
@@ -148,10 +150,10 @@ This file summarizes the expected rubric outcomes for the project, according to 
 
 | Rubric Section             | Subsection             | Expected Grade |
 |----------------------------|------------------------|----------------|
-| Kubernetes & Monitoring    | Kubernetes Usage       | Good           |
-|                            | Helm Installation       | Excellent      |
-|                            | App Monitoring          | Excellent      |
-|                            | Grafana Dashboard       | Excellent      |
+| Kubernetes & Monitoring    | Kubernetes Usage       | Excellent      |
+|                            | Helm Installation      | Excellent      |
+|                            | App Monitoring         | Excellent      |
+|                            | Grafana Dashboard      | Excellent      |
 
 # Assignment 4
 
