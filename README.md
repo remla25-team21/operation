@@ -278,3 +278,7 @@ We plan to eventually change `app-service` to accomodate environment variables w
 ## Activity Tracking
 
 See in [ACTIVITY.md](https://github.com/remla25-team21/operation/blob/main/ACTIVITY.md) for an overview of team contributions. 
+
+## Grade Expectation
+
+To assist with the evaluation of our project, we have included a [Grade_Expectation.md](https://github.com/remla25-team21/operation/blob/main/Grade_Expectation.md) that outlines how our implementation aligns with the grading criteria. This document is intended to make the grading process more straightforward and transparent.

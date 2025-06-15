@@ -21,7 +21,6 @@ This file summarizes the expected rubric outcomes for the project, according to 
 - All artifacts (model-service image, app image, libraries) are versioned and released.
 - GitHub workflows are used to automate the release.
 - Git release tags (e.g., `v1.2.3`) are used to version artifacts.
-- Patch version is bumped automatically, and `main` is set to a `-pre` version after each stable release.
 
 ### Software Reuse in Libraries: **Excellent**
 - Both `lib-version` and `lib-ml` are reused as external dependencies via package managers.
@@ -72,7 +71,7 @@ This file summarizes the expected rubric outcomes for the project, according to 
 - All expected VMs exist and are booted with the correct hostnames.
 - VMs are on a private network and can communicate directly with each other.
 - Host-only network allows all VMs to be accessed from the host without port forwarding.
-- Provisioning uses Ansible and completes within 6 minutes.
+- Provisioning uses Ansible and completes within 5 minutes.
 - `Vagrantfile` defines VMs using loops and template arithmetic for names and IPs.
 - CPU cores, memory, and number of workers are controlled via variables.
 - Extra arguments are passed from Vagrant to Ansible.
