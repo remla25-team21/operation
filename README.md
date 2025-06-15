@@ -75,9 +75,10 @@ These steps guide you through setting up the Kubernetes cluster on your local ma
    ./setup_cluster.sh
    ```
 
-3. Access Kubernetes sashboard:
+3. Access Kubernetes dashboard:
    - After the script completes, open your web browser and navigate to: [`https://dashboard.local`](https://dashboard.local) (**HTTPS** is required).
-   - You will see a token displayed in your terminal. Copy and paste this token into the Kubernetes Dashboard login page.
+   - You will see a token displayed in your terminal. Copy and paste this token into the Kubernetes Dashboard login page. 
+
 4. Remove the cluster:
    If you want to remove the cluster, run the following command:
 
@@ -289,7 +290,7 @@ If `app-service` fails to bind to port 5000, macOS's AirPlay Receiver may be usi
 **Temporary Workaround**
 
 1. Go to System Settings -> General -> Airdrop & Handoff and switch off Airplay Receiver.
-2. Go to terminal and use kill any process on port 5000:
+2. Go to the terminal and use kill any process on port 5000:
    ```bash
    lsof -i :5000
    kill -9 <PID>
@@ -297,7 +298,7 @@ If `app-service` fails to bind to port 5000, macOS's AirPlay Receiver may be usi
 
 **Long Term Fix**
 
-We plan to eventually change `app-service` to accomodate environment variables which should allow users to freely change ports via `docker-compose.yml` file.
+We plan to eventually change `app-service` to accommodate environment variables, which should allow users to freely change ports via the `docker-compose.yml` file. 
 
 ## Activity Tracking
 
