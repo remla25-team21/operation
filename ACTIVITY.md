@@ -292,11 +292,15 @@ Approved PR:
 -- Yizhen Zang: --  
 Created PR: 
 - https://github.com/remla25-team21/operation/pull/33  (A3)
+- https://github.com/remla25-team21/.github/pull/3  (Final Submission)
 
 Approved PR: 
+- https://github.com/remla25-team21/operation/pull/34  (A5)
 
 -- Zeryab Alam: --  
 Created PR: 
+- https://github.com/remla25-team21/operation/pull/34  (A5)
+- https://github.com/remla25-team21/model-training/pull/10  (A4)
 
 Approved PR: 
 
