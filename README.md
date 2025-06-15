@@ -3,14 +3,29 @@
 This is the central repository for a REMLA project by Group 21. The application performs sentiment analysis on user feedback using a machine learning model. This repository orchestrates the following components hosted in separate repositories:
 
 - [`model-training`](https://github.com/remla25-team21/model-training): Contains the machine learning training pipeline.
-
 - [`lib-ml`](https://github.com/remla25-team21/lib-ml): Contains data pre-processing logic used across components.
-
 - [`model-service`](https://github.com/remla25-team21/model-service): A wrapper service for the trained ML model. Exposes API endpoints to interact with the model.
-
 - [`lib-version`](https://github.com/remla25-team21/lib-version): A version-aware utility library that exposes version metadata.
+- [`app`](https://github.com/remla25-team21/app): Contains the application frontend and backend (user interface and service logic). 
 
-- [`app`](https://github.com/remla25-team21/app): Contains the application frontend and backend (user interface and service logic).
+## Table of Contents 
+
+- [How to Start the Application (Assignment 1)](#how-to-start-the-application-assignment-1)
+- [Kubernetes Cluster Provisioning (Assignment 2)](#kubernetes-cluster-provisioning-assignment-2)
+- [Kubernetes Cluster Monitoring (Assignment 3)](#kubernetes-cluster-monitoring-assignment-3)
+- [ML Configuration Management \& ML Testing （Assignment 4）](#ml-configuration-management--ml-testing-assignment-4)
+- [Istio Service Mesh（Assignment 5）](#istio-service-meshassignment-5)
+   - [Method 1: Using Vagrant/Ansible Cluster](#method-1-using-vagrantansible-cluster)
+      - [Deploy the Istio-based Setup](#deploy-the-istio-based-setup)
+      - [Verify Sticky Sessions](#verify-sticky-sessions)
+   - [Method 2: Using Local Minikube](#method-2-using-local-minikube)
+      - [Quick Start with Automated Script](#quick-start-with-automated-script)
+      - [Manual Setup and Deploy](#manual-setup-and-deploy)
+      - [Verify Sticky Sessions](#verify-sticky-sessions-1)
+   - [Continuous Experimentation](#continuous-experimentation)
+   - [Additional Use Case: Rate Limiting](#additional-use-case)
+- [Known Issue: macOS Port Conflict (AirPlay Receiver)](#known-issue-macos-port-conflict-airplay-receiver)
+- [Activity Tracking](#activity-tracking)
 
 ## How to Start the Application (Assignment 1)
 
@@ -60,9 +75,10 @@ These steps guide you through setting up the Kubernetes cluster on your local ma
    ./setup_cluster.sh
    ```
 
-3. Access Kubernetes sashboard:
+3. Access Kubernetes dashboard:
    - After the script completes, open your web browser and navigate to: [`https://dashboard.local`](https://dashboard.local) (**HTTPS** is required).
-   - You will see a token displayed in your terminal. Copy and paste this token into the Kubernetes Dashboard login page.
+   - You will see a token displayed in your terminal. Copy and paste this token into the Kubernetes Dashboard login page. 
+
 4. Remove the cluster:
    If you want to remove the cluster, run the following command:
 
@@ -94,7 +110,7 @@ Two methods are available for deploying the application with Istio service mesh:
 
 ### Method 1: Using Vagrant/Ansible Cluster
 
-Run the following command to start up the local Kubernetes cluster. (Make sure that you have GNU Parallel installed. Details in [Section 2](#kubernetes-cluster-provisioning-assignment-2))
+Run the following command to start up the local Kubernetes cluster. (Make sure that you have GNU Parallel installed. Details in [Section 2](#kubernetes-cluster-provisioning-assignment-2). )
 
 #### Deploy the Istio-based Setup
 
@@ -257,23 +273,32 @@ for i in {1..5}; do curl -s -H "user: 10" http://[EXTERNAL-IP]/env-config.js; do
 
 We used Istio’s traffic routing to run an A/B test between two frontend versions. Prometheus collected usage and satisfaction metrics, and the outcome was visualized in Grafana. Details are in [`docs/continuous-experimentation.md`](https://github.com/remla25-team21/operation/blob/main/docs/continuous-experimentation.md). 
 
+### Additional Use Case: Rate Limiting 
+
+To protect the application from abuse and ensure fair usage across users, we implemented rate limiting using an Istio `EnvoyFilter`. This configuration limits each unique `x-user-id` header to 10 requests per minute on the inbound sidecar. 
+
+We used two `EnvoyFilter` resources:
+   - The first inserts the `envoy.filters.http.local_ratelimit` filter into the inbound HTTP filter chain. It defines a token bucket allowing 10 requests every 60 seconds per user.
+   - The second configures route-level rate limits by matching the `x-user-id` header and enforcing the per-user descriptor.
+
+The response will include a custom header `x-local-rate-limit: true` when rate limiting is triggered. You can verify the rate limit by sending more than 10 requests within a minute. 
+
 ## Known Issue: macOS Port Conflict (AirPlay Receiver)
 
 If `app-service` fails to bind to port 5000, macOS's AirPlay Receiver may be using it.
 
-**Temporary Workaround**:
+**Temporary Workaround**
 
 1. Go to System Settings -> General -> Airdrop & Handoff and switch off Airplay Receiver.
-2. Go to terminal and use kill any process on port 5000:
-
+2. Go to the terminal and use kill any process on port 5000:
    ```bash
    lsof -i :5000
    kill -9 <PID>
    ```
 
-**Long Term Fix**:
+**Long Term Fix**
 
-We plan to eventually change `app-service` to accomodate environment variables which should allow users to freely change ports via `docker-compose.yml` file.
+We plan to eventually change `app-service` to accommodate environment variables, which should allow users to freely change ports via the `docker-compose.yml` file. 
 
 ## Activity Tracking
 
