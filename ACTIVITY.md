@@ -270,7 +270,6 @@ Approved PR:
 -- Raghav Talwar: --  
 Created PR: 
 - https://github.com/remla25-team21/.github/pull/2  (Final Submission)
-- https://github.com/remla25-team21/operation/pull/35  (A5)
 
 Approved PR: 
 - https://github.com/remla25-team21/.github/pull/1  (Final Submission)
@@ -312,5 +311,7 @@ Approved PR:
 
 -- Raghav Talwar: --  
 Created PR: 
+- https://github.com/remla25-team21/operation/pull/35  (A5)
 
 Approved PR: 
+- https://github.com/remla25-team21/.github/pull/3  (Final Submission)
