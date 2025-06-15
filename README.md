@@ -23,6 +23,7 @@ This is the central repository for a REMLA project by Group 21. The application 
       - [Manual Setup and Deploy](#manual-setup-and-deploy)
       - [Verify Sticky Sessions](#verify-sticky-sessions-1)
    - [Continuous Experimentation](#continuous-experimentation)
+   - [Additional Use Case: Rate Limiting](#additional-use-case)
 - [Known Issue: macOS Port Conflict (AirPlay Receiver)](#known-issue-macos-port-conflict-airplay-receiver)
 - [Activity Tracking](#activity-tracking)
 
@@ -108,7 +109,7 @@ Two methods are available for deploying the application with Istio service mesh:
 
 ### Method 1: Using Vagrant/Ansible Cluster
 
-Run the following command to start up the local Kubernetes cluster. (Make sure that you have GNU Parallel installed. Details in [Section 2](#kubernetes-cluster-provisioning-assignment-2))
+Run the following command to start up the local Kubernetes cluster. (Make sure that you have GNU Parallel installed. Details in [Section 2](#kubernetes-cluster-provisioning-assignment-2). )
 
 #### Deploy the Istio-based Setup
 
@@ -271,11 +272,21 @@ for i in {1..5}; do curl -s -H "user: 10" http://[EXTERNAL-IP]/env-config.js; do
 
 We used Istio’s traffic routing to run an A/B test between two frontend versions. Prometheus collected usage and satisfaction metrics, and the outcome was visualized in Grafana. Details are in [`docs/continuous-experimentation.md`](https://github.com/remla25-team21/operation/blob/main/docs/continuous-experimentation.md). 
 
+### Additional Use Case: Rate Limiting 
+
+To protect the application from abuse and ensure fair usage across users, we implemented rate limiting using an Istio `EnvoyFilter`. This configuration limits each unique `x-user-id` header to 10 requests per minute on the inbound sidecar. 
+
+We used two `EnvoyFilter` resources:
+   - The first inserts the `envoy.filters.http.local_ratelimit` filter into the inbound HTTP filter chain. It defines a token bucket allowing 10 requests every 60 seconds per user.
+   - The second configures route-level rate limits by matching the `x-user-id` header and enforcing the per-user descriptor.
+
+The response will include a custom header `x-local-rate-limit: true` when rate limiting is triggered. You can verify the rate limit by sending more than 10 requests within a minute. 
+
 ## Known Issue: macOS Port Conflict (AirPlay Receiver)
 
 If `app-service` fails to bind to port 5000, macOS's AirPlay Receiver may be using it.
 
-**Temporary Workaround**:
+**Temporary Workaround**
 
 1. Go to System Settings -> General -> Airdrop & Handoff and switch off Airplay Receiver.
 2. Go to terminal and use kill any process on port 5000:
@@ -284,7 +295,7 @@ If `app-service` fails to bind to port 5000, macOS's AirPlay Receiver may be usi
    kill -9 <PID>
    ```
 
-**Long Term Fix**:
+**Long Term Fix**
 
 We plan to eventually change `app-service` to accomodate environment variables which should allow users to freely change ports via `docker-compose.yml` file.
 
