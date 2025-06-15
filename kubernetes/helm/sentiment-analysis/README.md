@@ -71,6 +71,8 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
    - [Automatic Provisioning](#automatic-provisioning)
    - [Accessing Grafana](#accessing-grafana)
 - [Verifying HostPath Volume Mount (Shared Folder)](#verifying-hostpath-volume-mount-shared-folder)
+   - [Method A: Using Local Minikube](#method-a-using-local-minikube)
+   - [Method B: Using Vagrantfile-Based Multi-VM Kubernetes Setup](#method-b-using-vagrantfile-based-multi-vm-kubernetes-setup)
 
 ## Installation
 
@@ -271,7 +273,7 @@ The `model-service` (`v1`) is configured to mount a directory from the Minikube 
 This confirms the `hostPath` volume correctly maps the Minikube VM's `/mnt/shared` into the container.
 
 
-### With Vagrantfile-Based Multi-VM Kubernetes Setup 
+### Method B: Using Vagrantfile-Based Multi-VM Kubernetes Setup 
 
 If you deployed the application using [Method 1: Using Vagrant/Ansible Cluster](../../../README.md#method-1-using-vagrantansible-cluster), , follow these steps: 
 
