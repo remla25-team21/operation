@@ -9,26 +9,23 @@ This is the central repository for a REMLA project by Group 21. The application 
 - [`app`](https://github.com/remla25-team21/app): Contains the application frontend and backend (user interface and service logic). 
 
 ## Table of Contents 
-
-- [Operation Repository](#operation-repository)
-  - [Table of Contents](#table-of-contents)
-  - [How to Start the Application (Assignment 1)](#how-to-start-the-application-assignment-1)
-  - [Kubernetes Cluster Provisioning (Assignment 2)](#kubernetes-cluster-provisioning-assignment-2)
-  - [Kubernetes Cluster Monitoring (Assignment 3)](#kubernetes-cluster-monitoring-assignment-3)
-  - [ML Configuration Management \& ML Testing （Assignment 4）](#ml-configuration-management--ml-testing-assignment-4)
-  - [Istio Service Mesh（Assignment 5）](#istio-service-meshassignment-5)
-    - [Method 1: Using Vagrant/Ansible Cluster](#method-1-using-vagrantansible-cluster)
-      - [Deploy the Istio-based Setup](#deploy-the-istio-based-setup)
-      - [Verify Sticky Sessions](#verify-sticky-sessions)
-    - [Method 2: Using Local Minikube](#method-2-using-local-minikube)
-      - [Quick Start with Automated Script](#quick-start-with-automated-script)
-      - [Manual Setup and Deploy](#manual-setup-and-deploy)
-      - [Verify Sticky Sessions](#verify-sticky-sessions-1)
-    - [Continuous Experimentation](#continuous-experimentation)
-    - [Additional Use Case: Rate Limiting](#additional-use-case-rate-limiting)
-  - [Known Issue: macOS Port Conflict (AirPlay Receiver)](#known-issue-macos-port-conflict-airplay-receiver)
-  - [Activity Tracking](#activity-tracking)
-  - [Grade Expectation Summary](#grade-expectation-summary)
+- [How to Start the Application (Assignment 1)](#how-to-start-the-application-assignment-1)
+- [Kubernetes Cluster Provisioning (Assignment 2)](#kubernetes-cluster-provisioning-assignment-2)
+- [Kubernetes Cluster Monitoring (Assignment 3)](#kubernetes-cluster-monitoring-assignment-3)
+- [ML Configuration Management \& ML Testing （Assignment 4）](#ml-configuration-management--ml-testing-assignment-4)
+- [Istio Service Mesh（Assignment 5）](#istio-service-meshassignment-5)
+   - [Method 1: Using Vagrant/Ansible Cluster](#method-1-using-vagrantansible-cluster)
+   - [Deploy the Istio-based Setup](#deploy-the-istio-based-setup)
+   - [Verify Sticky Sessions](#verify-sticky-sessions)
+   - [Method 2: Using Local Minikube](#method-2-using-local-minikube)
+   - [Quick Start with Automated Script](#quick-start-with-automated-script)
+   - [Manual Setup and Deploy](#manual-setup-and-deploy)
+   - [Verify Sticky Sessions](#verify-sticky-sessions-1)
+   - [Continuous Experimentation](#continuous-experimentation)
+   - [Additional Use Case: Rate Limiting](#additional-use-case-rate-limiting)
+- [Known Issue: macOS Port Conflict (AirPlay Receiver)](#known-issue-macos-port-conflict-airplay-receiver)
+- [Activity Tracking](#activity-tracking)
+- [Grade Expectation Summary](#grade-expectation-summary)
 
 ## How to Start the Application (Assignment 1)
 
@@ -93,7 +90,7 @@ These steps guide you through setting up the Kubernetes cluster on your local ma
 
 ## Kubernetes Cluster Monitoring (Assignment 3)
 
-Refer to [README.md](./kubernetes/helm/sentiment-analysis/README.md) in the `kubernetes/helm/sentiment-analysis` directory for instructions to set up Prometheus and Grafana for monitoring.
+Refer to [`README.md`](./kubernetes/helm/sentiment-analysis/README.md) in the `kubernetes/helm/sentiment-analysis` directory for instructions to set up Prometheus and Grafana for monitoring.
 
 ## ML Configuration Management & ML Testing （Assignment 4）
 
@@ -305,7 +302,7 @@ We plan to eventually change `app-service` to accommodate environment variables,
 
 ## Activity Tracking
 
-See in [ACTIVITY.md](./ACTIVITY.md) for an overview of team contributions. 
+See in [`ACTIVITY.md`](./ACTIVITY.md) for an overview of team contributions. 
 
 ## Grade Expectation Summary
 

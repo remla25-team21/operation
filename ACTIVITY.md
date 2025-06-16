@@ -291,7 +291,7 @@ Created PR:
 - https://github.com/remla25-team21/app/pull/18 (A1)
 
 Approved PR: 
-- https://github.com/remla25-team21/operation/pull/33
+- https://github.com/remla25-team21/operation/pull/33  (A3)
 
 -- Yizhen Zang: --  
 Created PR: 
