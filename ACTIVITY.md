@@ -311,10 +311,10 @@ Created PR:
 Approved PR: 
 - https://github.com/remla25-team21/lib-ml/pull/4  (A1)
 
-
 -- Raghav Talwar: --  
 Created PR: 
 - https://github.com/remla25-team21/operation/pull/35  (A5)
+- https://github.com/remla25-team21/operation/pull/24  (A1)
 
 Approved PR: 
 - https://github.com/remla25-team21/.github/pull/3  (Final Submission)
