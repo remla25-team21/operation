@@ -79,7 +79,7 @@ Approved PR:
 
 -- Raghav Talwar: --  
 Created PR: 
-- https://github.com/remla25-team21/operation/pull/5 (A2)
+- https://github.com/remla25-team21/operation/pull/5  (A2)
 
 Approved PR: 
 - https://github.com/remla25-team21/operation/pull/4  (A2)
@@ -288,7 +288,7 @@ Approved PR:
 -- Kanta Tanahashi: --  
 Created PR: 
 - https://github.com/remla25-team21/operation/pull/24  (A1)
-- https://github.com/remla25-team21/app/pull/18 (A1)
+- https://github.com/remla25-team21/app/pull/18  (A1)
 
 Approved PR: 
 - https://github.com/remla25-team21/operation/pull/33  (A3)
@@ -309,7 +309,7 @@ Created PR:
 - https://github.com/remla25-team21/model-training/pull/10  (A4)
 
 Approved PR: 
-- https://github.com/remla25-team21/lib-ml/pull/4 (A1)
+- https://github.com/remla25-team21/lib-ml/pull/4  (A1)
 
 
 -- Raghav Talwar: --  
