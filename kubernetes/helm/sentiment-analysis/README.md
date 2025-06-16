@@ -7,16 +7,26 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 >
 > 1. Make sure your Kubernetes cluster is running (e.g., `minikube start`). 
 >
-> 2. Add the Prometheus Helm chart repository and install the Prometheus + Grafana stack. 
->
+> 2. Install Istio: 
+> Istio is required to enable traffic routing between different versions of the application and to expose services via gateways. Download Istio and add it to your path:
+> ```bash
+> curl -L https://istio.io/downloadIstio | sh -
+> cd istio-*
+> export PATH=$PWD/bin:$PATH
+> ```
+> Install Istio using the demo profile:
+> ```bash
+> istioctl install --set profile=demo -y
+> ```
+> 
+> 3. Add the Prometheus Helm chart repository and install the Prometheus + Grafana stack. 
 > ```bash
 > helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 > helm repo update
 > helm install prometheus prometheus-community/kube-prometheus-stack
 > ```
 >
-> After installing the Prometheus stack, it may take some time for all pods to become ready. You can monitor the status using `kubectl get pods` to ensure they are running before proceeding. 
->
+> After installing the Prometheus stack, it may **take some time** for all pods to become ready. You can monitor the status using `kubectl get pods` to ensure they are running before proceeding. 
 > ```bash
 >  # Keep this running in a separate terminal
 > kubectl -n default port-forward svc/prometheus-kube-prometheus-prometheus 9090
@@ -27,8 +37,7 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 > kubectl port-forward service/prometheus-grafana 3300:80
 > ```
 >
-> 3. Deploy the sentiment analysis application:
->
+> 4. Deploy the sentiment analysis application:
 > ```bash
 > helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis
 > ```
@@ -43,12 +52,27 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
 > kubectl port-forward svc/my-sentiment-analysis-app-service 5000:5000
 > ```
 >
-> 4. Access the interfaces:
+> 5. Access the interfaces:
 > - Application: [`http://localhost:3000`](http://localhost:3000) 
 > - Prometheus: [`http://localhost:9090`](http://localhost:9090)
 > - Grafana: [`http://localhost:3300`](http://localhost:3300) 
 >
-> 5. In Grafana, log in with `admin / prom-operator`. Go to **Dashboards -> Browse** and open the pre-provisioned dashboard titled "Dashboard". 
+> 6. In Grafana, log in with `admin / prom-operator`. Go to **Dashboards -> Browse** and open the pre-provisioned dashboard titled "Dashboard". 
+> 
+## Table of Contents
+- [Installation](#installation)
+- [Prometheus Monitoring](#prometheus-monitoring)
+   - [Available Metrics](#available-metrics)
+   - [Accessing Metrics](#accessing-metrics)
+   - [Setting Up Prometheus](#setting-up-prometheus)
+- [Alerting](#alerting)
+- [Grafana Dashboard](#grafana-dashboard)
+   - [Dashboard Features](#dashboard-features)
+   - [Automatic Provisioning](#automatic-provisioning)
+   - [Accessing Grafana](#accessing-grafana)
+- [Verifying HostPath Volume Mount (Shared Folder)](#verifying-hostpath-volume-mount-shared-folder)
+   - [Method A: Using Local Minikube](#method-a-using-local-minikube)
+   - [Method B: Using Vagrantfile-Based Multi-VM Kubernetes Setup](#method-b-using-vagrantfile-based-multi-vm-kubernetes-setup)
 
 ## Installation
 
@@ -57,25 +81,36 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
    minikube start
    ```
 
-2. Before deploying the application, install the monitoring stack so that Prometheus can discover metrics and Grafana can auto-load dashboards: 
+2. Istio is required to enable traffic routing between different versions of the application and to expose services via gateways. Download Istio and add it to your path:
+   ```bash
+   curl -L https://istio.io/downloadIstio | sh -
+   cd istio-*
+   export PATH=$PWD/bin:$PATH
+   ```
+   Install Istio using the demo profile:
+   ```bash
+   istioctl install --set profile=demo -y
+   ```
+
+3. Before deploying the application, install the monitoring stack so that Prometheus can discover metrics and Grafana can auto-load dashboards: 
    ```bash
    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
    helm repo update
    helm install prometheus prometheus-community/kube-prometheus-stack -n default
    ```
 
-3. Deploy the sentiment analysis application: 
+4. Deploy the sentiment analysis application: 
    ```bash
    helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis -n default
    ```
 
-4. You can verify the deployment by checking the status of your Helm release and inspecting the running Kubernetes resources. For example: 
+5. You can verify the deployment by checking the status of your Helm release and inspecting the running Kubernetes resources. For example: 
    - `helm status my-sentiment-analysis`: shows the release status and resources created 
    - `kubectl get pods`: confirms that all application pods are running 
    - `kubectl get svc`: lists the exposed services 
    - `kubectl get ingress` shows ingress configurations if used 
 
-5.  Port-forward services (in separate terminals): 
+6. Port-forward services (in separate terminals): 
    - Frontend: 
       ```bash
       kubectl port-forward svc/my-sentiment-analysis-app-frontend 3000:3000
@@ -85,7 +120,7 @@ This Helm chart deploys the Restaurant Review Sentiment Analysis application, wh
       kubectl port-forward svc/my-sentiment-analysis-app-service 5000:5000
       ```
 
-6.  Access the application from [`http://localhost:3000`](http://localhost:3000).
+7. Access the application from [`http://localhost:3000`](http://localhost:3000).
 
 ## Prometheus Monitoring
 
@@ -172,10 +207,10 @@ kubectl port-forward svc/alertmanager-operated 9093 -n default
 
 It can also be found under Alert tab in Prometheus dashboard.
 
-### Grafana Dashboard
+## Grafana Dashboard
 Grafana is used to visualize the Prometheus metrics collected from the `app-service`. A custom dashboard is automatically provisioned during deployment using a `ConfigMap`.
 
-#### Dashboard Features
+### Dashboard Features
 The Grafana dashboard includes:
 
 * Total Sentiment Predictions: A timeseries chart based on `sentiment_predictions_total`, with separate lines for each sentiment class. 
@@ -186,13 +221,11 @@ The Grafana dashboard includes:
 * User Session Duration: A histogram displaying user engagement patterns (`user_session_duration_seconds`) to measure the effectiveness of different UI/UX designs.
 * User star ratings: A histogram visualizing user satisfaction ratings (`user_star_ratings`) to identify trends in customer feedback.
 
-#### Automatic Provisioning
+### Automatic Provisioning
 No manual import is required. The dashboard is automatically loaded by Grafana using a Kubernetes ConfigMap (`sentiment-dashboard`) defined in the Helm chart. 
 
-#### Accessing Grafana
-
+### Accessing Grafana
 1. Port-forward the Grafana service on a free port (e.g., `3300`):
-
    ```bash
    kubectl port-forward service/prometheus-grafana 3300:80
    ```
@@ -203,4 +236,67 @@ No manual import is required. The dashboard is automatically loaded by Grafana u
    * **Username:** `admin` 
    * **Password:** `prom-operator` (default) 
 
-4. Navigate to **Dashboards -> Browse** and open the dashboard titled "Dashboard".
+4. Navigate to **Dashboards -> Browse** and open the dashboard titled "Dashboard". 
+
+## Verifying HostPath Volume Mount (Shared Folder)
+The `model-service` (`v1`) is configured to mount a directory from the Minikube host (`/mnt/shared`) into the container at `/app/shared`. This allows all pods to access the same shared host directory. You can verify that the volume mount is working using either Minikube or the Vagrant-based multi-VM setup, depending on your deployment method. 
+
+### Method A: Using Local Minikube 
+1. SSH into Minikube and create a test file: 
+   ```bash
+   minikube ssh
+   sudo mkdir -p /mnt/shared
+   echo "hello from host" | sudo tee /mnt/shared/test.txt
+   exit
+   ```
+   This ensures the shared folder exists and contains a recognizable file. 
+
+2. Find the running model-service pod: 
+   ```bash
+   kubectl get pods
+   ```
+   Look for the pod with a name like `my-sentiment-analysis-model-service-v1-xxxx`. 
+
+3. Exec into the pod and verify the mount
+   ```bash
+   kubectl exec -it <your-model-service-pod> -- /bin/bash
+   ```
+   Then inside the container:
+   ```bash
+   cat /app/shared/test.txt
+   ```
+   You should see:
+   ```
+   hello from host
+   ```
+
+This confirms the `hostPath` volume correctly maps the Minikube VM's `/mnt/shared` into the container.
+
+
+### Method B: Using Vagrantfile-Based Multi-VM Kubernetes Setup 
+
+If you deployed the application using [Method 1: Using Vagrant/Ansible Cluster](../../../README.md#method-1-using-vagrantansible-cluster), , follow these steps: 
+
+1. Add a test file from the host machine (same directory as `Vagrantfile`):
+   ```bash
+   mkdir -p shared
+   echo "hello from vagrant host" > shared/vagrant-check.txt
+   ```
+2. Check inside the VM:
+   ```bash
+   vagrant ssh ctrl
+   cat /mnt/shared/vagrant-check.txt
+   ```
+   Expected output is "hello from vagrant host". 
+
+3. Check from inside the Pod:
+   - Find your model-service pod with `kubectl get pods`. 
+   - Exec into it:
+      ```bash
+      kubectl exec -it <your-model-service-pod> -- /bin/bash
+      ls /app/shared
+      cat /app/shared/vagrant-check.txt
+      ```
+   You should see "hello from vagrant host" again. 
+
+This confirms the shared host directory is mounted into both the VM and the pod via Kubernetes `hostPath`. 
