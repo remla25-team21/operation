@@ -25,7 +25,7 @@ This is the central repository for a REMLA project by Group 21. The application 
    - [Additional Use Case: Rate Limiting](#additional-use-case-rate-limiting)
 - [Known Issue: macOS Port Conflict (AirPlay Receiver)](#known-issue-macos-port-conflict-airplay-receiver)
 - [Activity Tracking](#activity-tracking)
-- [Grade Expectation Summary](#grade-expectation-summary)
+- [Grade Expectation](#grade-expectation)
 
 ## How to Start the Application (Assignment 1)
 
@@ -306,4 +306,4 @@ See [`ACTIVITY.md`](./ACTIVITY.md) for an overview of team contributions.
 
 ## Grade Expectation
 
-To assist with the evaluation of our project, we have included a [`Grade_Expectation.md`](./Grade_Expectation.md) that outlines how our implementation aligns with the grading criteria. This document is intended to make the grading process more straightforward and transparent.
+To assist with the evaluation of our project, we have included a [`Grade_Expectation.md`](./Grade_Expectation.md) that outlines how our implementation aligns with the grading criteria. This document is intended to make the grading process more straightforward and transparent. 
