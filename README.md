@@ -302,8 +302,8 @@ We plan to eventually change `app-service` to accommodate environment variables,
 
 ## Activity Tracking
 
-See in [`ACTIVITY.md`](./ACTIVITY.md) for an overview of team contributions. 
+See [`ACTIVITY.md`](./ACTIVITY.md) for an overview of team contributions. 
 
-## Grade Expectation Summary
+## Grade Expectation
 
-For a complete overview of our expected rubric outcomes across all assignments, please refer to [`Grade_Expectation.md`](./Grade_Expectation.md). 
+To assist with the evaluation of our project, we have included a [`Grade_Expectation.md`](./Grade_Expectation.md) that outlines how our implementation aligns with the grading criteria. This document is intended to make the grading process more straightforward and transparent.
