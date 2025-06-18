@@ -26,7 +26,7 @@ This file summarizes the expected rubric outcomes for the project, according to 
 - Both `lib-version` and `lib-ml` are reused as external dependencies via package managers.
 - `lib-ml` contains shared logic between training and inference.
 - `lib-version` is automatically updated in the release pipeline.
-- Model is downloaded at container start using a specific version URL passed via ENV variable.
+- Model is downloaded at container start using a specific version URL passed via an ENV variable.
 - A local cache ensures models are not re-downloaded unnecessarily.
 
 ---
@@ -36,13 +36,13 @@ This file summarizes the expected rubric outcomes for the project, according to 
 ### Exposing a Model via REST: **Excellent**
 - All components communicate using REST.
 - `Flask` serves the model.
-- ENV variable defines DNS and port of model-service.
+- The ENV variable defines DNS and port of model-service.
 - API conforms to OpenAPI Spec with endpoint summaries, parameters, and responses.
-- Model-service port is configurable via ENV variable.
+- Model-service port is configurable via an ENV variable.
 
 ### Docker Compose Operation: **Excellent**
 - `docker-compose.yml` exists and supports complete local operation of the system.
-- Only `app-service` is exposed to host.
+- Only `app-service` is exposed to the host.
 - Includes volume mapping, port mapping, and environment variables.
 - Same images as Kubernetes deployment are used.
 - Restart policies are defined.
@@ -73,7 +73,7 @@ This file summarizes the expected rubric outcomes for the project, according to 
 - Host-only network allows all VMs to be accessed from the host without port forwarding.
 - Provisioning uses Ansible and completes within 5 minutes.
 - `Vagrantfile` defines VMs using loops and template arithmetic for names and IPs.
-- CPU cores, memory, and number of workers are controlled via variables.
+- CPU cores, memory, and the number of workers are controlled via variables.
 - Extra arguments are passed from Vagrant to Ansible.
 - A correct `inventory.cfg` is generated automatically and includes only active VMs.
 
@@ -84,19 +84,19 @@ This file summarizes the expected rubric outcomes for the project, according to 
 - Variables are registered and reused across tasks.
 - Tasks include loops (e.g., copying multiple SSH keys).
 - Re-provisioning does not reset the cluster.
-- A correct `/etc/hosts` file is generated containing only existing nodes.
+- A correct `/etc/hosts` file is generated, containing only existing nodes.
 - Wait conditions are included for slow processes (e.g., MetalLB).
 - Idempotent regex replacements are used in config files.
 
 ### Setting up Kubernetes: **Excellent**
 - `kubectl` config is copied to both the controller and the host.
 - Host-based `kubectl` can apply/delete resources directly.
-- Vagrant user has working `kubectl` setup on the controller.
+- Vagrant user has a working `kubectl` setup on the controller.
 - All in-class Kubernetes and Istio exercises can be deployed and work correctly.
 - MetalLB is installed and provides LoadBalancer IPs.
 - HTTP Ingress Controller (e.g., Nginx) works and has a fixed IP.
 - Istio Gateway is operational with a fixed IP.
-- Kubernetes Dashboard is accessible from host without SSH tunneling.
+- Kubernetes Dashboard is accessible from the host without SSH tunneling.
 - HTTPS Ingress Controller with self-signed certificates is set up.
 
 ---
@@ -115,7 +115,7 @@ This file summarizes the expected rubric outcomes for the project, according to 
 
 ## Kubernetes Usage: **Excellent**
 - The application is deployed to a Kubernetes cluster with a working Deployment and Service.
-- The app is accessible through an Ingress and IngressController.
+- The app is accessible through an Ingress and an IngressController.
 - The model service location is defined through an environment variable.
 - The model service can be relocated by updating the Kubernetes config (e.g., changing the service name or port).
 - A ConfigMap and Secret are used appropriately to demonstrate knowledge of Kubernetes resources.
@@ -203,7 +203,7 @@ This file summarizes the expected rubric outcomes for the project, according to 
 - Metrics are **registered in pipeline stages**.
 - Running `dvc exp show` displays **multiple experiments and metrics beyond accuracy**.
 
-### 🔹 Code Quality: **Excellent**
+### Code Quality: **Excellent**
 - The project uses a **custom non-standard `pylint` configuration** and passes with no warnings.
 - Multiple linters are used:
   - `flake8`
