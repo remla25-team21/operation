@@ -325,7 +325,6 @@ Approved PR:
 Created PR: 
 
 Approved PR: 
-- https://github.com/remla25-team21/app/pull/18
 
 -- Kanta Tanahashi: --  
 Created PR: 
@@ -341,6 +340,7 @@ Approved PR:
 Created PR: 
 
 Approved PR: 
+- https://github.com/remla25-team21/app/pull/18
 
 -- Raghav Talwar: --  
 Created PR: 
