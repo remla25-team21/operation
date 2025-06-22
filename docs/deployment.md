@@ -169,7 +169,7 @@ The system employs sticky session routing based on the `user` header to ensure c
 - Once assigned, users remain on the same version throughout their session
 - This approach eliminates version-switching confusion and provides reliable experimental data
 
-*For detailed configuration, see [app-frontend VirtualService](kubernetes/helm/sentiment-analysis/templates/appfrontend-virtualservice.yml) and [DestinationRule](kubernetes/helm/sentiment-analysis/templates/appfrontend-destinationrule.yml) in the repository.*
+*For detailed configuration, see [app-frontend VirtualService](../kubernetes/helm/sentiment-analysis/templates/appfrontend-virtualservice.yml) and [app-frontend DestinationRule](../kubernetes/helm/sentiment-analysis/templates/appfrontend-destinationrule.yml) in the repository.*
 
 **Routing Logic Flow:**
 
@@ -191,4 +191,4 @@ Incoming Request
 
 This approach ensures that frontend and backend versions remain synchronized, maintaining consistency in both user experience and metrics collection.
 
-*See [app-service VirtualService configuration](kubernetes/helm/sentiment-analysis/templates/appservice-virtualservice.yml) for implementation details.*
+*See [app-service VirtualService](../kubernetes/helm/sentiment-analysis/templates/appservice-virtualservice.yml) for implementation details.*
