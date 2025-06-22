@@ -11,8 +11,3 @@ spec:
     - name: v2
       labels:
         version: v2
-  trafficPolicy:
-    loadBalancer:
-      consistentHash:
-        httpHeaderName: user
-
