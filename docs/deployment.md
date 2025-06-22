@@ -37,7 +37,7 @@ The following tables outline all essential Kubernetes resources that can be foun
 | appservice-visualservice.yml    | VirtualService         | Routes users to different versions of app-service based on requests coming from app-frontend        |
 | model-service.yaml              | Deployment & Service   | Deploys a container with 2 instances of model-service using the same image, treated as one version  |
 | model-service-destinationrule.yml| DestinationRule        | Provides logical separation for model-service traffic (same image)          |
-| model-service-visualservice.yml  | VirtualService         | Routes requests to the model-service instance      s             |
+| model-service-visualservice.yml  | VirtualService         | Routes requests to the model-service instance                   |
 
 **Monitoring Resources**
 | File                   | Type              | Description                                                                                                  |
