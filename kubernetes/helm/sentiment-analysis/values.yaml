@@ -27,6 +27,7 @@ appService:
 appFrontend:
   name: app-frontend
   replicaCount: 1
+  replicaCountV2: 1
   image:
     repository: ghcr.io/remla25-team21/app-frontend
     tag: "5.0.latest"       # used for v1
