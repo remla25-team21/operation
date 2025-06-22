@@ -17,10 +17,13 @@ This file summarizes the expected rubric outcomes for the project, according to 
 
 ## ✅ Versioning & Releases
 
-### Automated Release Process: **Good**
+### Automated Release Process: **Excellent**
 - All artifacts (model-service image, app image, libraries) are versioned and released.
-- GitHub workflows are used to automate the release.
-- Git release tags (e.g., `v1.2.3`) are used to version artifacts.
+- GitHub workflows are used to automate the release. 
+- Git release tags (e.g., `v1.2.3`) are used to version artifacts. 
+- After a stable release, the main branch is automatically set to a pre-release version higher than the latest release (e.g., `v1.2.4-pre`). 
+- Dockerfiles are structured using multi-stage builds. 
+- The released container images support multiple CPU architectures (`amd64` and `arm64`). 
 
 ### Software Reuse in Libraries: **Excellent**
 - Both `lib-version` and `lib-ml` are reused as external dependencies via package managers.
@@ -57,7 +60,7 @@ This file summarizes the expected rubric outcomes for the project, according to 
 |----------------------------------- |----------------------------------|----------------|
 | Basic Requirements                 | Data Availability                | Pass           |
 |                                    | Sensible Use Case                | Pass           |
-| Versioning & Releases              | Automated Release Process        | Good           |
+| Versioning & Releases              | Automated Release Process        | Excellent      |
 |                                    | Software Reuse in Libraries      | Excellent      |
 | Containers & Orchestration         | Exposing a Model via REST        | Excellent      |
 |                                    | Docker Compose Operation         | Excellent      |
