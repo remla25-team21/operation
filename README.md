@@ -226,11 +226,31 @@ If you prefer to run commands individually:
    kubectl label ns default istio-injection=enabled --overwrite
    ```
 
+⚠️ Important Note for Apple Silicon (M1/M2/M3) Users (Else you can skip this step)
+
+On Apple Silicon Macs, the default file-sharing mechanism for Minikube is more restrictive. To allow the application's hostPath volume to mount correctly, you must first manually create a link between your Mac and the Minikube VM.
+
+Create a local directory on your Mac (y:
+
+```bash
+mkdir -p ~/data/shared
+```
+
+Open the mount tunnel:
+
+```bash
+minikube mount ~/data/shared:/mnt/shared # Keep this running in a separate terminal
+```
+You must keep this mount command running in its own terminal before proceeding with the steps below.
+
+
 5. Open the tunnel for Istio ingress gateway:
 
    ```bash
    minikube tunnel  # Keep this running in a `separate` terminal
    ```
+
+
 
 6. Deploy the application using Helm:
 
