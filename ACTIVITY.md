@@ -330,9 +330,11 @@ Approved PR:
 Created PR: 
 
 Approved PR: 
+- https://github.com/remla25-team21/operation/pull/38  (A5)
 
 -- Yizhen Zang: --  
 Created PR: 
+- https://github.com/remla25-team21/operation/pull/38  (A5)
 
 Approved PR: 
 
@@ -340,7 +342,7 @@ Approved PR:
 Created PR: 
 
 Approved PR: 
-- https://github.com/remla25-team21/app/pull/18
+- https://github.com/remla25-team21/app/pull/18  (A1)
 
 -- Raghav Talwar: --  
 Created PR: 
