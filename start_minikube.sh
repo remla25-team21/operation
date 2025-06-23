@@ -58,6 +58,9 @@ if [[ "$STEP" == "1" ]]; then
   minikube start --memory=4096 --cpus=4 --driver=docker
   minikube addons enable ingress
   echo -e "${GREEN}Minikube started successfully!${NC}"
+  echo -e "${BLUE}[2.5/4]${NC} Creating /mnt/shared inside Minikube..."
+  minikube ssh -- 'sudo mkdir -p /mnt/shared && sudo chmod 777 /mnt/shared && echo "created by setup script" | sudo tee /mnt/shared/init.txt > /dev/null'
+  echo -e "${GREEN}/mnt/shared prepared in Minikube VM!${NC}"
 
   echo -e "${BLUE}[3/4]${NC} Installing Prometheus stack..."
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts > /dev/null 2>&1

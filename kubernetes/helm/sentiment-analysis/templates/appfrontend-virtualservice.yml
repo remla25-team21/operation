@@ -6,9 +6,10 @@ spec:
   gateways:
     - {{ .Release.Name }}-gateway 
   hosts:
-    - "*" 
+    - "*"
   http:
-    - name: "canary-group"
+    # Sticky routing when `user` header is present and matches 
+    - name: "canary-sticky"
       match:
         - headers:
             user:
@@ -19,7 +20,22 @@ spec:
         - destination:
             host: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
             subset: v2
-    - name: "default-group"
+
+    # Sticky routing fallback for other `user` values 
+    - name: "sticky-default"
+      match:
+        - headers:
+            user:
+              regex: ".*"
+          uri:
+            prefix: /
+      route:
+        - destination:
+            host: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+            subset: v1
+
+    # Weighted routing when `user` header is missing 
+    - name: "weighted-default"
       match:
         - uri:
             prefix: /
@@ -27,3 +43,8 @@ spec:
         - destination:
             host: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
             subset: v1
+          weight: 90
+        - destination:
+            host: {{ .Release.Name }}-{{ .Values.appFrontend.name }}
+            subset: v2
+          weight: 10
