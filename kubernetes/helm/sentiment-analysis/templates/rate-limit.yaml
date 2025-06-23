@@ -21,10 +21,6 @@ spec:
           type_url: type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
           value:
             stat_prefix: http_local_rate_limiter
-            token_bucket:
-              max_tokens: 10
-              tokens_per_fill: 10
-              fill_interval: 60s
             filter_enabled:
               runtime_key: local_rate_limit_enabled
               default_value:
@@ -43,8 +39,8 @@ spec:
             local_rate_limit_per_downstream_connection: false
             descriptors:
               - entries:
-                  - key: header_match
-                    value: user_id
+                  - key: user_id
+                    value: ""
                 token_bucket:
                   max_tokens: 10
                   tokens_per_fill: 10
@@ -66,8 +62,6 @@ spec:
         route:
           rate_limits:
             - actions:
-                - header_value_match:
-                    descriptor_value: user_id
-                    headers:
-                      - name: "x-user-id"
-                        present_match: true
+                - request_headers:
+                    header_name: "x-user-id"
+                    descriptor_key: "user_id"
