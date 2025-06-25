@@ -46,6 +46,8 @@ The frontend will be available at [`http://localhost:3000`](http://localhost:300
 
 ## Kubernetes Cluster Provisioning (Assignment 2)
 
+Kindly refer to additonal steps provided in instructions related to Assignment 5 since introducing Istio brought additional complexities, and certain initial setups need to be done before proceeding. (Especially moving the correct `rate-limit.yaml` file)
+
 These steps guide you through setting up the Kubernetes cluster on your local machine using Vagrant and Ansible, and deploying the Kubernetes Dashboard.
 
 1. Install GNU parallel:
@@ -113,21 +115,32 @@ Two methods are available for deploying the application with Istio service mesh:
 Run the following command to start up the local Kubernetes cluster. (Make sure that you have GNU Parallel installed. Details in [Section 2](#kubernetes-cluster-provisioning-assignment-2). )
 
 #### Deploy the Istio-based Setup
+1. Run the following commands to properly configure the setup for Vagrant:
+   First, backing up the existing file:
+   ```bash
+   mv kubernetes/helm/sentiment-analysis/templates/rate-limit.yaml \
+   kubernetes/extra/rate-limit.minikube.yaml
+   ```
+   Then, moving the required file:
+   ```bash
+   mv kubernetes/extra/rate-limit.vagrant.yaml \
+   kubernetes/helm/sentiment-analysis/templates/rate-limit.yaml
+   ```
 
-1. Start the local cluster:
+2. Start the local cluster:
 
    ```bash
    chmod +x setup_cluster.sh
    ./setup_cluster.sh
    ```
 
-2. SSH into the control node:  
+3. SSH into the control node:  
 
    ```bash
    vagrant ssh ctrl
    ```
 
-3. Deploy the application using Helm:
+4. Deploy the application using Helm:
 
    ```bash
    cd /vagrant
@@ -143,7 +156,7 @@ Run the following command to start up the local Kubernetes cluster. (Make sure t
    > kubectl get pods
    > ```
 
-4. Access the frontend from [`http://192.168.56.91`](http://192.168.56.91).
+5. Access the frontend from [`http://192.168.56.91`](http://192.168.56.91).
 
 #### Verify Sticky Sessions
 
@@ -159,6 +172,19 @@ Users `6` and `10` should always see the same version on each reload.
 ### Method 2: Using Local Minikube
 
 This alternative approach uses Minikube directly on your local machine without Vagrant/Ansible.
+
+#### Before Starting:
+If you previously configured the rate limiting setup for Vagrant, and now want to revert to the default Minikube setup, follow these steps:
+```bash
+mv kubernetes/helm/sentiment-analysis/templates/rate-limit.yaml \
+kubernetes/extra/rate-limit.vagrant.yaml
+```
+```bash
+mv kubernetes/extra/rate-limit.minikube.yaml \
+kubernetes/helm/sentiment-analysis/templates/rate-limit.yaml
+```
+
+**Note:** If you never configured the project for Vagrant, you can ignore this step — the default Minikube configuration is already in place.
 
 #### Quick Start with Automated Script
 
@@ -301,7 +327,19 @@ We used two `EnvoyFilter` resources:
    - The first inserts the `envoy.filters.http.local_ratelimit` filter into the inbound HTTP filter chain. It defines a token bucket allowing 10 requests every 60 seconds per user.
    - The second configures route-level rate limits by matching the `x-user-id` header and enforcing the per-user descriptor.
 
-The response will include a custom header `x-local-rate-limit: true` when rate limiting is triggered. You can verify the rate limit by sending more than 10 requests within a minute. 
+The response will include a custom header `x-local-rate-limit: true` when rate limiting is triggered.
+
+To test rate limiting:
+**Vagrant:** Send more than 10 requests a minute, rate limiting will be applied, however, at a global scale.
+**Minikube:** Run the following:
+```bash
+for i in {1..12}; do curl -s -o /dev/null -w "User 6 - Request $i: %{http_code}\n" -H "x-user-id: 6" http://127.0.0.1/env-config.js; done    
+```
+And then run immediately after:
+```bash
+for i in {1..12}; do curl -s -o /dev/null -w "User 8 - Request $i: %{http_code}\n" -H "x-user-id: 8" http://127.0.0.1/env-config.js; done    
+```
+You will be able to see that both users are able to send 10 requests individually, before being rate limited, proving that rate limiting of 10 is applied per unique user id.
 
 ## Known Issue: macOS Port Conflict (AirPlay Receiver)
 

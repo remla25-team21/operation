@@ -1,4 +1,4 @@
-# MINIKUBE PER-USER RATE LIMITER
+# VAGRANT GLOBAL RATE LIMITER
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
@@ -22,6 +22,10 @@ spec:
           type_url: type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
           value:
             stat_prefix: http_local_rate_limiter
+            token_bucket:
+              max_tokens: 10
+              tokens_per_fill: 10
+              fill_interval: 60s
             filter_enabled:
               runtime_key: local_rate_limit_enabled
               default_value:
@@ -40,8 +44,8 @@ spec:
             local_rate_limit_per_downstream_connection: false
             descriptors:
               - entries:
-                  - key: user_id
-                    value: ""
+                  - key: header_match
+                    value: user_id
                 token_bucket:
                   max_tokens: 10
                   tokens_per_fill: 10
@@ -63,6 +67,8 @@ spec:
         route:
           rate_limits:
             - actions:
-                - request_headers:
-                    header_name: "x-user-id"
-                    descriptor_key: "user_id"
+                - header_value_match:
+                    descriptor_value: user_id
+                    headers:
+                      - name: "x-user-id"
+                        present_match: true
