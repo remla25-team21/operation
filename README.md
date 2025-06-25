@@ -133,6 +133,7 @@ Run the following command to start up the local Kubernetes cluster. (Make sure t
    cd /vagrant
    GATEWAY_IP=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
    helm install my-sentiment-analysis ./kubernetes/helm/sentiment-analysis --set istio.ingressGateway.host=$GATEWAY_IP
+   kubectl apply -f kubernetes/rate-limit-vagrant.yaml
    ```
 
    > [!NOTE]
@@ -223,6 +224,7 @@ If you prefer to run commands individually:
    kubectl apply -f kubernetes/istio-addons/prometheus.yaml
    kubectl apply -f kubernetes/istio-addons/jaeger.yaml
    kubectl apply -f kubernetes/istio-addons/kiali.yaml
+   kubectl apply -f kubernetes/rate-limit.yaml
    kubectl label ns default istio-injection=enabled --overwrite
    ```
 

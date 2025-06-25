@@ -66,7 +66,6 @@ echo -e "ctrl:ansible_ctrl_specific_setup node-1:ansible_node_specific_setup nod
 STEP_NUMBER=4
 echo -e "${YELLOW}Step 4/4: Finalizing cluster setup...${NC}"
 vagrant provision ctrl --provision-with ansible_ctrl_finalization
-vagrant ssh -c "kubectl apply -f kubernetes/rate-limit-vagrant.yaml" ctrl
 
 # Get Dashboard access token
 echo -e "${YELLOW}Retrieving Kubernetes Dashboard access token...${NC}"
