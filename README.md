@@ -232,7 +232,7 @@ If you prefer to run commands individually:
 
 On Apple Silicon Macs, the default file-sharing mechanism for Minikube is more restrictive. To allow the application's hostPath volume to mount correctly, you must first manually create a link between your Mac and the Minikube VM.
 
-Create a local directory on your Mac (y:
+Create a local directory on your Mac:
 
 ```bash
 mkdir -p ~/data/shared
