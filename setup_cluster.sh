@@ -45,7 +45,7 @@ STEP_NUMBER=1
 echo -e "${YELLOW}Step 1/4: Checking if dashboard.local is in /etc/hosts...${NC}"
 if ! grep -q "dashboard.local" /etc/hosts; then
     echo -e "${GREEN}Adding dashboard.local to hosts file...${NC}"
-    echo "127.0.0.1 dashboard.local" | sudo tee -a /etc/hosts > /dev/null
+    echo "192.168.56.90 dashboard.local" | sudo tee -a /etc/hosts > /dev/null
 else
     echo -e "${GREEN}dashboard.local already exists in /etc/hosts${NC}"
 fi

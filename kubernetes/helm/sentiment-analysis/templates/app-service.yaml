@@ -85,7 +85,7 @@ spec:
           periodSeconds: 30
           timeoutSeconds: 5
 ---
-# define service
+# Define service
 apiVersion: v1
 kind: Service
 metadata:

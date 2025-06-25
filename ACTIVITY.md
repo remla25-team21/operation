@@ -318,3 +318,36 @@ Created PR:
 
 Approved PR: 
 - https://github.com/remla25-team21/.github/pull/3  (Final Submission)
+
+# Week 9:
+
+-- Bohong Lu: --  
+Created PR: 
+- https://github.com/remla25-team21/operation/pull/36 (A5)
+
+Approved PR: 
+
+-- Kanta Tanahashi: --  
+Created PR: 
+
+Approved PR: 
+- https://github.com/remla25-team21/operation/pull/38  (A5)
+
+-- Yizhen Zang: --  
+Created PR: 
+- https://github.com/remla25-team21/operation/pull/38  (A5)
+
+Approved PR: 
+- https://github.com/remla25-team21/operation/pull/40  (A5)
+
+-- Zeryab Alam: --  
+Created PR: 
+- https://github.com/remla25-team21/operation/pull/40  (A5)
+
+Approved PR: 
+- https://github.com/remla25-team21/app/pull/18  (A1)
+
+-- Raghav Talwar: --  
+Created PR: 
+
+Approved PR: 
