@@ -117,7 +117,7 @@
       content: |
         controller:
           service:
-            loadBalancerIP: 192.168.56.90  # TODO: Might be changed to a range
+            loadBalancerIP: 192.168.56.90  # Could be changed to a range
       mode: '0644'
 
   - name: Install Nginx Ingress Controller

@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
   def configure_ansible_provisioner(ansible, playbook_path, current_vm_name, current_vm_ip, limit_target = nil)
     ansible.compatibility_mode = "2.0"
     ansible.playbook = playbook_path
-    ansible.inventory_path = "ansible/inventory/inventory.cfg" # Assumes this path is correct relative to Vagrantfile
+    ansible.inventory_path = "ansible/inventory/inventory.cfg"
     ansible.extra_vars = {
       "node_name" => current_vm_name,
       "private_ip" => current_vm_ip
@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
       # Configure VM with minimal changes before SSH (faster boot)
       machine.vm.provision "shell", inline: "echo 'Accelerating boot process...'"
 
-      # Provisioning Step 1 (User's terminology): General setup for the current VM
+      # Provisioning Step 1: General setup for the current VM
       # Vagrant will attempt to run this stage in parallel for all VMs during `vagrant up`.
       machine.vm.provision "ansible_general_setup", type: :ansible do |ansible|
         configure_ansible_provisioner(
@@ -66,7 +66,7 @@ Vagrant.configure("2") do |config|
         )
       end
 
-      # Provisioning Step 2 (User's terminology): Specific setup based on VM role
+      # Provisioning Step 2: Specific setup based on VM role
       if name == CTRL_NAME
         # Step 2a: Controller-specific playbook
         machine.vm.provision "ansible_ctrl_specific_setup", type: :ansible do |ansible|
@@ -78,7 +78,7 @@ Vagrant.configure("2") do |config|
           )
         end
 
-        # Provisioning Step 3 (User's terminology): Finalization playbook for the controller
+        # Provisioning Step 3: Finalization playbook for the controller
         # This is defined as the last provisioner for 'ctrl'.
         # Note: For strict "after nodes complete node.yaml" sequencing, see explanation below.
         machine.vm.provision "ansible_ctrl_finalization", type: :ansible do |ansible|

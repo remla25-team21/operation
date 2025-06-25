@@ -35,7 +35,7 @@ spec:
       route:
         - destination:
             host: {{ .Release.Name }}-{{ .Values.appService.name }}
-            subset: v1 # Randomly picked. this can be v1 or v2
+            subset: v1 # Randomly picked. This can be v1 or v2
 ---
 # Create a separate VirtualService for external gateway access
 apiVersion: networking.istio.io/v1beta1

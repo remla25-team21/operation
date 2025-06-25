@@ -39,7 +39,7 @@ appFrontend:
 # Istio Gateway configuration
 istio:
   ingressGateway:
-    # You can override this value during installation with --set istio.ingressGateway.host=<IP address>
+    # Override this value during installation with --set istio.ingressGateway.host=<IP address>
       host: ""  # Default is empty, will be handled by template logic
       scheme: "http"
       apiPath: "/api/app-service"
