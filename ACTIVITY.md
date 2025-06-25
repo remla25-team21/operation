@@ -337,6 +337,7 @@ Created PR:
 - https://github.com/remla25-team21/operation/pull/38  (A5)
 
 Approved PR: 
+- https://github.com/remla25-team21/operation/pull/40 (A5)
 
 -- Zeryab Alam: --  
 Created PR: 
